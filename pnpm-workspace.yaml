@@ -1,0 +1,5 @@
+# https://pnpm.io/ja/workspaces
+# 管理するフォルダの指定
+packages:
+  - 'packages/**'
+  - 'apps/**'
