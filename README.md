@@ -6,8 +6,8 @@
 ```
 .
 ├── apps
-│   ├── desktop-standalone  : electron-app
-│   └── nuxt3-web           : nuxt3 project
+│   ├── standalone-client   : electron-app
+│   └── web                 : nuxt3 project
 │
 └── packages
     ├── core                : core package
