@@ -1,0 +1,28 @@
+{
+  "name": "@timeup-tools/core",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "exports": {
+    "./model":  "./src/Domain/Model/index.ts",
+    "./value-object": "./src/Domain/ValueObject/index.ts",
+    "./repository": "./src/Domain/Repository/index.ts",
+    "./usecase": "./src/Usecase/index.ts",
+    "./util/*": "./src/Util/*.ts"
+  },
+  "scripts": {
+    "clean": "rm -rf build tsconfig.tsbuildinfo",
+    "build": "tsc --incremental",
+    "start:dev": "tsc -w --incremental",
+    "type-chcek": "tsc -noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "dayjs": "1.11.10"
+  }
+}
