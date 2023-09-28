@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "exports": {
-    "./model":  "./src/Domain/Model/index.ts",
+    "./model": "./src/Domain/Model/index.ts",
     "./value-object": "./src/Domain/ValueObject/index.ts",
     "./repository": "./src/Domain/Repository/index.ts",
     "./usecase": "./src/Usecase/index.ts",
@@ -13,13 +13,16 @@
   "scripts": {
     "clean": "rm -rf build tsconfig.tsbuildinfo",
     "build": "tsc --incremental",
-    "start:dev": "tsc -w --incremental",
-    "type-chcek": "tsc -noEmit"
+    "type-chcek": "tsc -noEmit",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "29.5.5",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.1",
     "typescript": "5.2.2"
   },
   "dependencies": {

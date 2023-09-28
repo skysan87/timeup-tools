@@ -4,7 +4,10 @@
     "module": "nodenext",
     "composite": false,
     "moduleResolution": "nodenext",
-    "rootDirs": ["./src"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "rootDirs": ["./src", "./test"],
     "declaration": true,
     "outDir": "./build",
     "esModuleInterop": true,
