@@ -1,4 +1,4 @@
-import { Frequnecy, MonthlyType, Nominal, UserId, Weekdays, ZippedData } from "../ValueObject";
+import { DateNumber, Frequnecy, MonthlyType, Nominal, UserId, Weekdays, ZippedData } from "../ValueObject"
 
 export type Habit = Nominal<{
   id: string // randam TODO:
@@ -12,14 +12,18 @@ export type Habit = Nominal<{
   weekdays: Weekdays[]
   /** 毎月実施する種別 */
   monthlyType?: MonthlyType
-  /** 実施する日 */
+  /** 実施する日(Frequnecy.MONTHLY && MonthlyType.DAY) */
   planDays: number[]
-  /** 実施する週 */
+  /**
+   * @param planWeek 実施する週 (Frequnecy.MONTHLY && MonthlyType.WEEK)
+   * @param planWeek.index 第N周
+   * @param planWeek.day 曜日(0-6)
+  */
   planWeek: { index: number, day: number }
   orderIndex: number
   userId: UserId
   /** 前回実施日 */
-  lastActivityDate: Date | null
+  lastActivityDate: DateNumber | null
   /** 通算対象回数(分母) */
   totalCount: number
   /** 通算実施回数(分子) */
@@ -29,13 +33,13 @@ export type Habit = Nominal<{
   /** 最長継続期間 */
   maxduration: number
   /** 実績更新日 */
-  summaryUpdatedAt: Date | null
+  summaryUpdatedAt: DateNumber | null
   /** 実施予定日 */
   plan: ZippedData
   /** 実績 */
   result: ZippedData
   /** 実績の更新確認用 */
-  needServerUpdate: false
+  needServerUpdate: boolean
   // TODO: デコレータで表示用と明示
   /** 今日が実施日か */
   isPlanDay: boolean

@@ -13,22 +13,30 @@ export type Mail = Nominal<string, 'Mail'>
 export type DisplayName = Nominal<string, 'DisplayName'>
 
 /** YYYYMMDD */
-export type DateNumber = Nominal<string, 'DateNumber'>
+export type DateNumber = Nominal<number, 'DateNumber'>
 
 // 西暦: 4桁の数字
 export type FullYear = Nominal<number, 'FullYear'>
 
+/** 繰り返し設定 */
 export const Frequnecy = {
+  /** 毎日 */
   DAILY: 'daily',
+  /** 毎週 */
   WEEKLY: 'weekly',
+  /** 毎月 */
   MONTHLY: 'monthly'
 } as const
 
 export type Frequnecy = typeof Frequnecy[keyof typeof Frequnecy]
 
+/** 毎月の繰り返し設定 */
 export const MonthlyType = {
+  /** 特定の日付 */
   DAY: 'day',
+  /** 特定の週 */
   WEEK: 'week',
+  /** 月末 */
   END: 'end'
 } as const
 
@@ -48,11 +56,11 @@ export type HexNumber = Nominal<string, 'HexNumber'>
 
 export type ZippedData = { [key: FullYear]: Array12<HexNumber> }
 
-export type BinaryNumber = Nominal<'0' | '1', 'BinaryNumber'>
+export const Flag = { ON: '1', OFF: '0' } as const
 
-export type MonthlyFlag = Nominal<Array32<BinaryNumber>, 'MonthlyFlag'>
+export type Flag = typeof Flag[keyof typeof Flag]
 
-export type UnzippedData = { [key: FullYear]: Array12<MonthlyFlag> }
+export type UnzippedData = { [key: FullYear]: Array12<Array32<Flag>> }
 
 export const TaskType = {
   TODO: 'todo',
