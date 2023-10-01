@@ -10,7 +10,7 @@ export abstract class BehaviorBase<T> implements IBehavior<T> {
     return this.value[key]
   }
 
-  public update(input: T): void {
+  public update(input: Partial<T>): void {
     this.value = {
       ...this.value,
       ...input

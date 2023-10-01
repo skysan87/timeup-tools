@@ -10,10 +10,11 @@ export type Task = Nominal<{
   startdate: DateNumber
   enddate: DateNumber
   orderIndex: number
+  /** TasklistId か HabitId */
   listId: string // TODO: ユニーク名
   userId: UserId
-  lastActivityDate: Date | null // TODO: 要確認
-  stateChangeDate: Date | null // TODO: 要確認
+  lastActivityDate: DateNumber | null
+  stateChangeDate: DateNumber | null
   createdAt: Date | null
   updatedAt: Date | null
   /** リスト名: 表示用 */

@@ -1,6 +1,7 @@
 import { dateFactory, forDayEach, forDayReverseEach } from "../../Util/DateUtil"
+import { Task } from "../Model"
 import { Habit } from "../Model/Habit"
-import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, UnzippedData, Weekdays, ZippedData } from "../ValueObject"
+import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekdays, ZippedData } from "../ValueObject"
 import { BehaviorBase } from "./BehaviorBase"
 
 export class HabitBehavior extends BehaviorBase<Habit> {
@@ -175,6 +176,33 @@ export class HabitBehavior extends BehaviorBase<Habit> {
   }
 
   /**
+   * 習慣タスク(TaskType.Habit)の実績計算
+   */
+  public calcSummaryFromTask(oldTask: Task, newTask: Task): void {
+    if (oldTask.state === newTask.state) {
+      return
+    }
+
+    let counter: number = 0
+    let lastActivityDate = oldTask.lastActivityDate
+
+    if (newTask.state === TaskState.Done) {
+      counter = 1
+      lastActivityDate = dateFactory().getDateNumber() as DateNumber
+    } else if (oldTask.state === TaskState.Done) {
+      // Doneから変更された場合はリセット
+      counter = -1
+      lastActivityDate = newTask.lastActivityDate
+    }
+
+    this.updateResult(newTask.state === TaskState.Done)
+
+    this.value.totalActivityCount += counter
+    this.value.duration += counter
+    this.value.lastActivityDate = lastActivityDate
+  }
+
+  /**
    * 繰り返し設定から実行予定日を判定
    * @param unzipPlan 解凍すみの実行予定データ
    * @param _date 対象日
@@ -248,7 +276,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
    * @description タスクが完了したら、実績にフラグを立てる
    * @param isDone タスクが完了したか
    */
-  public updateResult(isDone: boolean) {
+  private updateResult(isDone: boolean) {
     const today = new Date()
     const year = today.getFullYear() as FullYear
     const month = today.getMonth()

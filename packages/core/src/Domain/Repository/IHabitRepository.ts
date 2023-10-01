@@ -1,8 +1,10 @@
 import { Habit } from "../Model/Habit"
-import { UserId } from "../ValueObject"
+import { DateNumber, UserId } from "../ValueObject"
 
 export interface IHabitRepository {
-  get(userId: UserId): Promise<Habit[] | null>
-  save(userId: UserId, data: Partial<Habit>): Promise<void>
-  update(userId: UserId, data: Partial<Habit>): Promise<void>
+  get(userId: UserId): Promise<Habit[]>
+  getById(userId: UserId, habitId: string): Promise<Habit | null>
+  getTodayList(userId: UserId, today: DateNumber): Promise<Habit[]>
+  save(userId: UserId, data: Partial<Habit>): Promise<Habit>
+  update(userId: UserId, data: Partial<Habit>): Promise<Habit>
 }
