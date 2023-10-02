@@ -3,10 +3,25 @@ import { Task } from "../Model"
 import { Habit } from "../Model/Habit"
 import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekdays, ZippedData } from "../ValueObject"
 import { BehaviorBase } from "./BehaviorBase"
+import { IBehavior } from "./IBehavior"
 
 export class HabitBehavior extends BehaviorBase<Habit> {
 
   private today = new Date()
+
+  public action(callback: (behavior: IBehavior<Habit>) => void): Habit {
+    this.value = this.format()
+    callback(this)
+    this.checkPlanDay()
+    return this.value
+  }
+
+  public async actionAsync(callback: (behavior: IBehavior<Habit>) => Promise<void>): Promise<Habit> {
+    this.value = this.format()
+    await callback(this)
+    this.checkPlanDay()
+    return this.value
+  }
 
   public format(): Habit {
     const v = this.value
@@ -33,8 +48,8 @@ export class HabitBehavior extends BehaviorBase<Habit> {
       result: v.result ?? this.initializeZippedData(),
       createdAt: v.createdAt ?? null,
       updatedAt: v.updatedAt ?? null,
-      needServerUpdate: false,
-      isPlanDay: false // TODO:
+      needServerUpdate: v.needServerUpdate ?? false,
+      isPlanDay: v.isPlanDay ?? false
     } as Habit
   }
 
@@ -51,7 +66,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
   /**
    * 今日が実施日か判定
    */
-  public checkPlanDay() {
+  private checkPlanDay() {
     const today = new Date()
     const _y = today.getFullYear() as FullYear
     const _m = today.getMonth()

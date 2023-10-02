@@ -190,12 +190,14 @@ export class TaskUseCase {
       await new HabitBehavior(habit).actionAsync(async behavior => {
         const habitBehavior = behavior as HabitBehavior
         habitBehavior.calcSummaryFromTask(oldTask, newTask)
+        // TODO: 更新した値のみ
         await this.habitRepository.update(this.userId, habitBehavior.format())
       })
     }
 
     return new TaskBehavior(newTask).actionAsync(async behavior => {
       behavior.update(newTask)
+        // TODO: 更新した値のみ
       const updated = await this.taskRepository.update(this.userId, behavior.format())
       behavior.update(updated)
     })

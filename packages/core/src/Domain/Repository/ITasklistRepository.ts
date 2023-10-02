@@ -8,4 +8,5 @@ export interface ITasklistRepository {
   getById(userId: UserId, tasklistId: string): Promise<Tasklist | null>
   save(userId: UserId, data: Tasklist): Promise<Tasklist>
   update(userId: UserId, data: Partial<Tasklist>): Promise<Tasklist>
+  delete(userId: UserId, tasklistId: string): Promise<void>
 }
