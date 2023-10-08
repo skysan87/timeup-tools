@@ -1,7 +1,7 @@
 import { dateFactory, forDayEach, forDayReverseEach } from "../../Util/DateUtil"
 import { Task } from "../Model"
 import { Habit } from "../Model/Habit"
-import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekdays, ZippedData } from "../ValueObject"
+import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekday, Weekdays, ZippedData } from "../ValueObject"
 import { BehaviorBase } from "./BehaviorBase"
 import { IBehavior } from "./IBehavior"
 
@@ -227,7 +227,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
     const _y = _date.getFullYear() as FullYear
     const _m = _date.getMonth()
     const _d = _date.getDate()
-    const _dw = _date.getDay().toString() as Weekdays
+    const _dw = _date.getDay() as Weekday
 
     if (this.value.frequency === Frequnecy.DAILY) {
       unzipPlan[_y][_m][_d] = Flag.ON
