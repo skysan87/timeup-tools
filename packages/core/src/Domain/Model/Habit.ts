@@ -1,4 +1,4 @@
-import { DateNumber, Frequnecy, MonthlyType, Nominal, UserId, Weekdays, ZippedData } from "../ValueObject"
+import { DateNumber, Frequnecy, MonthlyType, Nominal, UserId, Weekday, ZippedData } from "../ValueObject"
 
 export type Habit = Nominal<{
   id: string // randam TODO:
@@ -9,7 +9,7 @@ export type Habit = Nominal<{
   /** 繰り返し設定 */
   frequency: Frequnecy
   /** 実施する曜日 */
-  weekdays: Weekdays[]
+  weekdays: Weekday[]
   /** 毎月実施する種別 */
   monthlyType?: MonthlyType
   /** 実施する日(Frequnecy.MONTHLY && MonthlyType.DAY) */
