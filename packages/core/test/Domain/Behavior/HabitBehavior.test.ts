@@ -14,10 +14,10 @@ jest.mock('@/Util/DateUtil', () => {
     // モック化不要なものはそのまま
     ...utils,
     // テスト対象のみ置き換える
-    dateFactory: jest.fn().mockImplementation((param) => {
+    dateFactory: jest.fn().mockImplementation((param?) => {
       // デフォルトの日付を固定にする
       // TODO: これをtest単位で設定
-      return utils.dateFactory(TEST_DAY)
+      return utils.dateFactory(param ?? TEST_DAY)
     })
   }
 })
@@ -48,5 +48,34 @@ describe('main', () => {
 
     // 今日が実施予定日である
     expect(result.isPlanDay).toBe(true)
+  })
+
+  test('繰り返し: 2022年9月の毎週の水・木のタスク', () => {
+    // 最終更新日(summaryUpdatedAt)が8/31で10/1に更新
+    // 9月分の更新の実施予定日を更新する
+    const data: Habit = {
+      id: '',
+      rootId: '',
+      title: '毎週の水・木のタスク',
+      frequency: Frequnecy.WEEKLY,
+      weekdays: [3, 4], // 水、木曜
+      summaryUpdatedAt: 20220830
+    } as Habit
+
+    const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
+      const b = behavior as HabitBehavior
+      b.updateSummary()
+    })
+
+    const today = new Date(2022, 8, 1) // 2022/09/01
+    const year = today.getFullYear()
+    const month = today.getMonth() // 8 = 9月
+
+    // - 9月分の実施予定日が計算されていること
+    const lastMonthPlan = result.plan[year as FullYear][month]
+    expect(lastMonthPlan).toBe('c183060c')
+
+    // 2022/10/1は土曜日なので対象日でない
+    expect(result.isPlanDay).toBe(false)
   })
 })
