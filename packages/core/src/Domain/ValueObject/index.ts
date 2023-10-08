@@ -26,7 +26,7 @@ export const Frequnecy = {
   WEEKLY: 'weekly',
   /** 毎月 */
   MONTHLY: 'monthly'
-} as const
+} as const satisfies { [key: string]: string }
 
 export type Frequnecy = typeof Frequnecy[keyof typeof Frequnecy]
 
@@ -38,13 +38,21 @@ export const MonthlyType = {
   WEEK: 'week',
   /** 月末 */
   END: 'end'
-} as const
+} as const satisfies { [key: string]: string }
 
 export type MonthlyType = typeof MonthlyType[keyof typeof MonthlyType]
 
+export type Weekday = Nominal<number, 'Weekday'>
+
 export const Weekdays = {
-  0: '日', 1: '月', 2: '火', 3: '水', 4: '木', 5: '金', 6: '土'
-} as const
+  [0 as Weekday]: '日',
+  [1 as Weekday]: '月',
+  [2 as Weekday]: '火',
+  [3 as Weekday]: '水',
+  [4 as Weekday]: '木',
+  [5 as Weekday]: '金',
+  [6 as Weekday]: '土'
+} as const satisfies Record<Weekday, string>
 
 export type Weekdays = typeof Weekdays[keyof typeof Weekdays]
 
@@ -65,7 +73,7 @@ export type UnzippedData = { [key: FullYear]: Array12<Array32<Flag>> }
 export const TaskType = {
   TODO: 'todo',
   HABIT: 'habit'
-} as const
+} as const satisfies { [key: string]: string }
 
 export type TaskType = typeof TaskType[keyof typeof TaskType]
 
@@ -73,7 +81,7 @@ export const TaskState = {
   Todo: 0,
   InProgress: 1,
   Done: 2
-} as const
+} as const satisfies { [key: string]: number }
 
 export type TaskState = typeof TaskState[keyof typeof TaskState]
 
@@ -81,6 +89,6 @@ export const TaskSateLabel = {
   [TaskState.Todo]: 'Todo',
   [TaskState.InProgress]: 'In Progress',
   [TaskState.Done]: 'Done'
-} as const
+} as const satisfies { [key: number]: string }
 
 export type TaskSateLabel = typeof TaskSateLabel[keyof typeof TaskSateLabel]
