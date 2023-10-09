@@ -19,7 +19,7 @@ export type Habit = Nominal<{
    * @param planWeek.index 第N周
    * @param planWeek.day 曜日(0-6)
   */
-  planWeek: { index: number, day: number }
+  planWeek: { index: number, day: Weekday }
   orderIndex: number
   userId: UserId
   /** 前回実施日 */

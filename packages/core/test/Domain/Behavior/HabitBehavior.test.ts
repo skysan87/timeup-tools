@@ -57,7 +57,7 @@ describe('main', () => {
       rootId: '',
       title: '毎週の水・木のタスク',
       frequency: Frequnecy.WEEKLY,
-      weekdays: [3, 4], // 水、木曜
+      weekdays: [Weekdays.WEDNESDAY, Weekdays.THURSDAY],
       summaryUpdatedAt: 20220830
     } as Habit
 
@@ -177,7 +177,7 @@ describe('main', () => {
       title: '第一土曜日のタスク',
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.WEEK,
-      planWeek: { index: 1, day: 6 }, // TODO: 曜日を定義
+      planWeek: { index: 1, day: Weekdays.SATURDAY },
       summaryUpdatedAt: 20220831
     } as Habit
 
