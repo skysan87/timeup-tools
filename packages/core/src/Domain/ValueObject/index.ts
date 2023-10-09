@@ -26,7 +26,7 @@ export const Frequnecy = {
   WEEKLY: 'weekly',
   /** 毎月 */
   MONTHLY: 'monthly'
-} as const
+} as const satisfies { [key: string]: string }
 
 export type Frequnecy = typeof Frequnecy[keyof typeof Frequnecy]
 
@@ -38,15 +38,35 @@ export const MonthlyType = {
   WEEK: 'week',
   /** 月末 */
   END: 'end'
-} as const
+} as const satisfies { [key: string]: string }
 
 export type MonthlyType = typeof MonthlyType[keyof typeof MonthlyType]
 
+export type Weekday = Nominal<number, 'Weekday'>
+
 export const Weekdays = {
-  0: '日', 1: '月', 2: '火', 3: '水', 4: '木', 5: '金', 6: '土'
-} as const
+  SUNDAY: 0 as Weekday,
+  MONDAY: 1 as Weekday,
+  TUESDAY: 2 as Weekday,
+  WEDNESDAY: 3 as Weekday,
+  THURSDAY: 4 as Weekday,
+  FRIDAY: 5 as Weekday,
+  SATURDAY: 6 as Weekday
+} as const satisfies Record<string, Weekday>
 
 export type Weekdays = typeof Weekdays[keyof typeof Weekdays]
+
+export const WeekdaysLabel = {
+  [Weekdays.SUNDAY]: '日',
+  [Weekdays.MONDAY]: '月',
+  [Weekdays.TUESDAY]: '火',
+  [Weekdays.WEDNESDAY]: '水',
+  [Weekdays.THURSDAY]: '木',
+  [Weekdays.FRIDAY]: '金',
+  [Weekdays.SATURDAY]: '土'
+} as const satisfies Record<Weekday, string>
+
+export type WeekdaysLabel = typeof WeekdaysLabel[keyof typeof WeekdaysLabel]
 
 export type Array12<T> = [T, T, T, T, T, T, T, T, T, T, T, T]
 
@@ -65,7 +85,7 @@ export type UnzippedData = { [key: FullYear]: Array12<Array32<Flag>> }
 export const TaskType = {
   TODO: 'todo',
   HABIT: 'habit'
-} as const
+} as const satisfies { [key: string]: string }
 
 export type TaskType = typeof TaskType[keyof typeof TaskType]
 
@@ -73,7 +93,7 @@ export const TaskState = {
   Todo: 0,
   InProgress: 1,
   Done: 2
-} as const
+} as const satisfies { [key: string]: number }
 
 export type TaskState = typeof TaskState[keyof typeof TaskState]
 
@@ -81,6 +101,6 @@ export const TaskSateLabel = {
   [TaskState.Todo]: 'Todo',
   [TaskState.InProgress]: 'In Progress',
   [TaskState.Done]: 'Done'
-} as const
+} as const satisfies { [key: number]: string }
 
 export type TaskSateLabel = typeof TaskSateLabel[keyof typeof TaskSateLabel]

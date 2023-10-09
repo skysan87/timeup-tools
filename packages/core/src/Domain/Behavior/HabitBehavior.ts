@@ -1,13 +1,13 @@
 import { dateFactory, forDayEach, forDayReverseEach } from "../../Util/DateUtil"
 import { Task } from "../Model"
 import { Habit } from "../Model/Habit"
-import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekdays, ZippedData } from "../ValueObject"
+import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekday, Weekdays, ZippedData } from "../ValueObject"
 import { BehaviorBase } from "./BehaviorBase"
 import { IBehavior } from "./IBehavior"
 
 export class HabitBehavior extends BehaviorBase<Habit> {
 
-  private today = new Date()
+  private today = dateFactory().toDate()
 
   public action(callback: (behavior: IBehavior<Habit>) => void): Habit {
     this.value = this.format()
@@ -67,7 +67,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
    * 今日が実施日か判定
    */
   private checkPlanDay() {
-    const today = new Date()
+    const today = dateFactory().toDate()
     const _y = today.getFullYear() as FullYear
     const _m = today.getMonth()
     const _d = today.getDate()
@@ -118,7 +118,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
    */
   private calcSummary(): void {
     // 初期化
-    const today = new Date()
+    const today = dateFactory().toDate()
     const years: FullYear[] = Object.keys(this.value.plan).sort().map(str => parseInt(str) as FullYear)
     const firstYear: FullYear = years.length > 0 ? years[0] : today.getFullYear() as FullYear
     const isFirstTime = this.value.summaryUpdatedAt === null
@@ -227,7 +227,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
     const _y = _date.getFullYear() as FullYear
     const _m = _date.getMonth()
     const _d = _date.getDate()
-    const _dw = _date.getDay().toString() as Weekdays
+    const _dw = _date.getDay() as Weekday
 
     if (this.value.frequency === Frequnecy.DAILY) {
       unzipPlan[_y][_m][_d] = Flag.ON
@@ -292,7 +292,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
    * @param isDone タスクが完了したか
    */
   private updateResult(isDone: boolean) {
-    const today = new Date()
+    const today = dateFactory().toDate()
     const year = today.getFullYear() as FullYear
     const month = today.getMonth()
     const day = today.getDate()
