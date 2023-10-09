@@ -27,6 +27,16 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
 
+  packages/inmemory-infra:
+    dependencies:
+      '@timeup-tools/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: 5.2.2
+        version: 5.2.2
+
 packages:
 
   /@ampproject/remapping@2.2.1:
