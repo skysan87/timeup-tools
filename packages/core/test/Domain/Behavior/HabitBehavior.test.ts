@@ -198,4 +198,35 @@ describe('main', () => {
     expect(result.isPlanDay).toBe(true)
   })
 
+  test('年越し', () => {
+    // 最終更新日(summaryUpdatedAt)が2021/12/31で2022/10/1に更新
+    const data: Habit = {
+      id: '',
+      rootId: '',
+      title: '毎月1日のタスク',
+      frequency: Frequnecy.MONTHLY,
+      monthlyType: MonthlyType.DAY,
+      planDays: [1],
+      summaryUpdatedAt: 20211231,
+      plan: {
+        [2021 as FullYear]: Array.from({ length: 12 }, () => 'c0000000')
+      }
+    } as Habit
+
+    const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
+      const b = behavior as HabitBehavior
+      b.updateSummary()
+    })
+
+    const today = new Date(2022, 9, 1) // 2022/10/01
+    const year = today.getFullYear()
+    const month = today.getMonth()
+
+    // 10月の実施予定日が計算されていること
+    const thisMonthPlan = result.plan[year as FullYear][month]
+    expect(thisMonthPlan).toBe('c0000000')
+
+    // 2022/10/1は対象日
+    expect(result.isPlanDay).toBe(true)
+  })
 })
