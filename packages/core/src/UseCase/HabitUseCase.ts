@@ -54,7 +54,7 @@ export class HabitUseCase {
    * @returns
    */
   public async addHabit(habit: Partial<Habit>): Promise<Habit> {
-    if (!this.habitlistRepository.validateMaxSize()) {
+    if (!this.habitRepository.validateMaxSize()) {
       throw new Error('これ以上登録できません')
     }
 
