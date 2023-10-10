@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "composite": false,
+    "moduleResolution": "Bundler",
+    "rootDirs": ["./test"],
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "noEmit": false,
+  },
+  "include": [
+    "test"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}
