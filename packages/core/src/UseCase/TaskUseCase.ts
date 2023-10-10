@@ -36,8 +36,7 @@ export class TaskUseCase {
     const today = dateFactory().getDateNumber() as DateNumber
 
     // 1. 今日の習慣を取得
-    // TODO: キャッシュから取得
-    const todaysHabits: Habit[] = await this.habitRepository.getTodayList(this.userId, today)
+    const todaysHabits: Habit[] = await this.habitRepository.getTodayListFromCache()
     // 2. 習慣のToDoをサーバーから取得
     const habitTasks = await this.taskRepository.getHabits(this.userId, today)
     // 3. 1と2を比較して、2が存在しないものは、追加する
