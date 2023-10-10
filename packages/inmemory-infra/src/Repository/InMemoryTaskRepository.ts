@@ -88,26 +88,28 @@ export class InMemoryTaskRepository implements ITaskRepository {
   }
 
   public update(userId: UserId, data: Partial<Task>): Promise<Task> {
-    let base = this.memory.find(h => h.id === data.id!)
-    base = {
-      ...base,
+    const index = this.memory.findIndex(h => h.id === data.id!)
+    const clone = {
+      ...this.memory[index],
       ...data,
       updatedAt: new Date()
     } as Task
-    return Promise.resolve(structuredClone(base))
+    this.memory[index] = clone
+    return Promise.resolve(structuredClone(clone))
   }
 
   public updateAll(userId: UserId, data: Partial<Task>[]): Promise<Task[]> {
     return new Promise(resolve => {
       const updated: Task[] = []
       for (const task of data) {
-        let base = this.memory.find(h => h.id === task.id!)
-        base = {
-          ...base,
-          ...data,
+        const index = this.memory.findIndex(h => h.id === task.id!)
+        const clone = {
+          ...this.memory[index],
+          ...task,
           updatedAt: new Date()
         } as Task
-        updated.push(base)
+        this.memory[index] = clone
+        updated.push(clone)
       }
       resolve(updated)
     })

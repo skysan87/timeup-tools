@@ -11,7 +11,7 @@ export class InMemoryTasklistRepository implements ITasklistRepository {
   }
 
   public getMaxIndex(): number {
-    return this.memory.map(i => i.maxIndex).reduce((a, b) => Math.max(a, b))
+    return this.memory.map(i => i.maxIndex).reduce((a, b) => Math.max(a, b), 0)
   }
 
   public get(userId: UserId): Promise<Tasklist[]> {
@@ -37,13 +37,13 @@ export class InMemoryTasklistRepository implements ITasklistRepository {
   }
 
   public update(userId: UserId, data: Partial<Tasklist>): Promise<Tasklist> {
-    let base = this.memory.find(h => h.id === data.id!)
-    base = {
-      ...base,
+    const index = this.memory.findIndex(h => h.id === data.id!)
+    const clone = {
+      ...this.memory[index],
       ...data,
       updatedAt: new Date()
     } as Tasklist
-    return Promise.resolve(structuredClone(base))
+    return Promise.resolve(structuredClone(clone))
   }
 
   public delete(userId: UserId, tasklistId: string): Promise<void> {

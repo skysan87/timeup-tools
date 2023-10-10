@@ -41,13 +41,14 @@ export class InMemoryHabitRepository implements IHabitRepository {
   }
 
   public update(userId: UserId, data: Partial<Habit>): Promise<Habit> {
-    let base = this.memory.find(h => h.id === data.id!)
-    base = {
-      ...base,
+    const index = this.memory.findIndex(h => h.id === data.id!)
+    const clone = {
+      ...this.memory[index],
       ...data,
       updatedAt: new Date()
     } as Habit
-    return Promise.resolve(structuredClone(base))
+    this.memory[index] = clone
+    return Promise.resolve(structuredClone(clone))
   }
 
   public delete(userId: UserId, habitId: string): Promise<void> {
