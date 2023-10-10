@@ -4,9 +4,6 @@
     "module": "nodenext",
     "composite": false,
     "moduleResolution": "nodenext",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "rootDirs": ["./src", "./test"],
     "declaration": true,
     "outDir": "./build",

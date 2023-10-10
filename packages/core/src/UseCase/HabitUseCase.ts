@@ -1,8 +1,8 @@
-import { HabitBehavior } from "@/Domain/Behavior/HabitBehavior"
-import { HabitlistBehavior } from "@/Domain/Behavior/HabitlistBehavior"
-import { Habit, Habitlist } from "@/Domain/Model"
-import { IHabitRepository, IHabitlistRepository, ITransaction, IUserRepository } from "@/Domain/Repository"
-import { UserId } from "@/Domain/ValueObject"
+import { HabitBehavior } from "../Domain/Behavior/HabitBehavior"
+import { HabitlistBehavior } from "../Domain/Behavior/HabitlistBehavior"
+import { Habit, Habitlist } from "../Domain/Model"
+import { IHabitRepository, IHabitlistRepository, ITransaction, IUserRepository } from "../Domain/Repository"
+import { UserId } from "../Domain/ValueObject"
 
 export class HabitUseCase {
 

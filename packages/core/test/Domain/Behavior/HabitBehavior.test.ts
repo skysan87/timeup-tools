@@ -1,7 +1,7 @@
-import { Habit } from "@/Domain/Model/Habit"
-import { Frequnecy, FullYear, Weekdays, MonthlyType } from "@/Domain/ValueObject"
-import { HabitBehavior } from "@/Domain/Behavior/HabitBehavior"
-import { IBehavior } from "@/Domain/Behavior/IBehavior"
+import { Habit } from "../../../src/Domain/Model/Habit"
+import { Frequnecy, FullYear, Weekdays, MonthlyType } from "../../../src/Domain/ValueObject"
+import { HabitBehavior } from "../../../src/Domain/Behavior/HabitBehavior"
+import { IBehavior } from "../../../src/Domain/Behavior/IBehavior"
 
 const TEST_DAY = 20221001 // 土曜
 
