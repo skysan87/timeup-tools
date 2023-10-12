@@ -1,15 +1,17 @@
-import { Task, Tasklist } from '@timeup-tools/core/model'
-import { TaskState } from '@timeup-tools/core/value-object'
-import { TaskUseCase, TasklistUseCase } from '@timeup-tools/core/usecase'
+import { Habit, Task, Tasklist } from '@timeup-tools/core/model'
+import { TaskState, TaskType } from '@timeup-tools/core/value-object'
+import { HabitUseCase, TaskUseCase, TasklistUseCase } from '@timeup-tools/core/usecase'
 import {
   InMemoryUserRepository
   , InMemoryTaskRepository
   , InMemoryTasklistRepository
   , InMemoryHabitRepository
   , InMemoryTransaction
+  , InMemoryHabitlistRepository
 } from '@timeup-tools/inmemory-infra/repository'
 
 let usecase: TaskUseCase
+let habitUseCase: HabitUseCase
 let listId: string
 
 const userRepositpry = new InMemoryUserRepository()
@@ -17,16 +19,30 @@ const userRepositpry = new InMemoryUserRepository()
 beforeEach(async () => {
   await userRepositpry.login()
 
+  const habitlistRepo = new InMemoryHabitlistRepository()
+  const habitRepo = new InMemoryHabitRepository()
+  const taskRepo = new InMemoryTaskRepository()
   const tasklistRepo = new InMemoryTasklistRepository()
   const trunsaction = new InMemoryTransaction()
 
   usecase = new TaskUseCase(
     userRepositpry,
-    new InMemoryTaskRepository(),
+    taskRepo,
     tasklistRepo,
-    new InMemoryHabitRepository(),
+    habitlistRepo,
+    habitRepo,
     trunsaction
   )
+
+  habitUseCase = new HabitUseCase(
+    userRepositpry,
+    habitlistRepo,
+    habitRepo,
+    trunsaction
+  )
+
+  await habitUseCase.init()
+
   const tasklistUseCase = new TasklistUseCase(userRepositpry, tasklistRepo, trunsaction)
   const tasklist = await tasklistUseCase.addList({ title: 'list_title' } as Tasklist)
   listId = tasklist.id
@@ -129,6 +145,20 @@ describe('基本動作', () => {
     expect(result.length).toBe(1)
     expect(result[0].id).toBe(task2.id)
   })
-})
 
-// TODO: describe('今日のタスク作成と取得', () => {})
+  test('習慣タスクを登録して、今日のタスクに登録される', async () => {
+    const habit: Habit = await habitUseCase.addHabit({
+      title: '毎日のタスク',
+      frequency: 'daily'
+    } as Habit)
+
+    await habitUseCase.init()
+    const tasks: Task[] = await usecase.getTodaysTasks()
+
+    expect(tasks.length).toBe(1)
+    expect(tasks[0].state).toBe(TaskState.Todo)
+    expect(tasks[0].type).toBe(TaskType.HABIT)
+    expect(tasks[0].listId).toBe(habit.id)
+  })
+
+})

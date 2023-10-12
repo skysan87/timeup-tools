@@ -19,33 +19,33 @@ export class HabitUseCase {
     return this._userId ?? this.userRepositpry.getFromCache().id
   }
 
-  /**
-   * リストの取得
-   * @description 存在しない場合は新規作成する
-   * @returns
-   */
-  public async getList(): Promise<Habitlist> {
-    let result: Habitlist
-
+  public async init(): Promise<void> {
     await this.transaction.run(async () => {
-      const habitlist = await this.habitlistRepository.get(this.userId)
+      let habitlist: Habitlist | null
 
-      if (habitlist) {
-        result = habitlist
-        return
+      habitlist = await this.habitlistRepository.get(this.userId)
+
+      if (!habitlist) {
+        const data = { userId: this.userId } as Habitlist
+
+        habitlist = await new HabitlistBehavior(data).actionAsync(async behavior => {
+          const created = await this.habitlistRepository.save(this.userId, behavior.format())
+          behavior.update(created)
+        })
       }
 
-      const data = {
-        userId: this.userId
-      } as Habitlist
+      const tmp: Habit[] = await this.habitRepository.get(this.userId, habitlist.id)
 
-      result = await new HabitlistBehavior(data).actionAsync(async behavior => {
-        const created = await this.habitlistRepository.save(this.userId, behavior.format())
-        behavior.update(created)
+      tmp.forEach(async h => {
+        await new HabitBehavior(h).actionAsync(async behavior => {
+          const habitBehavior = (behavior as HabitBehavior)
+          const data = habitBehavior.updateData()
+          if (data.needServerUpdate) {
+            await this.habitRepository.update(this.userId, habitlist!.id, data)
+          }
+        })
       })
     })
-
-    return result!
   }
 
   /**
@@ -59,7 +59,8 @@ export class HabitUseCase {
     }
 
     return new HabitBehavior(habit as Habit).actionAsync(async behavior => {
-      const created = await this.habitRepository.save(this.userId, behavior.format())
+      const habitlist = await this.habitlistRepository.get(this.userId)
+      const created = await this.habitRepository.save(this.userId, habitlist!.id, behavior.format())
       behavior.update(created)
     })
   }
@@ -73,7 +74,8 @@ export class HabitUseCase {
     let result: Habit
     await this.transaction.run(async () => {
       result = await new HabitBehavior(updateProps as Habit).actionAsync(async behavior => {
-        const updated = await this.habitRepository.update(this.userId, updateProps)
+        const habitlist = await this.habitlistRepository.get(this.userId)
+        const updated = await this.habitRepository.update(this.userId, habitlist!.id, updateProps)
         behavior.update(updated)
       })
     })
@@ -86,7 +88,8 @@ export class HabitUseCase {
    */
   public async deleteHabit(habitId: string): Promise<void> {
     await this.transaction.run(async () => {
-      this.habitRepository.delete(this.userId, habitId)
+      const habitlist = await this.habitlistRepository.get(this.userId)
+      this.habitRepository.delete(this.userId, habitlist!.id, habitId)
     })
   }
 

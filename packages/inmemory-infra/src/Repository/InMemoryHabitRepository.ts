@@ -1,6 +1,6 @@
 import { Habit } from "@timeup-tools/core/model";
 import { IHabitRepository } from "@timeup-tools/core/repository";
-import { UserId, DateNumber } from "@timeup-tools/core/value-object";
+import { UserId } from "@timeup-tools/core/value-object";
 
 export class InMemoryHabitRepository implements IHabitRepository {
 
@@ -10,13 +10,13 @@ export class InMemoryHabitRepository implements IHabitRepository {
     return this.memory.length <= 50
   }
 
-  public get(userId: UserId): Promise<Habit[]> {
+  public get(userId: UserId, habitlistId: string): Promise<Habit[]> {
     return new Promise(resolve => {
       resolve(structuredClone(this.memory))
     })
   }
 
-  public getById(userId: UserId, habitId: string): Promise<Habit | null> {
+  public getById(userId: UserId, habitlistId: string, habitId: string): Promise<Habit | null> {
     return new Promise(resolve => {
       resolve(structuredClone(this.memory.find(h => h.id === habitId) ?? null))
     })
@@ -28,7 +28,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     })
   }
 
-  public save(userId: UserId, data: Habit): Promise<Habit> {
+  public save(userId: UserId, habitlistId: string, data: Habit): Promise<Habit> {
     return new Promise(resolve => {
       const timestamp = new Date()
       data.id = Date.now().toString()
@@ -40,7 +40,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     })
   }
 
-  public update(userId: UserId, data: Partial<Habit>): Promise<Habit> {
+  public update(userId: UserId, habitlistId: string, data: Partial<Habit>): Promise<Habit> {
     const index = this.memory.findIndex(h => h.id === data.id!)
     const clone = {
       ...this.memory[index],
@@ -51,7 +51,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     return Promise.resolve(structuredClone(clone))
   }
 
-  public delete(userId: UserId, habitId: string): Promise<void> {
+  public delete(userId: UserId, habitlistId: string, habitId: string): Promise<void> {
     return new Promise(resolve => {
       const index = this.memory.findIndex(h => h.id === habitId)
       if (index > -1) {

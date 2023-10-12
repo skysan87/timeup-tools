@@ -33,7 +33,7 @@ describe('main', () => {
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
       const b = behavior as HabitBehavior
-      b.updateSummary()
+      b.updateData()
     })
 
     const today = new Date(2022, 9, 1) // 2022/10/01
@@ -63,7 +63,7 @@ describe('main', () => {
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
       const b = behavior as HabitBehavior
-      b.updateSummary()
+      b.updateData()
     })
 
     const today = new Date(2022, 8, 1) // 2022/09/01
@@ -93,7 +93,7 @@ describe('main', () => {
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
       const b = behavior as HabitBehavior
-      b.updateSummary()
+      b.updateData()
     })
 
     const today = new Date(2022, 9, 1) // 2022/10/01
@@ -124,7 +124,7 @@ describe('main', () => {
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
       const b = behavior as HabitBehavior
-      b.updateSummary()
+      b.updateData()
     })
 
     const today = new Date(2022, 8, 1) // 2022/9/01
@@ -153,7 +153,7 @@ describe('main', () => {
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
       const b = behavior as HabitBehavior
-      b.updateSummary()
+      b.updateData()
     })
 
     const today = new Date(2022, 8, 1) // 2022/9/01
@@ -183,7 +183,7 @@ describe('main', () => {
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
       const b = behavior as HabitBehavior
-      b.updateSummary()
+      b.updateData()
     })
 
     const today = new Date(2022, 9, 1) // 2022/10/01
@@ -215,7 +215,7 @@ describe('main', () => {
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
       const b = behavior as HabitBehavior
-      b.updateSummary()
+      b.updateData()
     })
 
     const today = new Date(2022, 9, 1) // 2022/10/01
