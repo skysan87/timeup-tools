@@ -14,5 +14,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@timeup-tools/core": "workspace:*",
+    "@timeup-tools/inmemory-infra": "workspace:*"
+  }
 }
