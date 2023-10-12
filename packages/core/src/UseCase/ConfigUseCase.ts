@@ -1,7 +1,7 @@
-import { ConfigBehavior } from "@/Domain/Behavior/ConfigBehavior"
-import { Config } from "@/Domain/Model"
-import { IConfigRepository, ITransaction, IUserRepository } from "@/Domain/Repository"
-import { UserId } from "@/Domain/ValueObject"
+import { ConfigBehavior } from "../Domain/Behavior/ConfigBehavior"
+import { Config } from "../Domain/Model"
+import { IConfigRepository, ITransaction, IUserRepository } from "../Domain/Repository"
+import { UserId } from "../Domain/ValueObject"
 
 export class ConfigUseCase {
   constructor(

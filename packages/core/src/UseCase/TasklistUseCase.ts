@@ -1,7 +1,7 @@
-import { UserId } from "@/Domain/ValueObject"
+import { UserId } from "../Domain/ValueObject"
 import { ITasklistRepository, ITransaction, IUserRepository } from "../Domain/Repository"
-import { Tasklist } from "@/Domain/Model"
-import { TasklistBehavior } from "@/Domain/Behavior/TasklistBehavior"
+import { Tasklist } from "../Domain/Model"
+import { TasklistBehavior } from "../Domain/Behavior/TasklistBehavior"
 
 export class TasklistUseCase {
 

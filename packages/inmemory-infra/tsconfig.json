@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
     "module": "nodenext",
     "composite": false,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "nodenext", // coreパッケージのエントリポイント対応(package.jsonのexportsフィールド)
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "rootDirs": ["./src", "./test"],
     "declaration": true,
     "outDir": "./build",
@@ -16,6 +19,7 @@
     "noEmit": false,
   },
   "exclude": [
+    "test",
     "node_modules",
     "build"
   ]

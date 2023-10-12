@@ -2,10 +2,11 @@ import { Habit } from "../Model/Habit"
 import { DateNumber, UserId } from "../ValueObject"
 
 export interface IHabitRepository {
-  get(userId: UserId): Promise<Habit[]>
-  getById(userId: UserId, habitId: string): Promise<Habit | null>
-  getTodayList(userId: UserId, today: DateNumber): Promise<Habit[]>
-  save(userId: UserId, data: Habit): Promise<Habit>
-  update(userId: UserId, data: Partial<Habit>): Promise<Habit>
-  delete(userId: UserId, habitId: string): Promise<void>
+  validateMaxSize(): boolean
+  get(userId: UserId, habitlistId: string): Promise<Habit[]>
+  getById(userId: UserId, habitlistId: string, habitId: string): Promise<Habit | null>
+  getTodayListFromCache(): Promise<Habit[]>
+  save(userId: UserId, habitlistId: string, data: Habit): Promise<Habit>
+  update(userId: UserId, habitlistId: string, data: Partial<Habit>): Promise<Habit>
+  delete(userId: UserId, habitlistId: string, habitId: string): Promise<void>
 }

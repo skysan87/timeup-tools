@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "nodenext",
+    "target": "ES2022",
+    "module": "ES2022",
     "composite": false,
-    "moduleResolution": "nodenext",
-    "rootDirs": ["./src", "./test"],
+    "moduleResolution": "Bundler",
+    "rootDirs": ["./test"],
     "declaration": true,
-    "outDir": "./build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -15,8 +14,14 @@
     "removeComments": true,
     "noEmit": false,
   },
+  "include": [
+    "test"
+  ],
   "exclude": [
-    "node_modules",
-    "build"
-  ]
+    "node_modules"
+  ],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
 }

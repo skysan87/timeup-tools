@@ -1,10 +1,10 @@
-import { dateFactory } from "@/Util/DateUtil"
-import { IHabitRepository, ITaskRepository, ITasklistRepository, ITransaction, IUserRepository } from "../Domain/Repository"
-import { DateNumber, TaskState, TaskType, UserId } from "@/Domain/ValueObject"
-import { Habit, Task } from "@/Domain/Model"
-import { TaskBehavior } from "@/Domain/Behavior/TaskBehavior"
-import { HabitBehavior } from "@/Domain/Behavior/HabitBehavior"
-import { TasklistBehavior } from "@/Domain/Behavior/TasklistBehavior"
+import { dateFactory } from "../Util/DateUtil"
+import { IHabitRepository, IHabitlistRepository, ITaskRepository, ITasklistRepository, ITransaction, IUserRepository } from "../Domain/Repository"
+import { DateNumber, TaskState, TaskType, UserId } from "../Domain/ValueObject"
+import { Habit, Task } from "../Domain/Model"
+import { TaskBehavior } from "../Domain/Behavior/TaskBehavior"
+import { HabitBehavior } from "../Domain/Behavior/HabitBehavior"
+import { TasklistBehavior } from "../Domain/Behavior/TasklistBehavior"
 
 export class TaskUseCase {
 
@@ -12,6 +12,7 @@ export class TaskUseCase {
     private readonly userRepositpry: IUserRepository,
     private readonly taskRepository: ITaskRepository,
     private readonly tasklistRepository: ITasklistRepository,
+    private readonly habitlistRepository: IHabitlistRepository,
     private readonly habitRepository: IHabitRepository,
     private readonly transaction: ITransaction
   ) { }
@@ -36,10 +37,9 @@ export class TaskUseCase {
     const today = dateFactory().getDateNumber() as DateNumber
 
     // 1. 今日の習慣を取得
-    // TODO: キャッシュから取得
-    const todaysHabits: Habit[] = await this.habitRepository.getTodayList(this.userId, today)
+    const todaysHabits: Habit[] = await this.habitRepository.getTodayListFromCache()
     // 2. 習慣のToDoをサーバーから取得
-    const habitTasks = await this.taskRepository.getHabits(this.userId, today)
+    const habitTasks: Task[] = await this.taskRepository.getHabits(this.userId, today)
     // 3. 1と2を比較して、2が存在しないものは、追加する
     const missinglist = todaysHabits.reduce((pre: Task[], _habit: Habit) => {
       // Habit.id === Todo.listId
@@ -55,7 +55,7 @@ export class TaskUseCase {
           , enddate: today
           , orderIndex: _habit.orderIndex
         } as Task
-        pre.push(task)
+        pre.push(new TaskBehavior(task).format())
       }
       return pre
     }, [])
@@ -183,7 +183,8 @@ export class TaskUseCase {
    */
   private async updateTaskAndHabit(oldTask: Task, newTask: Task): Promise<Task> {
     if (newTask.type === TaskType.HABIT) {
-      const habit = await this.habitRepository.getById(this.userId, newTask.listId)
+      const habitlist = await this.habitlistRepository.get(this.userId)
+      const habit = await this.habitRepository.getById(this.userId, habitlist!.id, newTask.listId)
       if (!habit) {
         throw new Error('対象の習慣はすでに削除されています')
       }
@@ -191,13 +192,13 @@ export class TaskUseCase {
         const habitBehavior = behavior as HabitBehavior
         habitBehavior.calcSummaryFromTask(oldTask, newTask)
         // TODO: 更新した値のみ
-        await this.habitRepository.update(this.userId, habitBehavior.format())
+        await this.habitRepository.update(this.userId, habitlist!.id, habitBehavior.format())
       })
     }
 
     return new TaskBehavior(newTask).actionAsync(async behavior => {
       behavior.update(newTask)
-        // TODO: 更新した値のみ
+      // TODO: 更新した値のみ
       const updated = await this.taskRepository.update(this.userId, behavior.format())
       behavior.update(updated)
     })

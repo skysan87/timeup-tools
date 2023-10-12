@@ -23,6 +23,12 @@ export class HabitBehavior extends BehaviorBase<Habit> {
     return this.value
   }
 
+  public updateData(): Habit {
+    this.updateSummary()
+    this.checkPlanDay()
+    return this.value
+  }
+
   public format(): Habit {
     const v = this.value
     return {
@@ -95,7 +101,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
   /**
    * 実績の更新
    */
-  public updateSummary(): void {
+  private updateSummary(): void {
     if (!this.value.isActive) {
       return
     }
