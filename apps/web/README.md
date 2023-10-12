@@ -8,7 +8,7 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 # at root directory
 pnpm install -D tailwindcss postcss@latest -F @timeup-tools/web
 pnpm install @fortawesome/vue-fontawesome@latest-3 -F @timeup-tools/web
-pnpm install @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-brands-svg-icons -F @timeup-tools/web
+pnpm install @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-brands-svg-icons @fortawesome/free-regular-svg-icons -F @timeup-tools/web
 pnpm install -D @nuxt/types -F @timeup-tools/web
 pnpm install v-calendar@next @popperjs/core -F @timeup-tools/web
 pnpm install -D cross-env -F @timeup-tools/web
