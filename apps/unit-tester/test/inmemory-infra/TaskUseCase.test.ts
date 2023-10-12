@@ -9,6 +9,7 @@ import {
   , InMemoryTransaction
   , InMemoryHabitlistRepository
 } from '@timeup-tools/inmemory-infra/repository'
+import { dateFactory } from '@timeup-tools/core/util/DateUtil'
 
 let usecase: TaskUseCase
 let habitUseCase: HabitUseCase
@@ -161,4 +162,18 @@ describe('基本動作', () => {
     expect(tasks[0].listId).toBe(habit.id)
   })
 
+  test('明日期限開始のタスクが表示されない', async () => {
+    const tomorrow = dateFactory().addDay(1).getDateNumber()
+    const task1 = await usecase.addTask(listId, {
+      title: 'タスク1',
+      state: TaskState.Todo,
+      startdate: tomorrow,
+      enddate: tomorrow,
+      listId
+    } as Task)
+
+    const tasks: Task[] = await usecase.getTodaysTasks()
+
+    expect(tasks.length).toBe(0)
+  })
 })
