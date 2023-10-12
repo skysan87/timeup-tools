@@ -5,6 +5,7 @@ console.log('ENV: ', process.env.APP_MODE)
 
 /** process.env.APP_MODEを参照 */
 const coreEnv = {
+  'dev-inmemory': '@/plugins/core/inmemory-infra'
 }
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -34,6 +35,8 @@ export default defineNuxtConfig({
   },
 
   plugins: [
+    // @ts-ignore
+    { src: coreEnv[process.env.APP_MODE], mode: 'client' }
   ],
 
   postcss: {
@@ -58,6 +61,10 @@ export default defineNuxtConfig({
   },
 
   css: [
+    '@/assets/css/tailwind.css',
+    '@/assets/css/common.css',
+    '@/assets/css/dialog.css',
+    '@fortawesome/fontawesome-svg-core/styles.css'
   ],
 
   typescript: {

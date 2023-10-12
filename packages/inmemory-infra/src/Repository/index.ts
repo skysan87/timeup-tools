@@ -1,4 +1,5 @@
 export { InMemoryUserRepository } from './InMemoryUserRepository'
+export { InMemoryConfigRepository } from './InMemoryConfigRepository'
 export { InMemoryTaskRepository } from './InMemoryTaskRepository'
 export { InMemoryTasklistRepository } from './InMemoryTasklistRepository'
 export { InMemoryHabitRepository } from './InMemoryHabitRepository'
