@@ -127,26 +127,6 @@ describe('基本動作', () => {
     expect(result[0].id).toBe(task2.id)
   })
 
-  test('完了済みタスクのみ削除される', async () => {
-    const task = await usecase.addTask(listId, {
-      title: 'タスク1',
-      state: TaskState.Done,
-      listId
-    } as Task)
-
-    const task2 = await usecase.addTask(listId, {
-      title: 'タスク2',
-      state: TaskState.Todo,
-      listId
-    } as Task)
-
-    await usecase.deleteDoneTasks(listId)
-
-    const result: Task[] = await usecase.getCurrentTasks(listId)
-    expect(result.length).toBe(1)
-    expect(result[0].id).toBe(task2.id)
-  })
-
   test('習慣タスクを登録して、今日のタスクに登録される', async () => {
     const habit: Habit = await habitUseCase.addHabit({
       title: '毎日のタスク',
@@ -164,7 +144,7 @@ describe('基本動作', () => {
 
   test('明日期限開始のタスクが表示されない', async () => {
     const tomorrow = dateFactory().addDay(1).getDateNumber()
-    const task1 = await usecase.addTask(listId, {
+    await usecase.addTask(listId, {
       title: 'タスク1',
       state: TaskState.Todo,
       startdate: tomorrow,

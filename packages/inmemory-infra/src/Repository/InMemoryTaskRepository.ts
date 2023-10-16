@@ -127,17 +127,4 @@ export class InMemoryTaskRepository implements ITaskRepository {
     })
   }
 
-  public deleteDone(userId: UserId, tasklistId: string): Promise<void> {
-    return new Promise(resolve => {
-      const targets = this.memory.filter(t => t.listId === tasklistId && t.state === TaskState.Done)
-      for (const task of targets) {
-        const index = this.memory.findIndex(h => h.id === task.id)
-        if (index > -1) {
-          this.memory.splice(index, 1)
-        }
-      }
-      resolve()
-    })
-  }
-
 }

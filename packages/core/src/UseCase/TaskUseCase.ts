@@ -215,16 +215,6 @@ export class TaskUseCase {
   }
 
   /**
-   * 完了済みをタスクを削除(タスクリスト単位)
-   * @param tasklistId
-   */
-  public async deleteDoneTasks(tasklistId: string): Promise<void> {
-    await this.transaction.run(async () => {
-      await this.taskRepository.deleteDone(this.userId, tasklistId)
-    })
-  }
-
-  /**
    * 期限の設定
    * @param targets
    * @returns
