@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appVersion: packageInfo.version,
-      rootPath: '/'
+      rootPath: '/today/list'
     }
   },
   app: {
