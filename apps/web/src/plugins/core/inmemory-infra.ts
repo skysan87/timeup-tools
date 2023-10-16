@@ -9,16 +9,6 @@ import {
   , InMemoryConfigRepository
 } from '@timeup-tools/inmemory-infra/repository'
 
-declare module '#app' {
-  interface NuxtApp {
-    $auth: AuthenticateUseCase,
-    $task: TaskUseCase,
-    $tasklist: TasklistUseCase,
-    $habit: HabitUseCase,
-    $user_config: ConfigUseCase
-  }
-}
-
 export default defineNuxtPlugin(() => {
 
   console.log('=== install app_mode: inmemory-infra ===')
@@ -39,11 +29,11 @@ export default defineNuxtPlugin(() => {
 
   return {
     provide: {
-      auth: () => auth,
-      task: () => task,
-      tasklist: () => tasklist,
-      habit: () => habit,
-      user_config: () => config
+      auth: auth,
+      task: task,
+      tasklist: tasklist,
+      habit: habit,
+      user_config: config
     }
   }
 })
