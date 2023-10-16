@@ -62,7 +62,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
   public save(userId: UserId, data: Task): Promise<Task> {
     return new Promise(resolve => {
       const timestamp = new Date()
-      data.id = Date.now().toString()
+      data.id = this.createId()
       data.userId = userId
       data.createdAt = timestamp
       data.updatedAt = timestamp
@@ -76,7 +76,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
       const updated: Task[] = []
       for (const task of data) {
         const timestamp = new Date()
-        task.id = Date.now().toString()
+        task.id = this.createId()
         task.userId = userId
         task.createdAt = timestamp
         task.updatedAt = timestamp
@@ -127,4 +127,8 @@ export class InMemoryTaskRepository implements ITaskRepository {
     })
   }
 
+  private createId(): string {
+    // 重複する場合があるので、乱数を追加(あくまで重複の可能性を下げるだけ)
+    return Date.now().toString() + Math.floor(Math.random() * 100).toString(16)
+  }
 }
