@@ -2,7 +2,7 @@ import { TaskState } from "@timeup-tools/core/value-object"
 
 export const useStateColor = () => {
   return {
-    getStateColor: (state: TaskState) => {
+    getStateColor: (state?: TaskState) => {
       switch (state) {
         case TaskState.Todo:
           return {

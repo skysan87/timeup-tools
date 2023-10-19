@@ -4,12 +4,12 @@ import { DateNumber, TaskState } from "@timeup-tools/core/value-object"
 export type TaskStore = ReturnType<typeof useTaskStore>
 
 export const useTaskStore = () => {
-  const { $task, $toast } = useNuxtApp()
+  const { $task } = useNuxtApp()
 
   const DEFAULT_STATE = [TaskState.Todo, TaskState.InProgress]
 
   const _tasks = ref<Task[]>([])
-  let _listId: string = ''
+  let _listId = ref<string>('')
 
   const selectedState = ref<TaskState[]>(DEFAULT_STATE)
   const selectedItem = ref<Task | null>(null)
@@ -57,26 +57,23 @@ export const useTaskStore = () => {
     return _tasks.value.find(v => v.id === id) ?? null
   }
 
-  const getTaskCount = (state: TaskState): number => {
-    return _tasks.value.filter(task =>
-      Object.values(TaskState).includes(state) ? task.state === state : true
-    ).length
+  const getTaskCount = (state?: TaskState): number => {
+    return (state! == undefined) ?
+      _tasks.value.filter(task =>
+        Object.values(TaskState).includes(state!) ? task.state === state : true
+      ).length :
+      _tasks.value.length
   }
 
   const init = async (tasklistId: string) => {
-    _listId = tasklistId
-    try {
-      _tasks.value.length = 0
-      _tasks.value.push(...await $task.getCurrentTasks(tasklistId))
-      console.log('init TaskStore: ', _tasks.value.length)
-    } catch (error: any) {
-      console.log(error)
-      $toast.error(error.message)
-    }
+    _listId.value = tasklistId
+    _tasks.value.length = 0
+    _tasks.value.push(...await $task.getCurrentTasks(tasklistId))
+    console.log('init TaskStore: ', _tasks.value.length)
   }
 
   const initNewList = (tasklistId: string) => {
-    _listId = tasklistId
+    _listId.value = tasklistId
     _tasks.value.length = 0
   }
 
@@ -86,29 +83,18 @@ export const useTaskStore = () => {
   }
 
   const initTodaylist = async () => {
-    try {
-      _listId = ''
-      _tasks.value.length = 0
-      _tasks.value.push(...await $task.getTodaysTasks())
-
-      console.log('init todaylist')
-    } catch (error: any) {
-      console.log(error)
-      $toast.error(error.message)
-    }
+    _listId.value = ''
+    _tasks.value.length = 0
+    _tasks.value.push(...await $task.getTodaysTasks())
+    console.log('init todaylist')
   }
 
   const initInProgressList = async () => {
-    try {
-      _listId = ''
-      _tasks.value.length = 0
-      _tasks.value.push(...await $task.getInProgressTasks())
+    _listId.value = ''
+    _tasks.value.length = 0
+    _tasks.value.push(...await $task.getInProgressTasks())
 
-      console.log('init wip')
-    } catch (error: any) {
-      console.log(error)
-      $toast.error(error.message)
-    }
+    console.log('init wip')
   }
 
   // TODO: 並び替えロジックを共通化
@@ -146,13 +132,8 @@ export const useTaskStore = () => {
 
     if (newOrderIndex !== dest.orderIndex) {
       src.orderIndex = newOrderIndex
-      try {
-        const updated = await $task.updateTask(src.id, src)
-        updateArray(updated)
-      } catch (error: any) {
-        console.log(error)
-        $toast.error(error.message)
-      }
+      const updated = await $task.updateTask(src.id, src)
+      updateArray(updated)
     }
   }
 
@@ -165,18 +146,13 @@ export const useTaskStore = () => {
   }
 
   const deleteTasks = async (taskIds: string[]) => {
-    try {
-      await $task.deleteTasks(taskIds)
+    await $task.deleteTasks(taskIds)
 
-      const tmp: Task[] = _tasks.value.filter(t => !taskIds.includes(t.id))
-      _tasks.value.length = 0
-      _tasks.value.push(...tmp)
+    const tmp: Task[] = _tasks.value.filter(t => !taskIds.includes(t.id))
+    _tasks.value.length = 0
+    _tasks.value.push(...tmp)
 
-      checkSelected()
-    } catch (error: any) {
-      console.log(error)
-      $toast.error(error.message)
-    }
+    checkSelected()
   }
 
   const changeFilter = (states: TaskState[]) => {
@@ -184,7 +160,7 @@ export const useTaskStore = () => {
   }
 
   const addTask = async (task: Partial<Task>) => {
-    const newTask = await $task.addTask(_listId, task)
+    const newTask = await $task.addTask(_listId.value, task)
     _tasks.value.push(newTask)
   }
 
@@ -194,42 +170,27 @@ export const useTaskStore = () => {
   }
 
   const deleteTask = async (taskId: string) => {
-    try {
-      const index = _tasks.value.findIndex(t => t.id === taskId)
-      if (index > -1) {
-        _tasks.value.splice(index, 1)
-        await $task.deleteTasks([taskId])
-      }
-    } catch (error: any) {
-      console.log(error)
-      $toast.error(error.message)
+    const index = _tasks.value.findIndex(t => t.id === taskId)
+    if (index > -1) {
+      _tasks.value.splice(index, 1)
+      await $task.deleteTasks([taskId])
     }
   }
 
   const setDeadline = async (targets: Array<{ id: string, startdate: DateNumber, enddate: DateNumber }>) => {
-    try {
-      const updated = await $task.updateDeadlines(targets)
-      updated.forEach(task => updateArray(task))
-    } catch (error: any) {
-      console.log(error)
-      $toast.error(error.message)
-    }
+    const updated = await $task.updateDeadlines(targets)
+    updated.forEach(task => updateArray(task))
   }
 
   const changeState = async (taskId: string) => {
-    try {
-      const task = await $task.changeState(taskId)
-      updateArray(task)
-    } catch (error: any) {
-      console.log(error)
-      $toast.error(error.message)
-    }
+    const task = await $task.changeState(taskId)
+    updateArray(task)
   }
 
   const updateArray = (task: Task): void => {
     const index = _tasks.value.findIndex(v => v.id === task.id)
     // プロジェクトの変更
-    if (_listId !== '' && _listId !== task.listId) {
+    if (_listId.value !== '' && _listId.value !== task.listId) {
       _tasks.value.splice(index, 1)
       return
     }
@@ -241,7 +202,7 @@ export const useTaskStore = () => {
     taskSize: _tasks.value.length,
     editMode: readonly(editMode),
     selectedState: readonly(selectedState),
-    currentListId: _listId,
+    currentListId: readonly(_listId),
     init,
     initNewList,
     initTodaylist,
