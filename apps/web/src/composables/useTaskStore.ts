@@ -66,15 +66,12 @@ export const useTaskStore = () => {
   }
 
   const init = async (tasklistId: string) => {
-    _listId.value = tasklistId
-    _tasks.value.length = 0
-    _tasks.value.push(...await $task.getCurrentTasks(tasklistId))
+    initTasks(tasklistId, await $task.getCurrentTasks(tasklistId))
     console.log('init TaskStore: ', _tasks.value.length)
   }
 
   const initNewList = (tasklistId: string) => {
-    _listId.value = tasklistId
-    _tasks.value.length = 0
+    initTasks(tasklistId, [])
   }
 
   const selectTask = (taskId: string) => {
@@ -83,18 +80,20 @@ export const useTaskStore = () => {
   }
 
   const initTodaylist = async () => {
-    _listId.value = ''
-    _tasks.value.length = 0
-    _tasks.value.push(...await $task.getTodaysTasks())
+    initTasks('', await $task.getTodaysTasks())
     console.log('init todaylist')
   }
 
   const initInProgressList = async () => {
-    _listId.value = ''
-    _tasks.value.length = 0
-    _tasks.value.push(...await $task.getInProgressTasks())
-
+    initTasks('', await $task.getInProgressTasks())
     console.log('init wip')
+  }
+
+  const initTasks = (listId: string = '', tasks: Task[]) => {
+    _listId.value = listId
+    _tasks.value.length = 0
+    _tasks.value.push(...tasks)
+    checkSelected()
   }
 
   // TODO: 並び替えロジックを共通化
@@ -203,6 +202,7 @@ export const useTaskStore = () => {
     editMode: readonly(editMode),
     selectedState: readonly(selectedState),
     currentListId: readonly(_listId),
+    selectedItem: readonly(selectedItem),
     init,
     initNewList,
     initTodaylist,
