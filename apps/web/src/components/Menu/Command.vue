@@ -6,7 +6,7 @@ const config = useRuntimeConfig()
 
 const appVersion = config.public.appVersion
 
-const userName = await getUserName()
+const userName = ref<string>('')
 
 const handleLogout = async () => {
   await logout(() => {
@@ -16,6 +16,10 @@ const handleLogout = async () => {
 
 // TODO:
 const reload = () => {}
+
+onMounted(async () => {
+  userName.value = await getUserName()
+})
 </script>
 
 <template>

@@ -46,7 +46,7 @@ onUnmounted(() => {
             </template>
             <template #component>
               <div class="flex-none">
-                <MenuApp />
+                <MenuCommand />
               </div>
             </template>
           </PartExpandPanel>
