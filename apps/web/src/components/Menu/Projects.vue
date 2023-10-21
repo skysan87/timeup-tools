@@ -1,0 +1,53 @@
+<script setup lang="ts">
+import { useMenu } from '@/composables/useMenu'
+import { MainPage } from '@/const/page'
+import TasklistDialog from '@/components/Tasklist/Dialog.vue'
+
+const { tasklists } = inject('tasklist') as TasklistStore
+const { isSelected } = useMenu()
+
+const activeItemId = ref<string>('')
+const dialog = ref<InstanceType<typeof TasklistDialog>>()
+
+const openListDialog = async () => {
+  await dialog.value?.openAsync({ isCreateMode: true })
+}
+
+const editTodolist = async (listId: string) => {
+  await dialog.value?.openAsync({ tasklistId: listId, isCreateMode: false })
+}
+</script>
+
+<template>
+  <div class="mt-5 px-4 flex justify-between items-center">
+    <div class="font-bold text-lg">
+      プロジェクト
+    </div>
+    <fa :icon="['far', 'plus-square']" class="cursor-pointer" title="プロジェクトを追加する" @click.left="openListDialog" />
+  </div>
+
+  <template v-for="tasklist in tasklists" :key="tasklist.id">
+    <NuxtLink :to="`/${MainPage.Task}/${tasklist.id}`">
+      <div
+        class="py-1 flex justify-between items-center hover:bg-blue-700 hover:opacity-75"
+        :class="{ 'bg-blue-700': isSelected(MainPage.Task, tasklist.id) }"
+        @mouseover="activeItemId = tasklist.id"
+        @mouseout="activeItemId = ''"
+      >
+        <div class="px-5 flex-1 cursor-pointer">
+          # {{ tasklist.title }}
+        </div>
+
+        <div
+          class="flex-none mr-2 px-2 opacity-0 cursor-pointer rounded-full hover:bg-blue-400"
+          :class="{ 'opacity-100': activeItemId === tasklist.id }"
+          @click.left.prevent="editTodolist(tasklist.id)"
+        >
+          <fa :icon="['fas', 'edit']" size="xs" title="プロジェクトを編集する" />
+        </div>
+      </div>
+    </NuxtLink>
+  </template>
+
+  <TasklistDialog ref="dialog" />
+</template>

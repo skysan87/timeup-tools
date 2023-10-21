@@ -80,6 +80,10 @@ watch(editMode, (n, _) => {
   }
 })
 
+definePageMeta({
+  layout: 'board'
+})
+
 onMounted(async () => {
   await init(tasklistId)
 })
@@ -88,7 +92,8 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col bg-white h-full">
     <header class="flex-none">
-      <header-view class="border-b" />
+      <TaskHeader />
+      <div class="border-b" />
       <div v-if="editMode" class="w-full flex items-center justify-center flex-wrap p-1 border-b">
         <fa class="mx-0.5 cursor-pointer" :icon="['fas', 'circle-info']" @click="showInfo" />
         <span class="mx-0.5">編集モード:</span>

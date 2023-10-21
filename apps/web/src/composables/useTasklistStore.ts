@@ -21,6 +21,10 @@ export const useTasklistStore = () => {
       return structuredClone(tasklists.value[index])
     },
 
+    getTasklistName: (tasklistId: string): string => {
+      return tasklists.value.find(v => v.id === tasklistId)?.title ?? ''
+    },
+
     addTasklist: async (data: Partial<Tasklist>) => {
       const newData = await $tasklist.addList(data)
       tasklists.value.push(newData)

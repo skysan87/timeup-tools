@@ -10,6 +10,7 @@ const tasklist = ref<Tasklist>({} as Tasklist)
 const errorMsg = ref<string>('')
 
 type Input = {
+  /** 削除ボタンを非表示 */
   isCreateMode: boolean
   tasklistId?: string
 }
@@ -28,7 +29,7 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 const _submit = async () => {
   errorMsg.value = ''
   try {
-    if (_isCreateMode.value) {
+    if (null === (tasklist.value.id ?? null)) {
       await addTasklist(tasklist.value)
     } else {
       await updateTasklist(tasklist.value)

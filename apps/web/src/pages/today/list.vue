@@ -12,6 +12,10 @@ const showEditDialog = async (id: string) => {
 onMounted(async () => {
   await initTodaylist()
 })
+
+definePageMeta({
+  layout: 'board'
+})
 </script>
 
 <template>
