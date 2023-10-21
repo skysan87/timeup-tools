@@ -9,7 +9,7 @@ export const useTaskStore = () => {
   const DEFAULT_STATE = [TaskState.Todo, TaskState.InProgress]
 
   const _tasks = ref<Task[]>([])
-  let _listId = ref<string>('')
+  const _listId = ref<string>('')
 
   const selectedState = ref<TaskState[]>(DEFAULT_STATE)
   const selectedItem = ref<Task | null>(null)

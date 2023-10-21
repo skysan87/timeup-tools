@@ -108,6 +108,7 @@ export class TaskUseCase {
         this.tasklistRepository.update(this.userId, behavior.format())
       })
 
+      task.listId = tasklistId
       result = await new TaskBehavior(task as Task).actionAsync(async behvior => {
         behvior.update({ stateChangeDate: dateFactory().getDateNumber() as DateNumber } as Task)
         const data = await this.taskRepository.save(this.userId, behvior.format())

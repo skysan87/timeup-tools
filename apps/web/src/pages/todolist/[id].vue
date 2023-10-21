@@ -10,7 +10,6 @@ const route = useRoute()
 const { editMode, filterdTasks, init, setDeadline, deleteTasks, switchEdit, selectTask } = inject('task') as TaskStore
 const { $toast } = useNuxtApp()
 
-const tasklistId: string = route.params.id.toString()
 const dialog = ref<InstanceType<typeof TaskDialog>>()
 const selectedIds = ref<string[]>([])
 
@@ -85,6 +84,7 @@ definePageMeta({
 })
 
 onMounted(async () => {
+  const tasklistId: string = route.params.id.toString()
   await init(tasklistId)
 })
 </script>
