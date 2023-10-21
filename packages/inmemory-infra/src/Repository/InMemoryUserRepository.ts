@@ -6,6 +6,15 @@ export class InMemoryUserRepository implements IUserRepository {
 
   private user: User | null = null
 
+  private _skipAuth: boolean = false
+
+  constructor(skipAuth = false) {
+    this._skipAuth = skipAuth
+    if (skipAuth) {
+      this.login() // 起動時のみ自動ログイン
+    }
+  }
+
   public get(): Promise<User> {
     if (!this.authenticated()) {
       return Promise.reject('auth error')
@@ -24,14 +33,18 @@ export class InMemoryUserRepository implements IUserRepository {
     return Promise.resolve(this.user !== null)
   }
 
-  public async login(): Promise<User> {
-    await this.sleep(1000)
-    this.user = {
-      id: 'dummyId' as UserId,
-      email: 'dummy@sample.com' as Mail,
-      displayName: 'dummy user' as DisplayName
-    } as User
-    return this.user
+  public login(): Promise<User> {
+    return new Promise(async resolve => {
+      if (!this._skipAuth) {
+        await this.sleep(1000)
+      }
+      this.user = {
+        id: 'dummyId' as UserId,
+        email: 'dummy@sample.com' as Mail,
+        displayName: 'dummy user' as DisplayName
+      } as User
+      resolve(this.user)
+    })
   }
 
   public async logout(): Promise<void> {
