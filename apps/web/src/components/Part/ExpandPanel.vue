@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 interface Props {
   left?: boolean
   right?: boolean
@@ -14,20 +12,24 @@ const props = withDefaults(defineProps<Props>(), {
 // デフォルトは左ボタン優先
 const isLeftVisible = props.left || !props.right
 const isRightVisible = !(props.left || !props.right)
-const isExpanded = ref<boolean>(false)
-
-const handleSwitch = () => isExpanded.value = !isExpanded.value
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center" @click.left="handleSwitch">
-      <fa v-if="isLeftVisible" :icon="['fas', 'caret-down']" :class="{'fa-rotate-180': isExpanded}" class="mr-1" />
-      <slot name="title" />
-      <fa v-if="isRightVisible" :icon="['fas', 'caret-down']" :class="{'fa-rotate-180': isExpanded}" class="ml-1" />
-    </div>
-    <div v-show="isExpanded">
-      <slot name="component" />
-    </div>
-  </div>
+  <details>
+    <!-- block要素でデフォルトの矢印削除 -->
+    <summary class="block">
+      <div class="flex items-center">
+        <fa v-if="isLeftVisible" :icon="['fas', 'caret-down']" class="mr-1 rotate" />
+        <slot name="title" />
+        <fa v-if="isRightVisible" :icon="['fas', 'caret-down']" class="ml-1 rotate" />
+      </div>
+    </summary>
+    <slot name="component" />
+  </details>
 </template>
+
+<style scoped>
+details[open] summary .rotate {
+  transform: rotate(180deg);
+}
+</style>
