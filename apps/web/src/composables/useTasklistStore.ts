@@ -17,8 +17,8 @@ export const useTasklistStore = () => {
     },
 
     getTasklist: (tasklistId: string): Tasklist => {
-      const index = tasklists.value.findIndex(v => v.id === tasklistId)
-      return structuredClone(tasklists.value[index])
+      const item = tasklists.value.find(v => v.id === tasklistId)
+      return { ...item } as Tasklist
     },
 
     getTasklistName: (tasklistId: string): string => {

@@ -11,7 +11,10 @@ const props = withDefaults(defineProps<Props>(), {
   isCreateMode: false
 })
 
-const subTask = ref<SubTask>(structuredClone(props.inputdata) ?? { id: '', isDone: false, title: '' } as SubTask)
+const subTask = ref<SubTask>({ id: '', isDone: false, title: '' } as SubTask)
+if (props.inputdata) {
+  subTask.value = { ...props.inputdata } as SubTask
+}
 const editMode = ref<boolean>(props.isCreateMode)
 const inputtext = ref<HTMLInputElement>()
 

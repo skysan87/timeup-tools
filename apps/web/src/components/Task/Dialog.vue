@@ -57,7 +57,7 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 const _init = (input: Input) => {
   isCreateMode.value = input.isCreateMode
   if (input.isCreateMode) {
-    task.value = structuredClone(input.task as Task)
+    task.value = { ...input.task } as Task
   } else {
     task.value = getTaskById(input.task.id!) ?? {} as Task
   }

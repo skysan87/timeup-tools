@@ -18,7 +18,9 @@ type Input = {
 const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
   return open(() => {
     _isCreateMode.value = input.isCreateMode
-    tasklist.value = !input.tasklistId ? {} as Tasklist : getTasklist(input.tasklistId!)
+    if (input.tasklistId) {
+      tasklist.value = getTasklist(input.tasklistId!)
+    }
   }, (isCancel) => {
     return {
       isSuccess: !isCancel
