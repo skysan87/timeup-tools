@@ -58,11 +58,9 @@ export const useTaskStore = () => {
   }
 
   const getTaskCount = (state?: TaskState): number => {
-    return (state! == undefined) ?
-      _tasks.value.filter(task =>
-        Object.values(TaskState).includes(state!) ? task.state === state : true
-      ).length :
-      _tasks.value.length
+    return (state === undefined)
+      ? _tasks.value.length
+      : _tasks.value.filter(task => task.state === state).length
   }
 
   const init = async (tasklistId: string) => {
