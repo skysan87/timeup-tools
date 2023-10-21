@@ -27,26 +27,24 @@ const editTodolist = async (listId: string) => {
   </div>
 
   <template v-for="tasklist in tasklists" :key="tasklist.id">
-    <NuxtLink :to="`/${MainPage.Task}/${tasklist.id}`">
-      <div
-        class="py-1 flex justify-between items-center hover:bg-blue-700 hover:opacity-75"
-        :class="{ 'bg-blue-700': isSelected(MainPage.Task, tasklist.id) }"
-        @mouseover="activeItemId = tasklist.id"
-        @mouseout="activeItemId = ''"
-      >
-        <div class="px-5 flex-1 cursor-pointer">
-          # {{ tasklist.title }}
-        </div>
+    <div
+      class="py-1 flex justify-between items-center hover:bg-blue-700 hover:opacity-75"
+      :class="{ 'bg-blue-700': isSelected(MainPage.Task, tasklist.id) }"
+      @mouseover="activeItemId = tasklist.id"
+      @mouseout="activeItemId = ''"
+    >
+      <NuxtLink :to="`/${MainPage.Task}/${tasklist.id}`" class="px-5 flex-1 cursor-pointer">
+        # {{ tasklist.title }}
+      </NuxtLink>
 
-        <div
-          class="flex-none mr-2 px-2 opacity-0 cursor-pointer rounded-full hover:bg-blue-400"
-          :class="{ 'opacity-100': activeItemId === tasklist.id }"
-          @click.left.prevent="editTodolist(tasklist.id)"
-        >
-          <fa :icon="['fas', 'edit']" size="xs" title="プロジェクトを編集する" />
-        </div>
+      <div
+        class="flex-none mr-2 px-2 opacity-0 cursor-pointer rounded-full hover:bg-blue-400"
+        :class="{ 'opacity-100': activeItemId === tasklist.id }"
+        @click.left.prevent="editTodolist(tasklist.id)"
+      >
+        <fa :icon="['fas', 'edit']" size="xs" title="プロジェクトを編集する" />
       </div>
-    </NuxtLink>
+    </div>
   </template>
 
   <TasklistDialog ref="dialog" />
