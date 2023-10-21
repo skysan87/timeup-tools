@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import TaskDialog from '@/components/Task/Dialog.vue'
 import { Task } from '@timeup-tools/core/model'
+import { TodayPage } from '~/const/page';
 
-const { filterdTasks, selectTask, initTodaylist } = inject('task') as TaskStore
+const { filterdTasks, selectTask, initTodaylist, initInProgressList } = inject('task') as TaskStore
 const dialog = ref<InstanceType<typeof TaskDialog>>()
 
 const showEditDialog = async (id: string) => {
   await dialog.value?.openAsync({ isCreateMode: false, task: { id } as Task })
 }
 
+const route = useRoute()
+const page: string = route.params.page.toString()
+
 onMounted(async () => {
-  await initTodaylist()
+  if (page === TodayPage.List) {
+    await initTodaylist()
+  } else if (page === TodayPage.InProgress) {
+    await initInProgressList()
+  }
 })
 
 definePageMeta({
