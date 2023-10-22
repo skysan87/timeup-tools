@@ -10,7 +10,7 @@ const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
 const { subTasks, isNewSubtask, doneCount, init, addSubTask, updateSubtask, deleteSubtask } = useSubTask()
 const { tasklists } = inject('tasklist') as TasklistStore
-const { getTaskById, addTask, deleteTask, updateTask } = inject('task') as TaskStore
+const { getTaskById, addTask, deleteTask, updateTask, currentListId } = inject('task') as TaskStore
 
 type Input = {
   isCreateMode: boolean
@@ -57,7 +57,7 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 const _init = (input: Input) => {
   isCreateMode.value = input.isCreateMode
   if (input.isCreateMode) {
-    task.value = { ...input.task } as Task
+    task.value = { ...input.task, listId: currentListId.value } as Task
   } else {
     task.value = getTaskById(input.task.id!) ?? {} as Task
   }
@@ -82,19 +82,14 @@ const _init = (input: Input) => {
   closeButton.value?.focus()
 }
 
-const _add = async () => {
+const _submit = async (isUpdate: boolean) => {
   try {
-    await addTask(task.value)
-    submit()
-  } catch (error: any) {
-    console.error(error)
-    $toast.error(error.message)
-  }
-}
-
-const _update = async () => {
-  try {
-    await updateTask(task.value)
+    task.value.subTasks = subTasks.value.concat()
+    if (isUpdate) {
+      await updateTask(task.value)
+    } else {
+      await addTask(task.value)
+    }
     submit()
   } catch (error: any) {
     console.error(error)
@@ -240,10 +235,10 @@ defineExpose({
       <div class="flex-none border-t my-1" />
 
       <div class="flex-none flex flex-row mt-2 mx-2">
-        <button v-if="isCreateMode" class="btn btn-regular ml-2" @click="_add">
+        <button v-if="isCreateMode" class="btn btn-regular ml-2" @click="_submit(false)">
           Add
         </button>
-        <button v-if="!isCreateMode" class="btn btn-regular ml-2" @click="_update">
+        <button v-if="!isCreateMode" class="btn btn-regular ml-2" @click="_submit(true)">
           Save
         </button>
         <button ref="closeButton" class="btn btn-outline ml-2" @click="cancel">

@@ -22,6 +22,7 @@ export const useSubTask = () => {
     },
 
     addSubTask: (data: SubTask) => {
+      data.id = Date.now().toString(16) + Math.floor(Math.random() * 10).toString()
       lists.value.push(data)
       isNewSubtask.value = false
 
