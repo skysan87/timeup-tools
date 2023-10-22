@@ -17,7 +17,7 @@ export const useAuth = () => {
       try {
         return await $auth.checkLogin()
       } catch (error) {
-        console.log(error)
+        console.error(error)
         return false
       }
     },

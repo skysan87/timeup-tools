@@ -18,7 +18,7 @@ const runAsync = async (callback: Function) => {
     await callback()
     $toast.show('成功しました')
   } catch (error) {
-    console.log(error)
+    console.error(error)
     $toast.error('失敗しました')
   }
 }

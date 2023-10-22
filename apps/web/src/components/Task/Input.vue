@@ -26,7 +26,7 @@ const add = async () => {
     task.value.startdate = task.value.enddate = checkDeadline()
     await addTask(task.value)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     $toast.error('失敗しました')
   } finally {
     task.value.title = ''

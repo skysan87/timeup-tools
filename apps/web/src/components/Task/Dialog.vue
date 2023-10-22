@@ -87,6 +87,7 @@ const _add = async () => {
     await addTask(task.value)
     submit()
   } catch (error: any) {
+    console.error(error)
     $toast.error(error.message)
   }
 }
@@ -96,6 +97,7 @@ const _update = async () => {
     await updateTask(task.value)
     submit()
   } catch (error: any) {
+    console.error(error)
     $toast.error(error.message)
   }
 }
@@ -108,6 +110,7 @@ const _delete = async () => {
     await deleteTask(task.value.id)
     submit()
   } catch (error: any) {
+    console.error(error)
     $toast.error(error.message)
   }
 }
