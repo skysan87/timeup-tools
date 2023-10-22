@@ -20,6 +20,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
       this.memory.filter(t =>
         t.type === TaskType.TODO
         && states.includes(t.state)
+        && t.startdate !== null
         && t.startdate <= today
       )
     )
