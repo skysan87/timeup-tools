@@ -21,7 +21,7 @@ export class TaskBehavior extends BehaviorBase<Task> {
       stateChangeDate: v.stateChangeDate ?? null,
       createdAt: v.createdAt ?? null,
       updatedAt: v.updatedAt ?? null,
-      subTasks: v.subTasks ?? [],
+      subTasks: v.subTasks ? [...v.subTasks] : [],
       isDone: v.isDone ?? false
     } as Task
   }

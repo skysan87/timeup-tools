@@ -198,7 +198,6 @@ export class TaskUseCase {
     }
 
     return new TaskBehavior(newTask).actionAsync(async behavior => {
-      behavior.update(newTask)
       // TODO: 更新した値のみ
       const updated = await this.taskRepository.update(this.userId, behavior.format())
       behavior.update(updated)
