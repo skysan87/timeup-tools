@@ -1,4 +1,4 @@
-import { Habit, Task, Tasklist } from '@timeup-tools/core/model'
+import { Habit, SubTask, Task, Tasklist } from '@timeup-tools/core/model'
 import { TaskState, TaskType } from '@timeup-tools/core/value-object'
 import { HabitUseCase, TaskUseCase, TasklistUseCase } from '@timeup-tools/core/usecase'
 import {
@@ -62,9 +62,15 @@ describe('基本動作', () => {
   })
 
   test('タスクが更新されること', async () => {
+    const subTasks: SubTask[] = [
+      { id: '1', isDone: false, title: 'subtask1' } as SubTask,
+      { id: '2', isDone: false, title: 'subtask2' } as SubTask
+    ]
+
     const task = await usecase.addTask(listId, {
       title: 'タスク1',
-      listId
+      listId,
+      subTasks: subTasks
     } as Task)
 
     task.title = 'タスク名更新'
