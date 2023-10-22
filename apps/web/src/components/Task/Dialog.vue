@@ -8,7 +8,7 @@ import { DatePicker } from 'v-calendar'
 
 const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
-const { subTasks, isNewSubtask, doneCount, init, addSubTask, updateSubtask, deleteSubtask } = useSubTask()
+const { subTasks, isNewSubtask, doneCount, addButton, init, addSubTask, updateSubtask, deleteSubtask } = useSubTask()
 const { tasklists } = inject('tasklist') as TasklistStore
 const { getTaskById, addTask, deleteTask, updateTask, currentListId } = inject('task') as TaskStore
 
