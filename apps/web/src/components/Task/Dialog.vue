@@ -5,6 +5,7 @@ import { Task } from '@timeup-tools/core/model'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil';
 import { DateNumber, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
 import { DatePicker } from 'v-calendar'
+import { ValidateError } from '@timeup-tools/core/error'
 
 const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
@@ -84,18 +85,27 @@ const _init = (input: Input) => {
 
 const _submit = async (isUpdate: boolean) => {
   try {
+    // reset
+    errorMsg.value = ''
+    // set fileds
     task.value.subTasks = subTasks.value.concat()
     task.value.startdate = range.value?.start ? dateFactory(range.value.start).getDateNumber() as DateNumber : null
     task.value.enddate = range.value?.end ? dateFactory(range.value.end).getDateNumber() as DateNumber : null
+    // data access
     if (isUpdate) {
       await updateTask(task.value)
     } else {
       await addTask(task.value)
     }
+    // close
     submit()
   } catch (error: any) {
-    console.error(error)
-    $toast.error(error.message)
+    if (error instanceof ValidateError) {
+      errorMsg.value = error.message
+    } else {
+      console.error(error)
+      $toast.error(error.message)
+    }
   }
 }
 

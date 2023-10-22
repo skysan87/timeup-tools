@@ -1,8 +1,31 @@
 import { Task } from "../Model/Task"
 import { TaskState, TaskType } from "../ValueObject"
 import { BehaviorBase } from "./BehaviorBase"
+import { IBehavior } from "./IBehavior"
+import { isEmpty } from "../../Util/StringUtil"
+import { ValidateError } from "../../Error/ValidateError"
 
 export class TaskBehavior extends BehaviorBase<Task> {
+
+  public action(callback: (behavior: IBehavior<Task>) => void): Task {
+    this.validate()
+    this.value = this.format()
+    callback(this)
+    return this.value
+  }
+
+  public async actionAsync(callback: (behavior: IBehavior<Task>) => Promise<void>): Promise<Task> {
+    this.validate()
+    this.value = this.format()
+    await callback(this)
+    return this.value
+  }
+
+  private validate(): void {
+    if (isEmpty(this.value.title)) {
+      throw new ValidateError('title is empty')
+    }
+  }
 
   public format(): Task {
     const v = this.value
