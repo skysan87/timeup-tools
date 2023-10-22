@@ -3,7 +3,7 @@ import { useDialog } from '@/composables/useDialog'
 import { useSubTask } from '@/composables/useSubTask'
 import { Task } from '@timeup-tools/core/model'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil';
-import { TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
+import { DateNumber, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
 import { DatePicker } from 'v-calendar'
 
 const { $toast } = useNuxtApp()
@@ -85,6 +85,8 @@ const _init = (input: Input) => {
 const _submit = async (isUpdate: boolean) => {
   try {
     task.value.subTasks = subTasks.value.concat()
+    task.value.startdate = range.value?.start ? dateFactory(range.value.start).getDateNumber() as DateNumber : null
+    task.value.enddate = range.value?.end ? dateFactory(range.value.end).getDateNumber() as DateNumber : null
     if (isUpdate) {
       await updateTask(task.value)
     } else {
@@ -168,7 +170,9 @@ defineExpose({
         <div class="modal-body">
           <label class="input-label">期間</label>
           <div class="flex">
-            <DatePicker model-value="range" range class="flex-1" :attributes="calenderAttributes"
+            <!-- NOTE: is-range may be deprecated. -->
+            <!-- @vue-ignore -->
+            <DatePicker v-model.range="range" is-range class="flex-1" :attributes="calenderAttributes"
               :disabled="forbid.range">
               <template #default="{ inputValue, togglePopover }">
                 <div class="flex justify-center items-center">
