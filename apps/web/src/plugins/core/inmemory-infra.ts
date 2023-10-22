@@ -13,7 +13,7 @@ export default defineNuxtPlugin(() => {
 
   console.log('=== install app_mode: inmemory-infra ===')
 
-  const userRepo = new InMemoryUserRepository(true)
+  const userRepo = new InMemoryUserRepository(false)
   const habitlistRepo = new InMemoryHabitlistRepository()
   const habitRepo = new InMemoryHabitRepository()
   const taskRepo = new InMemoryTaskRepository()
