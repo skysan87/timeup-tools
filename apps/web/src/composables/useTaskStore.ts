@@ -54,7 +54,8 @@ export const useTaskStore = () => {
   }
 
   const getTaskById = (id: string): Task | null => {
-    return _tasks.value.find(v => v.id === id) ?? null
+    const item = _tasks.value.find(v => v.id === id)
+    return item ? { ...item } as Task : null // copy
   }
 
   const getTaskCount = (state?: TaskState): number => {
@@ -162,7 +163,7 @@ export const useTaskStore = () => {
   }
 
   const updateTask = async (task: Task) => {
-    const updated: Task = await $task.updateTask(task.listId, task)
+    const updated: Task = await $task.updateTask(task.id, task)
     updateArray(updated)
   }
 
