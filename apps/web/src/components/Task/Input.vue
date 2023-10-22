@@ -29,13 +29,20 @@ const add = async () => {
     console.error(error)
     $toast.error('失敗しました')
   } finally {
-    task.value.title = ''
+    clearInput()
   }
 }
 
 const addDetail = async () => {
   task.value.startdate = task.value.enddate = checkDeadline()
-  await dialog.value?.openAsync({ isCreateMode: true, task: task.value })
+  const result = await dialog.value?.openAsync({ isCreateMode: true, task: task.value })
+  if (result?.isSuccess) {
+    clearInput()
+  }
+}
+
+const clearInput = () => {
+  task.value.title = ''
 }
 
 const checkDeadline = (): DateNumber | null => {
