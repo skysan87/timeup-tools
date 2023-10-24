@@ -3,23 +3,23 @@ import { DateNumber, Frequnecy, MonthlyType, Nominal, UserId, Weekday, ZippedDat
 export type Habit = Nominal<{
   id: string // randam TODO:
   rootId: string // HabitlistId TODO:
-  title: string | null
-  detail: string | null
+  title: string
+  detail: string
   isActive: boolean
   /** 繰り返し設定 */
   frequency: Frequnecy
   /** 実施する曜日 */
   weekdays: Weekday[]
   /** 毎月実施する種別 */
-  monthlyType?: MonthlyType
+  monthlyType: MonthlyType | null
   /** 実施する日(Frequnecy.MONTHLY && MonthlyType.DAY) */
-  planDays: number[]
+  planDays: Weekday[]
   /**
    * @param planWeek 実施する週 (Frequnecy.MONTHLY && MonthlyType.WEEK)
    * @param planWeek.index 第N周
    * @param planWeek.day 曜日(0-6)
   */
-  planWeek: { index: number, day: Weekday }
+  planWeek: { index: number, day: Weekday } | null
   orderIndex: number
   userId: UserId
   /** 前回実施日 */
