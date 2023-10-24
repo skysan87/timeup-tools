@@ -3,7 +3,8 @@ import { useAuth } from '~/composables/useAuth'
 import type { TasklistStore } from '~/composables/useTasklistStore'
 
 const { login, checkLogin } = useAuth()
-const { init } = inject('tasklist') as TasklistStore
+const { init: initTasklist } = inject('tasklist') as TasklistStore
+const { init: initHabit } = inject('habit') as HabitStore
 const config = useRuntimeConfig()
 
 const isMounted = ref(false)
@@ -11,7 +12,8 @@ const isClicked = ref(false)
 const isLogin = ref(false)
 
 const navigigate = async () => {
-  await init()
+  await initHabit()
+  await initTasklist()
   isLogin.value = true
   navigateTo(config.public.rootPath)
 }
