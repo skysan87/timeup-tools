@@ -36,7 +36,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
       rootId: v.rootId,
       title: v.title ?? null,
       detail: v.detail ?? null,
-      isActive: v.isActive ?? true,
+      isActive: v.isActive ?? false,
       frequency: v.frequency ?? Frequnecy.DAILY,
       weekdays: v.weekdays ? v.weekdays.map(v => v) : [],
       monthlyType: v.monthlyType ?? null,
