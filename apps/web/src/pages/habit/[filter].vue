@@ -84,13 +84,4 @@ definePageMeta({
   border-right: 1px solid #979797;
   border-bottom: 1px solid #979797;
 }
-
-/* ドラッグするアイテム */
-.sortable-chosen {
-  opacity: 0.3;
-}
-
-.sortable-ghost {
-  background-color: #979797;
-}
 </style>
