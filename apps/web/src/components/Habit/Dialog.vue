@@ -24,10 +24,13 @@ const errorMsg = reactive({
   frequency: ''
 })
 
-const monthlyType = ref<MonthlyType>()
+const defaultPlanWeek = { index: 1, day: Weekdays.SUNDAY }
+
+const monthlyType = ref<MonthlyType | null>()
 // TODO: 複数日対応
-const planDays = ref<Weekday>(Weekdays.SUNDAY)
-const planWeek = ref< {index: number, day: Weekday}>({ index: 1, day: Weekdays.SUNDAY })
+const planDays = ref<number>(1)
+const planWeek = ref<{ index: number, day: Weekday }>({ ...defaultPlanWeek })
+
 const activityRate = computed(() => {
   if (!habit.value.totalActivityCount || !habit.value.totalActivityCount) return 0
   return Math.floor(habit.value.totalActivityCount / habit.value.totalCount * 100)
@@ -47,18 +50,30 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 
 const _init = (input: Input) => {
   isCreateMode.value = input.isCreateMode
-  if (!input.isCreateMode) {
+  if (input.isCreateMode) {
+    habit.value = {} as Habit
+  } else {
     habit.value = getHabitById(input.habit.id!) ?? {} as Habit
   }
 
-  if (habit.value.planDays?.length > 0) {
-    planDays.value = habit.value.planDays[0]
+  monthlyType.value = habit.value.monthlyType ?? null
+  switch (habit.value.monthlyType) {
+    case MonthlyType.DAY:
+      if (habit.value.planDays?.length > 0) {
+        planDays.value = habit.value.planDays[0]
+      }
+      break;
+    case MonthlyType.WEEK:
+      planWeek.value.index = habit.value.planWeek?.index ?? defaultPlanWeek.index
+      planWeek.value.day = habit.value.planWeek?.day ?? defaultPlanWeek.day
+      break;
+    case MonthlyType.END:
+    default:
+      planDays.value = 1
+      planWeek.value.index = defaultPlanWeek.index
+      planWeek.value.day = defaultPlanWeek.day
+      break;
   }
-
-  // TODO:
-  // if (!habit.value?.planWeek) {
-  //   planWeek.value =  structuredClone(habit.value.planWeek!)
-  // }
 
   initErrorMsg()
   initCalendar()
@@ -68,6 +83,10 @@ const _submit = async () => {
   try {
     // reset
     initErrorMsg()
+    // set
+    habit.value.monthlyType = monthlyType.value ?? null
+    habit.value.planWeek = { ...planWeek.value }
+    habit.value.planDays = [planDays.value]
     if (isCreateMode.value) {
       await addHabit(habit.value)
     } else {

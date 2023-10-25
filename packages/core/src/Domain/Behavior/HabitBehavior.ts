@@ -41,7 +41,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
       weekdays: v.weekdays ? v.weekdays.map(v => v) : [],
       monthlyType: v.monthlyType ?? null,
       planDays: v.planDays ? v.planDays.map(v => v) : [],
-      planWeek: v.planWeek ?? null,
+      planWeek: { ...v.planWeek } ?? null,
       orderIndex: v.orderIndex ?? 0,
       userId: v.userId ?? null,
       lastActivityDate: v.lastActivityDate ?? null,

@@ -8,14 +8,14 @@ export type Habit = Nominal<{
   isActive: boolean
   /** 繰り返し設定 */
   frequency: Frequnecy
-  /** 実施する曜日 */
+  /** 繰り返し:毎週 実施する曜日 */
   weekdays: Weekday[]
   /** 毎月実施する種別 */
   monthlyType: MonthlyType | null
-  /** 実施する日(Frequnecy.MONTHLY && MonthlyType.DAY) */
-  planDays: Weekday[]
+  /** 繰り返し:毎月 実施する日(Frequnecy.MONTHLY && MonthlyType.DAY) */
+  planDays: number[]
   /**
-   * @param planWeek 実施する週 (Frequnecy.MONTHLY && MonthlyType.WEEK)
+   * @param planWeek 繰り返し:毎月 実施する週 (Frequnecy.MONTHLY && MonthlyType.WEEK)
    * @param planWeek.index 第N周
    * @param planWeek.day 曜日(0-6)
   */
