@@ -27,9 +27,7 @@ const errorMsg = reactive({
 const monthlyType = ref<MonthlyType>()
 // TODO: 複数日対応
 const planDays = ref<Weekday>(Weekdays.SUNDAY)
-// TODO: 初期値はBehavior
 const planWeek = ref< {index: number, day: Weekday}>({ index: 1, day: Weekdays.SUNDAY })
-// TODO: Behaviorで実装
 const activityRate = computed(() => {
   if (!habit.value.totalActivityCount || !habit.value.totalActivityCount) return 0
   return Math.floor(habit.value.totalActivityCount / habit.value.totalCount * 100)
