@@ -26,7 +26,6 @@ const errorMsg = reactive({
 
 const defaultPlanWeek = { index: 1, day: Weekdays.SUNDAY }
 
-const monthlyType = ref<MonthlyType | null>()
 // TODO: 複数日対応
 const planDays = ref<number>(1)
 const planWeek = ref<{ index: number, day: Weekday }>({ ...defaultPlanWeek })
@@ -56,7 +55,6 @@ const _init = (input: Input) => {
     habit.value = getHabitById(input.habit.id!) ?? {} as Habit
   }
 
-  monthlyType.value = habit.value.monthlyType ?? null
   switch (habit.value.monthlyType) {
     case MonthlyType.DAY:
       if (habit.value.planDays?.length > 0) {
@@ -84,7 +82,6 @@ const _submit = async () => {
     // reset
     initErrorMsg()
     // set
-    habit.value.monthlyType = monthlyType.value ?? null
     habit.value.planWeek = { ...planWeek.value }
     habit.value.planDays = [planDays.value]
     if (isCreateMode.value) {
@@ -200,7 +197,7 @@ defineExpose({
             <span v-show="habit.frequency === Frequnecy.MONTHLY" class="flex flex-col">
               <div>
                 <label class="ml-4 my-1">
-                  <input v-model="monthlyType" type="radio" :value="MonthlyType.DAY">
+                  <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.DAY">
                   <span>日付で指定</span>
                 </label>
                 <!-- TODO: 複数日対応 -->
@@ -210,7 +207,7 @@ defineExpose({
               </div>
               <div>
                 <label class="ml-4 my-1">
-                  <input v-model="monthlyType" type="radio" :value="MonthlyType.WEEK">
+                  <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.WEEK">
                   <span>週と曜日</span>
                 </label>
                 <div class="inline-block ml-4">
@@ -226,7 +223,7 @@ defineExpose({
               </div>
               <div>
                 <label class="ml-4 my-1">
-                  <input v-model="monthlyType" type="radio" :value="MonthlyType.END">
+                  <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.END">
                   <span>月末</span>
                 </label>
               </div>
