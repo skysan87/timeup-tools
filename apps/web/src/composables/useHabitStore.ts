@@ -9,6 +9,8 @@ export const useHabitStore = () => {
 
   const _habits = ref<Habit[]>([])
 
+  const currentFilter = ref<HabitPage | ''>('')
+
   const setFrequencyOptions = (habit: Habit) => {
     switch (habit.frequency) {
       case Frequnecy.DAILY:
@@ -47,8 +49,8 @@ export const useHabitStore = () => {
     _habits.value.push(...await $habit.init())
   }
 
-  const load = (filter: HabitPage) => {
-    switch (filter) {
+  const currentHabits = computed(() => {
+    switch (currentFilter.value) {
       case HabitPage.Today:
         return _habits.value.filter(h => h.isActive && h.isPlanDay)
       case HabitPage.Active:
@@ -57,7 +59,7 @@ export const useHabitStore = () => {
       default:
         return _habits.value.concat()
     }
-  }
+  })
 
   const getHabitById = (habitId: string) => {
     const item = _habits.value.find(h => h.id === habitId)
@@ -90,8 +92,9 @@ export const useHabitStore = () => {
   }
 
   return {
+    currentFilter,
+    currentHabits,
     init,
-    load,
     getHabitById,
     addHabit,
     updateHabit,

@@ -4,12 +4,12 @@ import { HabitStore } from '@/composables/useHabitStore'
 import HabitDialog from '@/components/Habit/Dialog.vue'
 import { Habit } from '@timeup-tools/core/model'
 
-const { load } = inject('habit') as HabitStore
+const { currentHabits, currentFilter } = inject('habit') as HabitStore
 const dialog = ref<InstanceType<typeof HabitDialog>>()
 
 const route = useRoute()
 const filter: HabitPage = route.params.filter.toString() as HabitPage
-const habits = ref<Habit[]>(load(filter))
+currentFilter.value = filter
 
 const showNewDialog = async () => {
   await dialog.value?.openAsync({ isCreateMode: true, habit: {} as Habit })
@@ -29,7 +29,7 @@ definePageMeta({
     <header class="border-b flex-none">
       <div class="px-6 py-2 flex flex-row">
         <div class="inline-block flex-1 m-auto">
-          <span>フィルター：{{ HabitPageLabel[filter] }} ( {{ habits.length }} )</span>
+          <span>フィルター：{{ HabitPageLabel[filter] }} ( {{ currentHabits.length }} )</span>
         </div>
         <button
           type="button"
@@ -41,10 +41,10 @@ definePageMeta({
       </div>
     </header>
     <main class="pt-2 pb-4 flex-1 overflow-y-scroll">
-      <div v-if="habits.length > 0" class="mx-2 overflow-x-hidden">
+      <div v-if="currentHabits.length > 0" class="mx-2 overflow-x-hidden">
         <div class="list-group">
           <HabitItem
-            v-for="item in habits"
+            v-for="item in currentHabits"
             :key="item.id"
             :habit="item"
             class="list-group-item list-style"
