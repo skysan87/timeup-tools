@@ -81,7 +81,7 @@ export class HabitUseCase {
     await this.transaction.run(async () => {
       result = await new HabitBehavior(updateProps as Habit).actionAsync(async behavior => {
         const habitlist = await this.habitlistRepository.get(this.userId)
-        const updated = await this.habitRepository.update(this.userId, habitlist!.id, updateProps)
+        const updated = await this.habitRepository.update(this.userId, habitlist!.id, behavior.format())
         behavior.update(updated)
       })
     })

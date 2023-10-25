@@ -38,9 +38,9 @@ export class HabitBehavior extends BehaviorBase<Habit> {
       detail: v.detail ?? null,
       isActive: v.isActive ?? true,
       frequency: v.frequency ?? Frequnecy.DAILY,
-      weekdays: v.weekdays ?? [],
+      weekdays: v.weekdays ? v.weekdays.map(v => v) : [],
       monthlyType: v.monthlyType ?? null,
-      planDays: v.planDays ?? [],
+      planDays: v.planDays ? v.planDays.map(v => v) : [],
       planWeek: v.planWeek ?? null,
       orderIndex: v.orderIndex ?? 0,
       userId: v.userId ?? null,
@@ -50,8 +50,8 @@ export class HabitBehavior extends BehaviorBase<Habit> {
       duration: v.duration ?? 0,
       maxduration: v.maxduration ?? 0,
       summaryUpdatedAt: v.summaryUpdatedAt ?? null,
-      plan: v.plan ?? this.initializeZippedData(),
-      result: v.result ?? this.initializeZippedData(),
+      plan: v.plan ? this.cloneZipperData(v.plan) : this.initializeZippedData(),
+      result: v.result ? this.cloneZipperData(v.result) : this.initializeZippedData(),
       createdAt: v.createdAt ?? null,
       updatedAt: v.updatedAt ?? null,
       needServerUpdate: v.needServerUpdate ?? false,
@@ -63,6 +63,16 @@ export class HabitBehavior extends BehaviorBase<Habit> {
     const key: FullYear = this.today.getFullYear() as FullYear
     const value: Array12<HexNumber> = this.getYearHexArray()
     return { [key]: value }
+  }
+
+  // Proxy対応
+  private cloneZipperData(data: ZippedData): ZippedData {
+    const clone = {} as ZippedData
+    for (const key in data) {
+      const y: FullYear = parseInt(key) as FullYear
+      clone[y] = data[y].map(v => v) as Array12<HexNumber>
+    }
+    return clone
   }
 
   private getYearHexArray(): Array12<HexNumber> {
@@ -259,7 +269,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
   private calcMonthyPlanFlag(unzipPlan: UnzippedData, _date: Date): boolean {
     const _y = _date.getFullYear() as FullYear
     const _m = _date.getMonth()
-    const _d = _date.getDate()
+    const _d = _date.getDate() as Weekday
 
     switch (this.value.monthlyType) {
       case MonthlyType.DAY:
