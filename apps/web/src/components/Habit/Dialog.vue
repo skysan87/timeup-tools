@@ -3,9 +3,10 @@ import { useDialog } from '@/composables/useDialog'
 import { HabitStore } from '@/composables/useHabitStore'
 import { ValidateError } from '@timeup-tools/core/error'
 import { Habit } from '@timeup-tools/core/model'
-import { Weekday, MonthlyType, WeekdaysLabel, Weekdays, Frequnecy } from '@timeup-tools/core/value-object'
+import { Weekday, MonthlyType, WeekdaysLabel, Weekdays, Frequnecy, FullYear } from '@timeup-tools/core/value-object'
+import { getTargetMonth } from '@timeup-tools/core/util/ZippedDataUtil'
 import { Calendar } from 'v-calendar'
-import { Page } from 'v-calendar/dist/types/src/utils/page.js';
+import { Page } from 'v-calendar/dist/types/src/utils/page.js'
 
 const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
@@ -121,23 +122,26 @@ const initCalendar = () => {
   setCalendar(today.getFullYear(), today.getMonth())
 }
 
-// TODO:
-const updateCalendar = (page: Page) => {
-  console.log(page)
-  // setCalendar(page.year, page.month - 1)
+const updateCalendar = (pages: Page[]) => {
+  if (pages.length > 0) {
+    setCalendar(pages[0].year, pages[0].month - 1)
+  }
 }
 
 const setCalendar = (year: number, month: number) => {
+  if (isCreateMode.value) {
+    return
+  }
   calenderAttributes.value = [
     {
       key: 'plan', // 実施予定
       dot: 'blue',
-      dates: [] // TODO: core/utilityに用意: getResultDaysOfMonth
+      dates: getTargetMonth(habit.value.plan, year as FullYear, month)
     },
     {
       key: 'result', // 実績
       highlight: { color: 'blue', fillMode: 'light' },
-      dates: [] // TODO: core/utilityに用意: getResultDaysOfMonth
+      dates: getTargetMonth(habit.value.result, year as FullYear, month)
     }
   ]
 }
@@ -242,7 +246,7 @@ defineExpose({
         <div v-if="!isCreateMode" class="modal-body">
           <label class="input-label">実績</label>
           <div>
-            <Calendar is-expanded :attributes="calenderAttributes" @update:pages="updateCalendar" />
+            <Calendar expanded :attributes="calenderAttributes" @did-move="updateCalendar" />
           </div>
           <div>
             <span class="pr-4">継続期間 {{ habit.duration }}</span>
