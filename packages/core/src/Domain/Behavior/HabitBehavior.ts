@@ -1,4 +1,5 @@
 import { dateFactory, forDayEach, forDayReverseEach } from "../../Util/DateUtil"
+import { unzip, zip } from "../../Util/ZippedDataUtil"
 import { Task } from "../Model"
 import { Habit } from "../Model/Habit"
 import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekday, Weekdays, ZippedData } from "../ValueObject"
@@ -88,23 +89,10 @@ export class HabitBehavior extends BehaviorBase<Habit> {
     const _m = today.getMonth()
     const _d = today.getDate()
     try {
-      const thisMonthPlan = this.unzip(this.value.plan[_y][_m])
+      const thisMonthPlan = unzip(this.value.plan[_y][_m])
       this.value.isPlanDay = thisMonthPlan[_d] === Flag.ON
     } catch {
       this.value.isPlanDay = false
-    }
-  }
-
-  /**
-   * 計算した実績の取得: サーバ更新用
-   */
-  public getSummary() {
-    return {
-      totalCount: this.value.totalCount,
-      duration: this.value.duration,
-      maxduration: this.value.maxduration,
-      summaryUpdatedAt: this.value.summaryUpdatedAt,
-      plan: this.value.plan
     }
   }
 
@@ -148,7 +136,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
         this.value.plan[y] = this.getYearHexArray()
       }
       unzipPlan[y] = this.value.plan[y].map((monthPlan) => {
-        return this.unzip(monthPlan)
+        return unzip(monthPlan)
       }) as Array12<Array32<Flag>>
     }
 
@@ -189,7 +177,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
     // 実施予定日: 実績更新日から本日までの期間の実施予定日を更新
     for (let y = firstYear; y <= today.getFullYear(); y++) {
       unzipPlan[y].forEach((monthPlan, index) => {
-        this.value.plan[y][index] = this.zip(monthPlan)
+        this.value.plan[y][index] = zip(monthPlan)
       })
     }
 
@@ -316,87 +304,10 @@ export class HabitBehavior extends BehaviorBase<Habit> {
     if (!this.value.result[year]) {
       this.value.result[year] = this.getYearHexArray()
     }
-    const unzipResult = this.unzip(this.value.result[year][month])
+    const unzipResult = unzip(this.value.result[year][month])
 
     unzipResult[day] = isDone ? Flag.ON : Flag.OFF
-    this.value.result[year][month] = this.zip(unzipResult)
+    this.value.result[year][month] = zip(unzipResult)
   }
 
-  /**
-   * 解凍(16進数->2進数)
-   * @description
-   *  月単位のデータをフラグ(2進数)で管理している。
-   *  永続化する場合、圧縮して16進数に変換している。
-   *  一月は32bitに収まるので、16進数では0〜FFFFFFFFで表される
-   * @param monthlyHexData 圧縮データ(16進数)
-   * @returns 解凍データ(32個の2進数)
-   */
-  private unzip(monthlyHexData: HexNumber): Array32<Flag> {
-    if (monthlyHexData !== '0') {
-      // 16進数 -> 2進数の配列
-      return parseInt(monthlyHexData, 16).toString(2).split('') as Array32<Flag>
-    } else {
-      const arr = Array.from({ length: 32 }, () => Flag.OFF) as Array32<Flag>
-      arr[0] = Flag.ON // 32桁を維持するため、先頭は埋める
-      return arr
-    }
-  }
-
-  /**
-   * 圧縮(2進数->16進数)
-   * @description
-   *  月単位のデータをフラグ(2進数)で管理している。
-   *  永続化する場合、圧縮して16進数に変換している。
-   *  一月は32bitに収まるので、16進数では0〜FFFFFFFFで表される
-   * @param monthlyBitData 解凍データ(32個の2進数)
-   * @returns 圧縮データ(16進数)
-   */
-  private zip(monthlyBitData: Array32<Flag>): HexNumber {
-    return parseInt(monthlyBitData.join(''), 2).toString(16) as HexNumber
-  }
-
-  /**
-   * 対象月の実施予定日を取得
-   * @param year 年(西暦)
-   * @param month 月(0-11)
-   * @return 日付(YYYY-MM-DD)の配列
-   */
-  public getPlanDaysOfMonth(year: FullYear, month: number): string[] {
-    return this.getTargetMonth(this.value.plan, year, month)
-  }
-
-  /**
-   * 対象月の実績日を取得
-   * @param year 年(西暦)
-   * @param month 月(0-11)
-   * @return 日付(YYYY-MM-DD)の配列
-   */
-  public getResultDaysOfMonth(year: FullYear, month: number): string[] {
-    return this.getTargetMonth(this.value.result, year, month)
-  }
-
-  /**
-   * 実施予定/実績から対象月の予定を取得
-   * @param zipedArray plan/result
-   * @param year 年(西暦)
-   * @param month 月(0-11)
-   * @return 日付(YYYY-MM-DD)の配列
-   */
-  private getTargetMonth(zipedArray: ZippedData, year: FullYear, month: number): string[] {
-    if (!zipedArray[year]) {
-      return []
-    }
-
-    const lastDay = new Date(year, month + 1, 0).getDate()
-    const unzipedDays = this.unzip(zipedArray[year][month])
-    const targetDays: string[] = []
-    const actualMonth = month + 1
-
-    for (let i = 1; i <= lastDay; i++) {
-      if (unzipedDays[i] === Flag.ON) {
-        targetDays.push(`${year}-${actualMonth}-${i}`)
-      }
-    }
-    return targetDays
-  }
 }
