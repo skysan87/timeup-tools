@@ -1,16 +1,19 @@
 import { dateFactory, forDayEach, forDayReverseEach } from "../../Util/DateUtil"
 import { unzip, zip } from "../../Util/ZippedDataUtil"
+import { isEmpty } from "../../Util/StringUtil"
 import { Task } from "../Model"
 import { Habit } from "../Model/Habit"
 import { Array12, Array32, DateNumber, Flag, Frequnecy, FullYear, HexNumber, MonthlyType, TaskState, TaskType, UnzippedData, Weekday, Weekdays, ZippedData } from "../ValueObject"
 import { BehaviorBase } from "./BehaviorBase"
 import { IBehavior } from "./IBehavior"
+import { ValidateError } from "../../Error/ValidateError"
 
 export class HabitBehavior extends BehaviorBase<Habit> {
 
   private today = dateFactory().toDate()
 
   public action(callback: (behavior: IBehavior<Habit>) => void): Habit {
+    this.validate()
     this.value = this.format()
     callback(this)
     this.checkPlanDay()
@@ -18,6 +21,7 @@ export class HabitBehavior extends BehaviorBase<Habit> {
   }
 
   public async actionAsync(callback: (behavior: IBehavior<Habit>) => Promise<void>): Promise<Habit> {
+    this.validate()
     this.value = this.format()
     await callback(this)
     this.checkPlanDay()
@@ -308,6 +312,22 @@ export class HabitBehavior extends BehaviorBase<Habit> {
 
     unzipResult[day] = isDone ? Flag.ON : Flag.OFF
     this.value.result[year][month] = zip(unzipResult)
+  }
+
+  private validate(): void {
+    const error = new ValidateError<Habit>()
+
+    if (isEmpty(this.value.title)) {
+      error.set('title', 'title is empty.')
+    }
+
+    if (!Object.values(Frequnecy).includes(this.value.frequency)) {
+      error.set('frequency', 'frequency must be selected.')
+    }
+
+    if (error.hasError) {
+      throw error
+    }
   }
 
 }

@@ -22,8 +22,14 @@ export class TaskBehavior extends BehaviorBase<Task> {
   }
 
   private validate(): void {
+    const error = new ValidateError<Task>()
+
     if (isEmpty(this.value.title)) {
-      throw new ValidateError('title is empty')
+      error.set('title', 'title is empty')
+    }
+
+    if (error.hasError) {
+      throw error
     }
   }
 

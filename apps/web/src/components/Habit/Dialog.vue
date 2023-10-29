@@ -94,9 +94,9 @@ const _submit = async () => {
     submit()
   } catch (error: any) {
     if (error instanceof ValidateError) {
-      // TODO: 項目を取得できるようにする
-      errorMsg.title = error.message
-      errorMsg.frequency = error.message
+      const err = error as ValidateError<Habit>
+      errorMsg.title = err.get('title')
+      errorMsg.frequency = err.get('frequency')
     } else {
       console.error(error)
       $toast.error(error.message)

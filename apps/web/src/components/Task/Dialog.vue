@@ -101,7 +101,8 @@ const _submit = async (isUpdate: boolean) => {
     submit()
   } catch (error: any) {
     if (error instanceof ValidateError) {
-      errorMsg.value = error.message
+      const err = error as ValidateError<Task>
+      errorMsg.value = err.get('title')
     } else {
       console.error(error)
       $toast.error(error.message)
