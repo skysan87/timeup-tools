@@ -10,7 +10,7 @@ import { Page } from 'v-calendar/dist/types/src/utils/page.js'
 
 const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
-const { getHabitById, addHabit, updateHabit, deleteHabit } = inject('habit') as HabitStore
+const { create, getHabitById, addHabit, updateHabit, deleteHabit } = inject('habit') as HabitStore
 
 type Input = {
   isCreateMode: boolean
@@ -50,11 +50,7 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 
 const _init = (input: Input) => {
   isCreateMode.value = input.isCreateMode
-  if (input.isCreateMode) {
-    habit.value = {} as Habit
-  } else {
-    habit.value = getHabitById(input.habit.id!) ?? {} as Habit
-  }
+  habit.value = input.isCreateMode ? create() : getHabitById(input.habit.id!)
 
   switch (habit.value.monthlyType) {
     case MonthlyType.DAY:

@@ -19,6 +19,10 @@ export class HabitUseCase {
     return this._userId ?? this.userRepositpry.getFromCache().id
   }
 
+  public create(): Habit {
+    return new HabitBehavior({} as Habit).format()
+  }
+
   public async init(): Promise<Habit[]> {
     const results: Habit[] = []
 

@@ -61,9 +61,13 @@ export const useHabitStore = () => {
     }
   })
 
+  const create = () => {
+    return $habit.create()
+  }
+
   const getHabitById = (habitId: string) => {
     const item = _habits.value.find(h => h.id === habitId)
-    return item ? { ...item } as Habit : null
+    return item ? { ...item } as Habit : $habit.create()
   }
 
   const addHabit = async (habit: Partial<Habit>) => {
@@ -95,6 +99,7 @@ export const useHabitStore = () => {
     currentFilter,
     currentHabits,
     init,
+    create,
     getHabitById,
     addHabit,
     updateHabit,
