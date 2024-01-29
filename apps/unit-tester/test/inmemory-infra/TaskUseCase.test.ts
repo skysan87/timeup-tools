@@ -135,8 +135,10 @@ describe('基本動作', () => {
 
   test('習慣タスクを登録して、今日のタスクに登録される', async () => {
     const habit: Habit = await habitUseCase.addHabit({
+      rootId: 'root',
       title: '毎日のタスク',
-      frequency: 'daily'
+      frequency: 'daily',
+      isActive: true
     } as Habit)
 
     await habitUseCase.init()
