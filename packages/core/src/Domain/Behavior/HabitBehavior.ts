@@ -36,7 +36,8 @@ export class HabitBehavior extends BehaviorBase<Habit> {
 
   public format(): Habit {
     const v = this.value
-    return {
+
+    const instance = {
       id: v.id,
       rootId: v.rootId,
       title: v.title ?? null,
@@ -62,6 +63,10 @@ export class HabitBehavior extends BehaviorBase<Habit> {
       needServerUpdate: v.needServerUpdate ?? false,
       isPlanDay: v.isPlanDay ?? false
     } as Habit
+
+    this.setFrequencyOptions(instance)
+
+    return instance
   }
 
   private initializeZippedData(): ZippedData {
@@ -327,6 +332,40 @@ export class HabitBehavior extends BehaviorBase<Habit> {
 
     if (error.hasError) {
       throw error
+    }
+  }
+
+  private setFrequencyOptions(habit: Habit): void {
+    switch (habit.frequency) {
+      case Frequnecy.DAILY:
+        habit.weekdays = []
+        habit.monthlyType = null
+        habit.planDays = []
+        habit.planWeek = null
+        break
+      case Frequnecy.WEEKLY:
+        habit.monthlyType = null
+        habit.planDays = []
+        habit.planWeek = null
+        break
+      case Frequnecy.MONTHLY:
+        habit.weekdays = []
+        switch (habit.monthlyType) {
+          case MonthlyType.DAY:
+            habit.planWeek = null
+            break
+          case MonthlyType.WEEK:
+            habit.planDays = []
+            break
+          case MonthlyType.END:
+          default:
+            habit.planDays = []
+            habit.planWeek = null
+            break
+        }
+        break
+      default:
+        break
     }
   }
 

@@ -11,40 +11,6 @@ export const useHabitStore = () => {
 
   const currentFilter = ref<HabitPage | ''>('')
 
-  const setFrequencyOptions = (habit: Habit) => {
-    switch (habit.frequency) {
-      case Frequnecy.DAILY:
-        habit.weekdays = []
-        habit.monthlyType = null
-        habit.planDays = []
-        habit.planWeek = null
-        break
-      case Frequnecy.WEEKLY:
-        habit.monthlyType = null
-        habit.planDays = []
-        habit.planWeek = null
-        break
-      case Frequnecy.MONTHLY:
-        habit.weekdays = []
-        switch (habit.monthlyType) {
-          case MonthlyType.DAY:
-            habit.planWeek = null
-            break
-          case MonthlyType.WEEK:
-            habit.planDays = []
-            break
-          case MonthlyType.END:
-          default:
-            habit.planDays = []
-            habit.planWeek = null
-            break
-        }
-        break
-      default:
-        break
-    }
-  }
-
   const init = async () => {
     _habits.value.push(...await $habit.init())
   }
@@ -71,13 +37,11 @@ export const useHabitStore = () => {
   }
 
   const addHabit = async (habit: Partial<Habit>) => {
-    setFrequencyOptions(habit as Habit)
     const newHabit = await $habit.addHabit(habit)
     _habits.value.push(newHabit)
   }
 
   const updateHabit = async (habit: Habit) => {
-    setFrequencyOptions(habit)
     const updated = await $habit.updateHabit(habit)
     _updateArray(updated)
   }
