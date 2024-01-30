@@ -16,6 +16,10 @@ dialog[open]:modal.--mobile {
   max-height: 90vh; /* モバイル表示のダイアログの高さ */
 }
 
+.modal-body {
+  margin: 10px 0;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   dialog[open]:modal {
     animation: slide-up 0.4s ease-out;

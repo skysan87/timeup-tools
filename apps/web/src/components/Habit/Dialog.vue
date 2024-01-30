@@ -154,7 +154,7 @@ defineExpose({
 
 <template>
   <dialog ref="dialog" @cancel.prevent class="p-0">
-    <div class="flex flex-col py-4" style="height: 83vh;">
+    <div class="flex flex-col py-4" style="height: 83vh; min-width: 75vw;">
       <div class="flex-1 overflow-y-auto pl-4 pr-2">
 
         <div class="modal-body">
@@ -176,15 +176,15 @@ defineExpose({
           <div>
             <label>
               <input v-model="habit.frequency" name="frequency" type="radio" :value="Frequnecy.DAILY">
-              <span>毎日</span>
+              <span class="mx-1">毎日</span>
             </label>
           </div>
-          <div>
+          <div class="flex items-center">
             <label>
               <input v-model="habit.frequency" name="frequency" type="radio" :value="Frequnecy.WEEKLY">
-              <span>毎週</span>
+              <span class="mx-1">毎週</span>
             </label>
-            <label v-for="id in Weekdays" v-show="habit.frequency === Frequnecy.WEEKLY" :key="id" class="mx-1">
+            <label v-for="id in Weekdays" v-show="habit.frequency === Frequnecy.WEEKLY" :key="id" class="ml-1 flex items-center">
               <input v-model="habit.weekdays" type="checkbox" :value="id">
               <span class="p-1 align-middle">{{ WeekdaysLabel[id] }}</span>
             </label>
@@ -192,30 +192,30 @@ defineExpose({
           <div>
             <label>
               <input v-model="habit.frequency" name="frequency" type="radio" :value="Frequnecy.MONTHLY">
-              <span>毎月</span>
+              <span class="mx-1">毎月</span>
             </label>
             <span v-show="habit.frequency === Frequnecy.MONTHLY" class="flex flex-col">
               <div>
                 <label class="ml-4 my-1">
                   <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.DAY">
-                  <span>日付で指定</span>
+                  <span class="ml-1">日付で指定</span>
                 </label>
                 <!-- TODO: 複数日対応 -->
-                <select v-model="planDays" class="ml-4 px-1 bg-gray-200">
+                <select v-model="planDays" class="ml-4 bg-gray-200">
                   <option v-for="day of 31" :key="day" :value="day">{{ day }}</option>
                 </select>
               </div>
               <div>
                 <label class="ml-4 my-1">
                   <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.WEEK">
-                  <span>週と曜日</span>
+                  <span class="ml-1">週と曜日</span>
                 </label>
                 <div class="inline-block ml-4">
                   <span>第</span>
-                  <select v-model="planWeek.index" class="px-1 bg-gray-200">
+                  <select v-model="planWeek.index" class="ml-1 bg-gray-200">
                     <option v-for="id of 4" :key="id" :value="id">{{ id }}</option>
                   </select>
-                  <select v-model="planWeek.day" class="px-1 bg-gray-200">
+                  <select v-model="planWeek.day" class="ml-1 bg-gray-200">
                     <option v-for="id of Weekdays" :key="id" :value="id">{{ WeekdaysLabel[id] }}</option>
                   </select>
                   <span>曜日</span>
@@ -224,7 +224,7 @@ defineExpose({
               <div>
                 <label class="ml-4 my-1">
                   <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.END">
-                  <span>月末</span>
+                  <span class="ml-1">月末</span>
                 </label>
               </div>
             </span>
@@ -266,7 +266,7 @@ defineExpose({
         <button v-if="!isCreateMode" class="btn btn-red-outline ml-2" @click="_delete">
           Delete
         </button>
-        <span v-if="!isCreateMode" class="text-xs text-gray-600 flex-1">
+        <span v-if="!isCreateMode" class="ml-2 text-xs text-gray-600 flex-1">
           変更や削除は明日以降のタスクに反映されます。
         </span>
       </div>
