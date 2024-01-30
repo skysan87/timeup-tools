@@ -1,6 +1,17 @@
 <script setup lang="ts">
-// TODO:
-const updateHeaderText = () => {}
+import PartInputDialog from '@/components/Part/InputDialog.vue'
+
+const dialog = ref<InstanceType<typeof PartInputDialog>>()
+
+const updateHeaderText = async () => {
+  const result = await dialog.value?.openAsync('') // TODO: 編集前の値
+  console.log(result)
+}
+
+const submit = async (input: string) => {
+  // TODO: 更新後の値を保存する
+  console.log(input)
+}
 </script>
 
 <template>
@@ -15,4 +26,5 @@ const updateHeaderText = () => {}
   >
     ヘッダーメッセージ
   </div>
+  <PartInputDialog ref="dialog" title="ヘッダーメッセージを変更" :submit-action="submit" />
 </template>
