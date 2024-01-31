@@ -1,3 +1,4 @@
+<!-- 汎用ダイアログ -->
 <script setup lang="ts">
 const { dialog, open, cancel, submit } = useDialog()
 
@@ -8,7 +9,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
-  submitAction: (value: string) => { }
+  submitAction: (input: string) => { }
 })
 
 const inputValue = ref<string>('')
