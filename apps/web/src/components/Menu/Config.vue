@@ -2,15 +2,20 @@
 import PartInputDialog from '@/components/Part/InputDialog.vue'
 
 const dialog = ref<InstanceType<typeof PartInputDialog>>()
+const { config, updateMessage } = inject('config') as ConfigStore
+const { $toast } = useNuxtApp()
 
 const updateHeaderText = async () => {
-  const result = await dialog.value?.openAsync('') // TODO: 編集前の値
-  console.log(result)
+  const isSuccess = await dialog.value?.openAsync(config.value?.globalMessage ?? '') // TODO: 編集前の値
+  if (isSuccess) {
+    $toast.show('更新しました')
+  } else {
+    $toast.error('失敗しました')
+  }
 }
 
 const submit = async (input: string) => {
-  // TODO: 更新後の値を保存する
-  console.log(input)
+  await updateMessage(input)
 }
 </script>
 

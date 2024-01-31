@@ -4,10 +4,9 @@ import { useBoard } from '@/composables/useBoard'
 
 const { sideWidth, dragStartSidebar, draggingSidebar, registerEvents, unregisterEvents } = useBoard()
 const { selectedItem } = inject('task') as TaskStore
+const { config } = inject('config') as ConfigStore
 
 const currentDate: string = dateFactory().format('YYYY.M.D(ddd)')
-// TODO: config
-const globalMessage = ref<string>('')
 
 // =========================================
 // サイズメニュー幅変更
@@ -33,7 +32,7 @@ onUnmounted(() => {
 <template>
   <div class="app-container select-none">
     <div class="app-top_nav bg-green-400 text-center">
-      {{ globalMessage }}
+      {{ config.globalMessage ?? '' }}
     </div>
     <div class="app-workspace-layout">
       <div class="app-workspace__sidebar">
