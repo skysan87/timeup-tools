@@ -181,9 +181,8 @@ defineExpose({
         <div class="modal-body">
           <label class="input-label">期間</label>
           <div class="flex">
-            <!-- NOTE: is-range may be deprecated. -->
             <!-- @vue-ignore -->
-            <DatePicker v-model.range="range" is-range class="flex-1" :attributes="calenderAttributes"
+            <DatePicker v-model.range="range" class="flex-1" :attributes="calenderAttributes"
               :disabled="forbid.range">
               <template #default="{ inputValue, togglePopover }">
                 <div class="flex justify-center items-center">
