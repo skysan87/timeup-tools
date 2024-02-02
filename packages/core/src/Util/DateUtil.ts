@@ -171,3 +171,5 @@ class Wrapper {
     return this.instance.diff(dateObj.instance, unit)
   }
 }
+
+export type DateUtil = Wrapper
