@@ -144,6 +144,7 @@ onUnmounted(() => {
 .app-workspace__view {
   grid-area: app-workspace__view;
   width: calc(100vw - v-bind(sidebar_width) - v-bind(sidepanel_width));
+  overflow: auto;
 }
 
 .app-workspace__view-2 {
