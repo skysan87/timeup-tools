@@ -1,24 +1,55 @@
 <script setup lang="ts">
 import { TaskStore } from '@/composables/useTaskStore'
-import { DatePicker } from 'v-calendar'
 import ChartGantt from '@/components/Chart/Gantt.vue'
 
-const { filterdTasks, init } = inject('task') as TaskStore
+const { filterdTasks, init, setDeadline } = inject('task') as TaskStore
 const { tasklists } = inject('tasklist') as TasklistStore
 const { $toast } = useNuxtApp()
 const gantt = ref<InstanceType<typeof ChartGantt>>()
 
-const onSelectProject = async (e: Event) => {
-  const projectId = (e.currentTarget as HTMLSelectElement).value
+const projectId = ref<string>('')
 
-  if (!projectId) return
+const onSelectProject = async (e: Event) => {
+  projectId.value = (e.currentTarget as HTMLSelectElement).value ?? ''
+
+  if (!projectId.value) {
+    gantt.value?.initView([])
+    return
+  }
 
   try {
-    await init(projectId)
+    await init(projectId.value)
     gantt.value?.initView(filterdTasks.value)
   } catch (error) {
     console.error(error)
     $toast.error('プロジェクトの読み込みに失敗しました')
+  }
+}
+
+const saveAll = async () => {
+  try {
+    if (!confirm('期限を変更しますか？')) {
+      return
+    }
+
+    const data = gantt.value?.getChangedData()
+
+    if (data!.length === 0) {
+      return
+    }
+
+    await setDeadline(data!.map(item => {
+      return {
+        id: item.id,
+        startdate: item.startDate,
+        enddate: item.endDate
+      }
+    }))
+    gantt.value?.initView(filterdTasks.value)
+    $toast.show('変更しました')
+  } catch (error) {
+    console.error(error)
+    $toast.error('変更に失敗しました')
   }
 }
 
@@ -41,7 +72,7 @@ definePageMeta({
           <span class="ml-4">表示開始月:</span>
           <input type="month" class="block border ml-2 py-1 px-2 bg-gray-200" :value="startMonth.format('YYYY-MM')"
             @change="changeStartMonth">
-          <!-- <button v-if="tasks.length > 0" class="btn btn-regular ml-auto" @click="saveAll">保存</button> -->
+          <button v-if="projectId !== ''" class="btn btn-regular ml-auto" @click="saveAll">保存</button>
         </div>
       </template>
     </ChartGantt>

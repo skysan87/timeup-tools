@@ -1,6 +1,7 @@
 import { DateUtil, dateFactory } from "@timeup-tools/core/util/DateUtil"
 import { GanttViewModel } from '@/viewmodels/GanttViewModel'
 import { Task } from "@timeup-tools/core/model"
+import { DateNumber } from "@timeup-tools/core/value-object"
 
 const BLOCK_SIZE = 20
 const TASK_WIDTH = 320
@@ -221,12 +222,12 @@ export const useGantt = () => {
 
   const getChangedData = () => {
     return tasks.value
-      .filter(task => task.isChanged)
+      .filter(task => task.isChanged && !!task.startDate && !!task.endDate)
       .map(task => {
         return {
           id: task.id,
-          startDate: task.startDateString,
-          endDate: task.endDateString
+          startDate: task.startDate!.getDateNumber() as DateNumber,
+          endDate: task.endDate!.getDateNumber() as DateNumber
         }
       })
   }
