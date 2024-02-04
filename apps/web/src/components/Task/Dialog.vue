@@ -3,7 +3,7 @@ import { useDialog } from '@/composables/useDialog'
 import { useSubTask } from '@/composables/useSubTask'
 import { Task } from '@timeup-tools/core/model'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil';
-import { DateNumber, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
+import { DateNumber, DateRange, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
 import { DatePicker } from 'v-calendar'
 import { ValidateError } from '@timeup-tools/core/error'
 
@@ -21,7 +21,7 @@ type Input = {
 const isCreateMode = ref(false)
 
 const task = ref<Task>({} as Task)
-const range = ref<{ start: Date | null, end: Date | null }>({ start: null, end: null })
+const range = ref<DateRange>({ start: null, end: null })
 const options = Object.values(TaskState)
 const errorMsg = ref<string>('')
 const forbid = reactive({
