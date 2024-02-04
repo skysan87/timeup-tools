@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import TaskDialog from '@/components/Task/Dialog.vue'
 import { Task } from '@timeup-tools/core/model'
-import { TodayPage } from '~/const/page';
+import { TodayPage } from '~/const/page'
+import { LayoutKey } from '~~/.nuxt/types/layouts'
 
 const { filterdTasks, selectTask, initTodaylist, initInProgressList } = inject('task') as TaskStore
 const dialog = ref<InstanceType<typeof TaskDialog>>()
@@ -22,7 +23,10 @@ onMounted(async () => {
 })
 
 definePageMeta({
-  layout: 'board'
+  layout: computed<LayoutKey>(() => {
+    const { isMobile } = useDevice()
+    return isMobile ? 'board-mobile' : 'board'
+  })
 })
 </script>
 

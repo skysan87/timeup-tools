@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TaskStore } from '@/composables/useTaskStore'
 import GanttChart from '@/components/Gantt/Chart.vue'
+import { LayoutKey } from '~~/.nuxt/types/layouts'
 
 const { filterdTasks, init, setDeadline, selectTask } = inject('task') as TaskStore
 const { tasklists } = inject('tasklist') as TasklistStore
@@ -54,7 +55,10 @@ const saveAll = async () => {
 }
 
 definePageMeta({
-  layout: 'board'
+  layout: computed<LayoutKey>(() => {
+    const { isMobile } = useDevice()
+    return isMobile ? 'not-supported' : 'board'
+  })
 })
 </script>
 

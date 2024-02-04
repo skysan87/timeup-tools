@@ -5,6 +5,7 @@ import { Task } from '@timeup-tools/core/model';
 import { dateFactory } from '@timeup-tools/core/util/DateUtil';
 import { DateNumber, DateRange } from '@timeup-tools/core/value-object';
 import { DatePicker } from 'v-calendar'
+import { LayoutKey } from '~~/.nuxt/types/layouts'
 
 const route = useRoute()
 const { editMode, filterdTasks, init, setDeadline, deleteTasks, switchEdit, selectTask } = inject('task') as TaskStore
@@ -88,7 +89,10 @@ watch(editMode, (n, _) => {
 })
 
 definePageMeta({
-  layout: 'board'
+  layout: computed<LayoutKey>(() => {
+    const { isMobile } = useDevice()
+    return isMobile ? 'board-mobile' : 'board'
+  })
 })
 
 onMounted(async () => {

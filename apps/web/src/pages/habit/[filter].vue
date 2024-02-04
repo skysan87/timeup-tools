@@ -3,6 +3,7 @@ import { HabitPage, HabitPageLabel } from '@/const/page'
 import { HabitStore } from '@/composables/useHabitStore'
 import HabitDialog from '@/components/Habit/Dialog.vue'
 import { Habit } from '@timeup-tools/core/model'
+import { LayoutKey } from '~~/.nuxt/types/layouts'
 
 const { currentHabits, currentFilter } = inject('habit') as HabitStore
 const dialog = ref<InstanceType<typeof HabitDialog>>()
@@ -20,7 +21,10 @@ const showEditDialg = async (id: string) => {
 }
 
 definePageMeta({
-  layout: 'board'
+  layout: computed<LayoutKey>(() => {
+    const { isMobile } = useDevice()
+    return isMobile ? 'board-mobile' : 'board'
+  })
 })
 </script>
 
