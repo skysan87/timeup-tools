@@ -54,7 +54,7 @@ defineExpose({
 
 <template>
   <dialog ref="dialog" @cancel.prevent class="p-0">
-    <div class="flex flex-col py-4" style="height: 83vh;">
+    <div class="flex flex-col py-4" style="max-height: 90vh; min-width: 50vw;">
       <div class="flex-1 overflow-y-auto pl-4 pr-2">
         <div class="mx-2 mb-6">
           <label class="input-label">プロジェクト名</label>
