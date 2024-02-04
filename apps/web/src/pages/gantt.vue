@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { TaskStore } from '@/composables/useTaskStore'
-import ChartGantt from '@/components/Chart/Gantt.vue'
+import GanttChart from '@/components/Gantt/Chart.vue'
 
 const { filterdTasks, init, setDeadline } = inject('task') as TaskStore
 const { tasklists } = inject('tasklist') as TasklistStore
 const { $toast } = useNuxtApp()
-const gantt = ref<InstanceType<typeof ChartGantt>>()
+const gantt = ref<InstanceType<typeof GanttChart>>()
 
 const projectId = ref<string>('')
 
@@ -60,7 +60,7 @@ definePageMeta({
 
 <template>
   <div class="relative h-full w-full">
-    <ChartGantt ref="gantt">
+    <GanttChart ref="gantt">
       <template #header="{ startMonth, changeStartMonth }">
         <div class="h-8 p-2 flex items-center">
           <select class="block border py-1 px-2 bg-gray-200" @change="onSelectProject">
@@ -75,6 +75,6 @@ definePageMeta({
           <button v-if="projectId !== ''" class="btn btn-regular ml-auto" @click="saveAll">保存</button>
         </div>
       </template>
-    </ChartGantt>
+    </GanttChart>
   </div>
 </template>
