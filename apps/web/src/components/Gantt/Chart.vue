@@ -2,12 +2,15 @@
 import { useGantt } from '@/composables/useGantt'
 import { Task } from '@timeup-tools/core/model'
 import { GanttViewModel } from '~/viewmodels/GanttViewModel'
+import CalendarDialog from './CalendarDialog.vue'
+
+const dialog = ref<InstanceType<typeof CalendarDialog>>()
 
 const {
   calendarRef,
   blockWidth, taskWidth, viewWidth, totalDays, calendars, startMonth,
   todayPosition, taskRows,
-  setData, getChangedData, weekendColor, mountEvent, unmountEvent, onMouseDown_MoveStart, onMouseDown_ResizeStart, changeStartMonth
+  setData, getChangedData, setRange, weekendColor, mountEvent, unmountEvent, onMouseDown_MoveStart, onMouseDown_ResizeStart, changeStartMonth
 } = useGantt()
 
 const emits = defineEmits<{
@@ -23,8 +26,14 @@ const selectTask = (taskId: string) => {
   emits('select-task', taskId)
 }
 
-const editRange = (taskId: string) => {
-  // TODO: カレンダーダイアログ表示
+const editRange = async (taskId: string) => {
+  const task = taskRows.value.find(task => task.id === taskId)
+  if (!task) return
+
+  const result = await dialog.value?.openAsync(task.startDate?.toDate(),  task.endDate?.toDate())
+  if (result?.isSuccess) {
+    setRange(taskId, result?.range)
+  }
 }
 
 const initView = (data: Task[]) => {
@@ -122,6 +131,7 @@ defineExpose({
       </div>
     </div>
   </div>
+  <CalendarDialog ref="dialog" />
 </template>
 
 <style scoped>

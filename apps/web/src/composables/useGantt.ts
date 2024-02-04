@@ -1,7 +1,7 @@
 import { DateUtil, dateFactory } from "@timeup-tools/core/util/DateUtil"
 import { GanttViewModel } from '@/viewmodels/GanttViewModel'
 import { Task } from "@timeup-tools/core/model"
-import { DateNumber } from "@timeup-tools/core/value-object"
+import { DateNumber, DateRange } from "@timeup-tools/core/value-object"
 
 const BLOCK_SIZE = 20
 const TASK_WIDTH = 320
@@ -67,6 +67,14 @@ export const useGantt = () => {
         title: targetMonth.format('YYYY年MM月'),
         days: getDays(targetMonth)
       })
+    }
+  }
+
+  const setRange = (id: string, range: DateRange) => {
+    const task = tasks.value.find(task => task.id === id)
+    if (task) {
+      task.startDate = range.start ? dateFactory(range.start) : null
+      task.endDate = range.end ? dateFactory(range.end) : null
     }
   }
 
@@ -298,6 +306,7 @@ export const useGantt = () => {
     startMonth: readonly(startMonth),
     taskRows,
     todayPosition,
+    setRange,
     weekendColor,
     setData,
     getChangedData,

@@ -104,3 +104,5 @@ export const TaskStateLabel = {
 } as const satisfies { [key: number]: string }
 
 export type TaskStateLabel = typeof TaskStateLabel[keyof typeof TaskStateLabel]
+
+export type DateRange = { start: Date | null, end: Date | null}
