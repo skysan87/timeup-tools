@@ -2,7 +2,7 @@
 import { TaskStore } from '@/composables/useTaskStore'
 import GanttChart from '@/components/Gantt/Chart.vue'
 
-const { filterdTasks, init, setDeadline } = inject('task') as TaskStore
+const { filterdTasks, init, setDeadline, selectTask } = inject('task') as TaskStore
 const { tasklists } = inject('tasklist') as TasklistStore
 const { $toast } = useNuxtApp()
 const gantt = ref<InstanceType<typeof GanttChart>>()
@@ -60,7 +60,7 @@ definePageMeta({
 
 <template>
   <div class="relative h-full w-full">
-    <GanttChart ref="gantt">
+    <GanttChart ref="gantt" @select-task="selectTask">
       <template #header="{ startMonth, changeStartMonth }">
         <div class="h-8 p-2 flex items-center">
           <select class="block border py-1 px-2 bg-gray-200" @change="onSelectProject">
