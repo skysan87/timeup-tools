@@ -6,6 +6,7 @@ const { isMenuExpanded, switchMenu, close } = useMobileLayout()
 const route = useRoute()
 
 const currentDate: string = dateFactory().format('YYYY.M.D(ddd)')
+const { config } = inject('config') as ConfigStore
 
 watch(
   () => route.path,
@@ -33,8 +34,6 @@ watch(
         </button>
       </div>
 
-      <!-- TODO: グローバルメッセージ -->
-
       <div v-show="isMenuExpanded" class="fixed left-0 mt-10 w-full bg-gray-800 h-full overflow-y-scroll">
         <MenuCommand />
 
@@ -53,6 +52,9 @@ watch(
 
   <!-- contents -->
   <div class="container mx-auto pt-10 h-screen overflow-hidden">
+    <div class="left-0 w-full bg-green-400 text-center">
+      {{ config.globalMessage }}
+    </div>
     <slot />
   </div>
 </template>
