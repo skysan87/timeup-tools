@@ -3,7 +3,7 @@ import TaskDialog from '@/components/Task/Dialog.vue'
 import { TaskStore } from '@/composables/useTaskStore'
 import { Task } from '@timeup-tools/core/model';
 import { dateFactory } from '@timeup-tools/core/util/DateUtil';
-import { DateNumber } from '@timeup-tools/core/value-object';
+import { DateNumber, DateRange } from '@timeup-tools/core/value-object';
 import { DatePicker } from 'v-calendar'
 
 const route = useRoute()
@@ -12,6 +12,7 @@ const { $toast } = useNuxtApp()
 
 const dialog = ref<InstanceType<typeof TaskDialog>>()
 const selectedIds = ref<string[]>([])
+const dateRange = ref<DateRange | null>(null)
 
 const runAsync = async (callback: Function) => {
   try {
@@ -50,14 +51,18 @@ const handleCheck = (taskId: string) => {
   }
 }
 
-const _setDeadline = async (targetDate: any) => {
-  console.log(targetDate)
+const clearSelection = () => {
+  selectedIds.value.length = 0
+}
 
+const _setDeadline = async (targetDate: DateRange) => {
   if (!editMode.value) return
+  // dateRangeの変更で動いてしまうので、除外
+  if (!targetDate) return
 
   if (targetDate !== null && selectedIds.value.length > 0 && confirm('期限を設定しますか？')) {
-    const startDateNum = dateFactory(targetDate.start).getDateNumber() as DateNumber
-    const endDateNum = dateFactory(targetDate.end).getDateNumber() as DateNumber
+    const startDateNum = dateFactory(targetDate.start!).getDateNumber() as DateNumber
+    const endDateNum = dateFactory(targetDate.end!).getDateNumber() as DateNumber
     const targets = filterdTasks.value
       .filter(t => selectedIds.value.includes(t.id))
       .map((t) => {
@@ -69,13 +74,16 @@ const _setDeadline = async (targetDate: any) => {
       })
 
     await runAsync(() => setDeadline(targets))
+    // NOTE: @update:modelValueが動く
+    dateRange.value = null
+    clearSelection()
   }
 }
 
 watch(editMode, (n, _) => {
   // 編集モード終了時に選択を解除する
   if (n === false) {
-    selectedIds.value.length = 0
+    clearSelection()
   }
 })
 
@@ -92,18 +100,19 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col bg-white h-full">
     <header class="flex-none">
-      <TaskHeader />
+      <TaskHeader show-menu />
       <div class="border-b" />
       <div v-if="editMode" class="w-full flex items-center justify-center flex-wrap p-1 border-b">
         <fa class="mx-0.5 cursor-pointer" :icon="['fas', 'circle-info']" @click="showInfo" />
         <span class="mx-0.5">編集モード:</span>
         <div class="mx-0.5 flex flex items-center">
-          <DatePicker range class="flex-1" :value="null" :attributes="[{
+          <!-- @vue-ignore -->
+          <DatePicker v-model.range="dateRange" class="flex-1" :attributes="[{
               key: 'today',
               dot: 'blue',
               dates: [new Date()]
             }]"
-            @input="_setDeadline"
+            @update:modelValue="_setDeadline"
           >
             <template #default="{ togglePopover }">
               <button class="btn-sm btn-outline block" @click="togglePopover">
