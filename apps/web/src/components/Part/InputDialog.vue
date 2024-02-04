@@ -4,12 +4,12 @@ const { dialog, open, cancel, submit } = useDialog()
 
 interface Props {
   title: string
-  submitAction: (input: string) => void
+  submitAction: (input: string) => Promise<void>
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
-  submitAction: (input: string) => { }
+  submitAction: () => Promise.resolve()
 })
 
 const inputValue = ref<string>('')

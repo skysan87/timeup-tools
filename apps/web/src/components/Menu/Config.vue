@@ -6,11 +6,9 @@ const { config, updateMessage } = inject('config') as ConfigStore
 const { $toast } = useNuxtApp()
 
 const updateHeaderText = async () => {
-  const isSuccess = await dialog.value?.openAsync(config.value?.globalMessage ?? '') // TODO: 編集前の値
-  if (isSuccess) {
+  const result = await dialog.value?.openAsync(config.value?.globalMessage ?? '') // TODO: 編集前の値
+  if (result?.isSuccess) {
     $toast.show('更新しました')
-  } else {
-    $toast.error('失敗しました')
   }
 }
 
