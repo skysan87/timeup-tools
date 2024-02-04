@@ -22,8 +22,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       show({
         type: 'info',
         message,
-        timeout: 2,
-        pauseOnHover: false
+        timeout: 0.8,
+        pauseOnHover: false,
+        progress: false
       })
     },
     warn: (message: string) => {
