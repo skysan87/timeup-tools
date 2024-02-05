@@ -1,7 +1,7 @@
 import { Nominal } from "../ValueObject";
 
 export type SubTask = Nominal<{
-  id: string // TODO: nominal
+  id: string
   title: string
   isDone: boolean
 }, 'SubTask'>
