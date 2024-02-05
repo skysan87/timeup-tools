@@ -2,6 +2,10 @@
 import { useAuth } from '@/composables/useAuth'
 
 const { logout, getUserName } = useAuth()
+const { init: initTasklist } = inject('tasklist') as TasklistStore
+const { init: initHabit } = inject('habit') as HabitStore
+const { init: initConfig } = inject('config') as ConfigStore
+
 const config = useRuntimeConfig()
 
 const appVersion = config.public.appVersion
@@ -14,12 +18,20 @@ const handleLogout = async () => {
   })
 }
 
-// TODO:
-const reload = () => {}
+const reload = async () => {
+  await Promise.all([
+    initHabit(),
+    initTasklist(),
+    initConfig()
+  ])
+  navigateTo(config.public.rootPath)
+}
 
-onMounted(async () => {
+const _getUserName = async () => {
   userName.value = await getUserName()
-})
+}
+
+onMounted(_getUserName)
 </script>
 
 <template>
