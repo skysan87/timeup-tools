@@ -132,6 +132,9 @@ export class TaskUseCase {
       if (!oldTask) {
         throw new Error('task does not exist.')
       }
+      if (!this.existsList(oldTask)) {
+        throw new Error('listId is missing.')
+      }
       newTask.stateChangeDate = dateFactory().getDateNumber() as DateNumber
 
       result = await this.updateTaskAndHabit(oldTask, newTask)
@@ -154,6 +157,10 @@ export class TaskUseCase {
         throw new Error('task does not exist.')
       }
 
+      if (!this.existsList(oldTask)) {
+        throw new Error('listId is missing.')
+      }
+
       const newTask: Task = { ...oldTask! }
 
       switch (oldTask.state) {
@@ -173,6 +180,18 @@ export class TaskUseCase {
     })
 
     return result!
+  }
+
+  private async existsList(task: Task): Promise<boolean> {
+    if (task.type === TaskType.HABIT) {
+      const habitlist = await this.habitlistRepository.get(this.userId)
+      const habit = await this.habitRepository.getById(this.userId, habitlist!.id, task.listId)
+      return habit !== null
+    } else {
+      const tasklist = await this.tasklistRepository.getById(this.userId, task.listId)
+      console.log(tasklist)
+      return tasklist !== null
+    }
   }
 
   /**
@@ -222,7 +241,15 @@ export class TaskUseCase {
   public async updateDeadlines(targets: Array<{ id: string, startdate: Number, enddate: Number }>): Promise<Task[]> {
     const result: Task[] = []
 
+    if (targets.length === 0) return result
+
     await this.transaction.run(async () => {
+      // NOTE: プロジェクト単位でのみ一括変更できるので、1つ目の値のみチェック
+      const task: Task | null = await this.taskRepository.getById(this.userId, targets[0].id)
+      if (!await this.existsList(task!)) {
+        throw new Error('listId is missing.')
+      }
+
       const data = await this.taskRepository.updateAll(this.userId, targets.map(item => {
         return {
           id: item.id,
