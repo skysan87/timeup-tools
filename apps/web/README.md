@@ -1,6 +1,4 @@
-# Nuxt 3 Minimal Starter
-
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# Nuxt3 Project
 
 ## Setup
 
@@ -15,36 +13,75 @@ pnpm install -D cross-env -F @timeup-tools/web
 pnpm install tailvue -F @timeup-tools/web
 ```
 
-Make sure to install the dependencies:
-
-```bash
-# pnpm
-pnpm install
-```
-
-## Development Server
+## Scripts
+### 開発サーバ起動
 
 Start the development server on `http://localhost:3000`:
 
 ```bash
 # pnpm
-pnpm run dev
+pnpm run dev:inmemory
+
+# Network:  use --host to expose
+pnpm run dev:inmemory --host
 ```
 
-## Production
+### ビルドの動作確認
 
-Build the application for production:
+`pnpm run preview`ではない
 
 ```bash
 # pnpm
-pnpm run build
+pnpm run dev:build
 ```
 
-Locally preview production build:
+## 画面一覧
 
-```bash
-# pnpm
-pnpm run preview
-```
+* ログイン
+  * url: /login
+  * 機能
+    * ログイン
+* 今日のタスク
+  * url: /today/list
+  * 機能
+    * タスクの期限が開始日を過ぎているものを表示
+* 作業中のタスク
+  * url: /today/inprogress
+  * 機能
+    * 作業中のタスクを表示
+* ガントチャート
+  * url: /gantt
+  * 機能
+    * ガントチャートの表示
+    * タスクの期限の編集
+* プロジェクト
+  * url: /todolist/[プロジェクトid]
+  * 機能
+    * タスクの作成・編集
+    * タスク
+      * 期限設定
+      * プロジェクト設定
+      * チェックリスト
+      * リロード
+      * 完了済みのタスクの一括削除
+      * タスクの一括削除
+      * タスクの期限一括変更
+      * プロジェクト名編集
+* 習慣: 今日
+  * url: /habit/today
+  * 機能
+    * 今日が対象の習慣を表示
+* 習慣: 有効のみ
+  * url: /habit/active
+  * 機能
+    * 有効な状態の習慣を表示
+* 習慣: 全て
+  * url: /habit/all
+  * 機能
+    * 全ての習慣を表示
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### サイドメニューの機能
+* リロード
+* ログアウト
+* プロジェクトの追加・編集・削除
+* ヘッダーメッセージの編集
