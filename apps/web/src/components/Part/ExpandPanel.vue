@@ -16,8 +16,7 @@ const isRightVisible = !(props.left || !props.right)
 
 <template>
   <details>
-    <!-- block要素でデフォルトの矢印削除 -->
-    <summary class="block">
+    <summary>
       <div class="flex items-center">
         <fa v-if="isLeftVisible" :icon="['fas', 'caret-down']" class="mr-1 rotate" />
         <slot name="title" />
@@ -32,4 +31,16 @@ const isRightVisible = !(props.left || !props.right)
 details[open] summary .rotate {
   transform: rotate(180deg);
 }
+
+/* デフォルトの矢印を非表示 */
+summary {
+  display: block;
+  list-style: none;
+}
+
+/* デフォルトの矢印を非表示 safari */
+summary::-webkit-details-marker {
+  display: none;
+}
+
 </style>
