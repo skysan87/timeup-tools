@@ -16,9 +16,13 @@ export const useTasklistStore = () => {
       console.log('init TasklistStore', tasklists.value.length)
     },
 
+    create: (data?: Partial<Tasklist>): Tasklist => {
+      return $tasklist.create(data)
+    },
+
     getTasklist: (tasklistId: string): Tasklist => {
       const item = tasklists.value.find(v => v.id === tasklistId)
-      return { ...item } as Tasklist
+      return item ? { ...item } as Tasklist : $tasklist.create()
     },
 
     getTasklistName: (tasklistId: string): string => {

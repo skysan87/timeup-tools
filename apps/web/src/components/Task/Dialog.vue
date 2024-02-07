@@ -11,7 +11,7 @@ const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
 const { subTasks, isNewSubtask, doneCount, addButton, init, addSubTask, updateSubtask, deleteSubtask } = useSubTask()
 const { tasklists } = inject('tasklist') as TasklistStore
-const { getTaskById, addTask, deleteTask, updateTask, currentListId } = inject('task') as TaskStore
+const { create, getTaskById, addTask, deleteTask, updateTask, currentListId } = inject('task') as TaskStore
 
 type Input = {
   isCreateMode: boolean
@@ -58,9 +58,9 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 const _init = (input: Input) => {
   isCreateMode.value = input.isCreateMode
   if (input.isCreateMode) {
-    task.value = { ...input.task, listId: currentListId.value } as Task
+    task.value = create({ ...input.task, listId: currentListId.value } as Task)
   } else {
-    task.value = getTaskById(input.task.id!) ?? {} as Task
+    task.value = getTaskById(input.task.id!)
   }
 
   init(task.value.subTasks ?? [])

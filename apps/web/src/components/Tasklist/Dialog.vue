@@ -3,7 +3,7 @@ import { Tasklist } from '@timeup-tools/core/model'
 import { useDialog } from '@/composables/useDialog'
 
 const { dialog, open, cancel, submit } = useDialog()
-const { getTasklist, addTasklist, updateTasklist, deleteTasklist } = inject('tasklist') as TasklistStore
+const { create, getTasklist, addTasklist, updateTasklist, deleteTasklist } = inject('tasklist') as TasklistStore
 
 const _isCreateMode = ref<boolean>(false)
 const tasklist = ref<Tasklist>({} as Tasklist)
@@ -18,7 +18,9 @@ type Input = {
 const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
   return open(() => {
     _isCreateMode.value = input.isCreateMode
-    if (input.tasklistId) {
+    if (input.isCreateMode) {
+      tasklist.value = create()
+    } else {
       tasklist.value = getTasklist(input.tasklistId!)
     }
   }, (isCancel) => {

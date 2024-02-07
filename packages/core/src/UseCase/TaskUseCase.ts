@@ -23,6 +23,10 @@ export class TaskUseCase {
     return this._userId ?? this.userRepositpry.getFromCache().id
   }
 
+  public create(data?: Partial<Task>): Task {
+    return new TaskBehavior((data ?? {}) as Task).format()
+  }
+
   public async getCurrentTasks(tasklistId: string): Promise<Task[]> {
     return this.taskRepository.get(this.userId, tasklistId)
   }

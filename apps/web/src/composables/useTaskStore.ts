@@ -53,15 +53,19 @@ export const useTaskStore = () => {
     })
   }
 
-  const getTaskById = (id: string): Task | null => {
+  const getTaskById = (id: string): Task => {
     const item = _tasks.value.find(v => v.id === id)
-    return item ? { ...item } as Task : null // copy
+    return item ? { ...item } as Task : $task.create()
   }
 
   const getTaskCount = (state?: TaskState): number => {
     return (state === undefined)
       ? _tasks.value.length
       : _tasks.value.filter(task => task.state === state).length
+  }
+
+  const create = (data?: Partial<Task>): Task => {
+    return $task.create(data)
   }
 
   const init = async (tasklistId: string) => {
@@ -202,6 +206,7 @@ export const useTaskStore = () => {
     selectedState: readonly(selectedState),
     currentListId: readonly(_listId),
     selectedItem: readonly(selectedItem),
+    create,
     init,
     initNewList,
     initTodaylist,
