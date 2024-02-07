@@ -36,7 +36,6 @@ export const useTasklistStore = () => {
 
     updateTasklist: async (data: Tasklist) => {
       const newData = await $tasklist.updateList(data)
-      tasklists.value.push(newData)
       const index = tasklists.value.findIndex(v => v.id === newData.id)
       Object.assign(tasklists.value[index], newData)
     },
