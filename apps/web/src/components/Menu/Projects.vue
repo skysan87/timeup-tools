@@ -33,9 +33,9 @@ const editTodolist = async (listId: string) => {
       @mouseover="activeItemId = tasklist.id"
       @mouseout="activeItemId = ''"
     >
-      <NuxtLink :to="`/${MainPage.Task}/${tasklist.id}`" class="px-5 flex-1 cursor-pointer">
+      <RouterLink :to="`/${MainPage.Task}/${tasklist.id}`" class="px-5 flex-1 cursor-pointer" replace>
         # {{ tasklist.title }}
-      </NuxtLink>
+      </RouterLink>
 
       <div
         class="flex-none mr-2 px-2 opacity-0 cursor-pointer rounded-full hover:bg-blue-400"

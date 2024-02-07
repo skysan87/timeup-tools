@@ -1,3 +1,3 @@
 <script setup lang="ts">
-navigateTo('/login')
+navigateTo('/login', { replace: true })
 </script>

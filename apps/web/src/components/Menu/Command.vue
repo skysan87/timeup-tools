@@ -14,7 +14,7 @@ const userName = ref<string>('')
 
 const handleLogout = async () => {
   await logout(() => {
-    navigateTo('/login')
+    navigateTo('/login', { replace: true })
   })
 }
 
@@ -24,7 +24,7 @@ const reload = async () => {
     initTasklist(),
     initConfig()
   ])
-  navigateTo(config.public.rootPath)
+  navigateTo(config.public.rootPath, { replace: true })
 }
 
 const _getUserName = async () => {

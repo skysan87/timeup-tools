@@ -12,13 +12,13 @@ const { isSelected } = useMenu()
     </div>
   </div>
   <template div v-for="page in HabitPage" :key="page">
-    <nuxt-link :to="`/${MainPage.Habit}/${page}`">
+    <RouterLink :to="`/${MainPage.Habit}/${page}`" replace>
       <div
         class="py-1 px-5 cursor-pointer hover:bg-blue-700 hover:opacity-75"
         :class="{ 'bg-blue-700': isSelected(MainPage.Habit, page) }"
       >
         # {{ HabitPageLabel[page] }}
       </div>
-    </nuxt-link>
+    </RouterLink>
   </template>
 </template>

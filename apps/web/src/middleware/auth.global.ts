@@ -5,6 +5,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const authenticated = await checkLogin()
 
   if (!authenticated && to.path !== '/login') {
-    return navigateTo('/login')
+    return navigateTo('/login', { replace: true })
   }
 })

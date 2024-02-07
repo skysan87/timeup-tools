@@ -16,7 +16,7 @@ const navigigate = async () => {
     initConfig()
   ])
   isLogin.value = true
-  navigateTo(config.public.rootPath)
+  navigateTo(config.public.rootPath, { replace: true })
 }
 
 const doLogin = async () => {
@@ -37,7 +37,7 @@ onMounted(async () => {
   // If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
   const loginSucceeded = await checkLogin()
   if (loginSucceeded) {
-    navigigate()
+    await navigigate()
   }
   isMounted.value = true
 })

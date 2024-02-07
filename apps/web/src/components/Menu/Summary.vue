@@ -12,20 +12,20 @@ const { isSelected } = useMenu()
     </div>
   </div>
   <template v-for="page in TodayPage" :key="page">
-    <NuxtLink :to="`/${MainPage.Today}/${page}`">
+    <RouterLink :to="`/${MainPage.Today}/${page}`" replace>
       <div
         class="py-1 px-5 cursor-pointer hover:bg-blue-700 hover:opacity-75"
         :class="{ 'bg-blue-700': isSelected(MainPage.Today, page) }"
       >
         # {{ TodayPageLabel[page] }}
       </div>
-    </NuxtLink>
+    </RouterLink>
   </template>
 
-  <NuxtLink to="/gantt">
+  <RouterLink to="/gantt" replace>
     <div class="py-1 px-5 cursor-pointer hover:bg-blue-700 hover:opacity-75"
       :class="{ 'bg-blue-700': isSelected(MainPage.Gantt, '') }">
       # ガントチャート
     </div>
-  </NuxtLink>
+  </RouterLink>
 </template>
