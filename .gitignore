@@ -116,3 +116,5 @@ emulator_data/
 build/
 
 tsconfig.tsbuildinfo
+
+.devbox
