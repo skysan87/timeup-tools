@@ -8,7 +8,8 @@
     "./value-object": "./src/Domain/ValueObject/index.ts",
     "./repository": "./src/Domain/Repository/index.ts",
     "./usecase": "./src/Usecase/index.ts",
-    "./util/*": "./src/Util/*.ts"
+    "./util/*": "./src/Util/*.ts",
+    "./error": "./src/Error/index.ts"
   },
   "scripts": {
     "clean": "rm -rf build tsconfig.tsbuildinfo",

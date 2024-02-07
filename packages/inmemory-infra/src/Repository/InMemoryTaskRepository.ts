@@ -20,6 +20,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
       this.memory.filter(t =>
         t.type === TaskType.TODO
         && states.includes(t.state)
+        && t.startdate !== null
         && t.startdate <= today
       )
     )
@@ -62,7 +63,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
   public save(userId: UserId, data: Task): Promise<Task> {
     return new Promise(resolve => {
       const timestamp = new Date()
-      data.id = Date.now().toString()
+      data.id = this.createId()
       data.userId = userId
       data.createdAt = timestamp
       data.updatedAt = timestamp
@@ -76,7 +77,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
       const updated: Task[] = []
       for (const task of data) {
         const timestamp = new Date()
-        task.id = Date.now().toString()
+        task.id = this.createId()
         task.userId = userId
         task.createdAt = timestamp
         task.updatedAt = timestamp
@@ -127,17 +128,8 @@ export class InMemoryTaskRepository implements ITaskRepository {
     })
   }
 
-  public deleteDone(userId: UserId, tasklistId: string): Promise<void> {
-    return new Promise(resolve => {
-      const targets = this.memory.filter(t => t.listId === tasklistId && t.state === TaskState.Done)
-      for (const task of targets) {
-        const index = this.memory.findIndex(h => h.id === task.id)
-        if (index > -1) {
-          this.memory.splice(index, 1)
-        }
-      }
-      resolve()
-    })
+  private createId(): string {
+    // 重複する場合があるので、乱数を追加(あくまで重複の可能性を下げるだけ)
+    return Date.now().toString() + Math.floor(Math.random() * 100).toString(16)
   }
-
 }

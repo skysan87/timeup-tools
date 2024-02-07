@@ -19,7 +19,13 @@ export class HabitUseCase {
     return this._userId ?? this.userRepositpry.getFromCache().id
   }
 
-  public async init(): Promise<void> {
+  public create(): Habit {
+    return new HabitBehavior({} as Habit).format()
+  }
+
+  public async init(): Promise<Habit[]> {
+    const results: Habit[] = []
+
     await this.transaction.run(async () => {
       let habitlist: Habitlist | null
 
@@ -37,15 +43,19 @@ export class HabitUseCase {
       const tmp: Habit[] = await this.habitRepository.get(this.userId, habitlist.id)
 
       tmp.forEach(async h => {
-        await new HabitBehavior(h).actionAsync(async behavior => {
+        const habit = await new HabitBehavior(h).actionAsync(async behavior => {
           const habitBehavior = (behavior as HabitBehavior)
           const data = habitBehavior.updateData()
           if (data.needServerUpdate) {
-            await this.habitRepository.update(this.userId, habitlist!.id, data)
+            const updated = await this.habitRepository.update(this.userId, habitlist!.id, data)
+            habitBehavior.update(updated)
           }
         })
+        results.push(habit)
       })
     })
+
+    return results
   }
 
   /**
@@ -75,7 +85,7 @@ export class HabitUseCase {
     await this.transaction.run(async () => {
       result = await new HabitBehavior(updateProps as Habit).actionAsync(async behavior => {
         const habitlist = await this.habitlistRepository.get(this.userId)
-        const updated = await this.habitRepository.update(this.userId, habitlist!.id, updateProps)
+        const updated = await this.habitRepository.update(this.userId, habitlist!.id, behavior.format())
         behavior.update(updated)
       })
     })

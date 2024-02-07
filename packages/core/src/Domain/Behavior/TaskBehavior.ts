@@ -1,8 +1,37 @@
 import { Task } from "../Model/Task"
 import { TaskState, TaskType } from "../ValueObject"
 import { BehaviorBase } from "./BehaviorBase"
+import { IBehavior } from "./IBehavior"
+import { isEmpty } from "../../Util/StringUtil"
+import { ValidateError } from "../../Error/ValidateError"
 
 export class TaskBehavior extends BehaviorBase<Task> {
+
+  public action(callback: (behavior: IBehavior<Task>) => void): Task {
+    this.validate()
+    this.value = this.format()
+    callback(this)
+    return this.value
+  }
+
+  public async actionAsync(callback: (behavior: IBehavior<Task>) => Promise<void>): Promise<Task> {
+    this.validate()
+    this.value = this.format()
+    await callback(this)
+    return this.value
+  }
+
+  private validate(): void {
+    const error = new ValidateError<Task>()
+
+    if (isEmpty(this.value.title)) {
+      error.set('title', 'title is empty')
+    }
+
+    if (error.hasError) {
+      throw error
+    }
+  }
 
   public format(): Task {
     const v = this.value
@@ -21,7 +50,8 @@ export class TaskBehavior extends BehaviorBase<Task> {
       stateChangeDate: v.stateChangeDate ?? null,
       createdAt: v.createdAt ?? null,
       updatedAt: v.updatedAt ?? null,
-      subTasks: v.subTasks ?? [],
+      // Proxy対応
+      subTasks: v.subTasks ? v.subTasks.map(v => ({...v})) : [],
       isDone: v.isDone ?? false
     } as Task
   }

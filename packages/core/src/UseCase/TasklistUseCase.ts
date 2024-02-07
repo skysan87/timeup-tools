@@ -19,6 +19,10 @@ export class TasklistUseCase {
     return this._userId ?? this.userRepositpry.getFromCache().id
   }
 
+  public create(data?: Partial<Tasklist>): Tasklist {
+    return new TasklistBehavior((data ?? {}) as Tasklist).format()
+  }
+
   /**
    * リストの取得
    * @description 存在しない場合は新規作成する

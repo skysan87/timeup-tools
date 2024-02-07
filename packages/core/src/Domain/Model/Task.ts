@@ -7,8 +7,8 @@ export type Task = Nominal<{
   title: string
   state: TaskState
   detail: string
-  startdate: DateNumber
-  enddate: DateNumber
+  startdate: DateNumber | null
+  enddate: DateNumber | null
   orderIndex: number
   /** TasklistId か HabitId */
   listId: string // TODO: ユニーク名

@@ -1,0 +1,49 @@
+.circle-button-border {
+  border: 1px solid #000000;
+}
+
+.circle-button {
+  width: 22px;
+  height: 22px;
+  margin: auto;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  color: #FFFFFF;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+}
+
+.omit-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ページ遷移時のアニメーション */
+.page-enter-active, .page-leave-active {
+  transition: opacity .3s;
+}
+.page-enter, .page-leave-to {
+  opacity: 0;
+}
+
+/* レイアウト変更時のアニメーション */
+.layout-enter-active, .layout-leave-to {
+  transition: opacity .3s;
+}
+.layout-enter, .layout-leave-to {
+  opacity: 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 5px;
+  text-align: center;
+  border-radius: .25rem;
+  vertical-align: baseline;
+  font-size: 75%;
+  white-space: nowrap;
+  font-weight: bold;
+}

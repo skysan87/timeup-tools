@@ -97,10 +97,12 @@ export const TaskState = {
 
 export type TaskState = typeof TaskState[keyof typeof TaskState]
 
-export const TaskSateLabel = {
+export const TaskStateLabel = {
   [TaskState.Todo]: 'Todo',
   [TaskState.InProgress]: 'In Progress',
   [TaskState.Done]: 'Done'
 } as const satisfies { [key: number]: string }
 
-export type TaskSateLabel = typeof TaskSateLabel[keyof typeof TaskSateLabel]
+export type TaskStateLabel = typeof TaskStateLabel[keyof typeof TaskStateLabel]
+
+export type DateRange = { start: Date | null, end: Date | null}

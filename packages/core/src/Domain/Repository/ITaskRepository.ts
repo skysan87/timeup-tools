@@ -14,5 +14,4 @@ export interface ITaskRepository {
   update(userId: UserId, data: Partial<Task>): Promise<Task>
   updateAll(userId: UserId, data: Partial<Task>[]): Promise<Task[]>
   delete(userId: UserId, taskIds: string[]): Promise<void>
-  deleteDone(userId: UserId, tasklistId: string): Promise<void>
 }

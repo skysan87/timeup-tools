@@ -162,4 +162,14 @@ class Wrapper {
   getWeekIndex(): number {
     return Math.ceil(this.instance.get('date') / 7)
   }
+
+  /**
+   * 差分を取得
+   * @param unit 単位(date, day, month, year, hour, minute, second, millisecond)
+   */
+  diff(dateObj: Wrapper, unit: dayjs.UnitType): number {
+    return this.instance.diff(dateObj.instance, unit)
+  }
 }
+
+export type DateUtil = Wrapper
