@@ -1,0 +1,45 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "nodePackages.pnpm@latest": {
+      "last_modified": "2024-01-14T03:55:27Z",
+      "resolved": "github:NixOS/nixpkgs/dd5621df6dcb90122b50da5ec31c411a0de3e538#nodePackages.pnpm",
+      "source": "devbox-search",
+      "version": "8.10.5",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/wwyypzb74j7q8rn60w5qi8lh4qy44z9c-pnpm-8.10.5"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/31xqf1lcap1jhihg23mghc920qjxwhk2-pnpm-8.10.5"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/2ybr820xsx9957g8s3fdwsr6zw0m10am-pnpm-8.10.5"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/lv80y6dbzkn26qjhq3v9bjk3f77bwgrr-pnpm-8.10.5"
+        }
+      }
+    },
+    "nodejs@18": {
+      "last_modified": "2024-01-14T03:55:27Z",
+      "resolved": "github:NixOS/nixpkgs/dd5621df6dcb90122b50da5ec31c411a0de3e538#nodejs_18",
+      "source": "devbox-search",
+      "version": "18.19.0",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/jvp3jsc9dwn64ycnjalw959811lj7x3g-nodejs-18.19.0"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/0b7li2bh1zl86dn2zbcwyrjp7wbbg1q9-nodejs-18.19.0"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/s87scp45c388gaa4jd27kyh66hr4vfwb-nodejs-18.19.0"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/6fy84r0hj7vdqzdzjn9gva18fzdl510z-nodejs-18.19.0"
+        }
+      }
+    }
+  }
+}
