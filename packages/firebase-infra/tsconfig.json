@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "nodenext",
+    "composite": false,
+    "moduleResolution": "nodenext", // coreパッケージのエントリポイント対応(package.jsonのexportsフィールド)
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "rootDirs": ["./src"],
+    "declaration": true,
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "noEmit": false,
+  },
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+}
