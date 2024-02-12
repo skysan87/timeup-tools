@@ -5,4 +5,5 @@ export interface ITransactionScope {
 export interface ITransaction {
   // NOTE: 実装でITransactionScopeを指定するオブジェクトのフラグ管理をする
   run(callback: () => Promise<void>): Promise<void>
+  runBatch(callback: () => Promise<void>): Promise<void>
 }

@@ -8,4 +8,7 @@ export class InMemoryTransaction implements ITransaction {
   async run(callback: (scope: ITransactionScope) => Promise<void>): Promise<void> {
     await callback(new InMemoryTransactionScope())
   }
+  async runBatch(callback: (scope: ITransactionScope) => Promise<void>): Promise<void> {
+    await callback(new InMemoryTransactionScope())
+  }
 }
