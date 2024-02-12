@@ -2,8 +2,8 @@ import { Config, Habit, Habitlist, Task, Tasklist } from "@timeup-tools/core/mod
 import { FieldValue } from "firebase/firestore"
 
 type FirebaseField = {
-  createdAt: FieldValue
-  updatedAt: FieldValue
+  createdAt?: FieldValue
+  updatedAt?: FieldValue
 }
 
 /**
