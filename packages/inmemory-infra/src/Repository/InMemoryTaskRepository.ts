@@ -6,8 +6,8 @@ export class InMemoryTaskRepository implements ITaskRepository {
 
   private memory: Array<Task> = new Array<Task>()
 
-  public validateMaxSize(): boolean {
-    return this.memory.length <= 100
+  public validateMaxSize(): Promise<boolean> {
+    return Promise.resolve(this.memory.length <= 100)
   }
 
   public getHabits(userId: UserId, today: DateNumber): Promise<Task[]> {

@@ -95,7 +95,7 @@ export class TaskUseCase {
    * タスクの追加
    */
   public async addTask(tasklistId: string, task: Partial<Task>): Promise<Task> {
-    if (!this.taskRepository.validateMaxSize()) {
+    if (!await this.taskRepository.validateMaxSize(this.userId, tasklistId)) {
       throw new Error('これ以上登録できません')
     }
     let result: Task

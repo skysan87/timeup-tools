@@ -2,7 +2,7 @@ import { Task } from "../Model/Task"
 import { DateNumber, UserId } from "../ValueObject"
 
 export interface ITaskRepository {
-  validateMaxSize(): boolean
+  validateMaxSize(userId?: UserId, tasklistId?: string): Promise<boolean>
   getHabits(userId: UserId, today: DateNumber): Promise<Task[]>
   getTodaysTasks(userId: UserId, today: DateNumber): Promise<Task[]>
   getInProgressTasks(userId: UserId, today: DateNumber): Promise<Task[]>
