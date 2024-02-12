@@ -1,7 +1,6 @@
 import { firestore } from "../AppSetting"
 import { ITransaction, ITransactionScope } from "@timeup-tools/core/repository"
-import { Transaction } from 'firebase/firestore'
-import { runTransaction } from 'firebase/firestore'
+import { Transaction, runTransaction } from 'firebase/firestore'
 
 class FirestoreTransactoinScope implements ITransactionScope {
   value: Transaction | null = null
