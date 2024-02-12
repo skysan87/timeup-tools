@@ -21,7 +21,7 @@ class FirestoreTransactoinScope implements ITransactionScope {
 // singleton
 export const scope = new FirestoreTransactoinScope()
 
-export class Firestoreransaction implements ITransaction {
+export class FirestoreTransaction implements ITransaction {
   async run(callback: () => Promise<void>): Promise<void> {
     await runTransaction(firestore, async transaction => {
       try {
