@@ -1,11 +1,11 @@
 import { firestore } from "../AppSetting"
 import { ITransaction, ITransactionScope } from "@timeup-tools/core/repository"
-import { Transaction, runTransaction } from 'firebase/firestore'
+import { DocumentReference, DocumentSnapshot, Transaction, WriteBatch, deleteDoc, getDoc, runTransaction, setDoc, updateDoc, writeBatch } from 'firebase/firestore'
 
 class FirestoreTransactoinScope implements ITransactionScope {
-  value: Transaction | null = null
+  value: Transaction | WriteBatch | null = null
 
-  public setTransaction(value: Transaction) {
+  public setTransaction(value: Transaction | WriteBatch) {
     this.value = value
   }
 
@@ -13,8 +13,42 @@ class FirestoreTransactoinScope implements ITransactionScope {
     this.value = null
   }
 
-  public get hasTransaction() : boolean {
-    return this.value !== null
+  public async get(docRef: DocumentReference<any>): Promise<DocumentSnapshot> {
+    if (this.value instanceof Transaction) {
+      return this.value.get(docRef)
+    } else {
+      return getDoc(docRef)
+    }
+  }
+
+  public async set(docRef: DocumentReference<any>, data: any) {
+    if (this.value instanceof Transaction) {
+      this.value.set(docRef, data)
+    } else if (this.value instanceof WriteBatch) {
+      this.value.set(docRef, data)
+    } else {
+      await setDoc(docRef, data)
+    }
+  }
+
+  public async update(docRef: DocumentReference<any>, data: any) {
+    if (this.value instanceof Transaction) {
+      this.value.update(docRef, data)
+    } else if (this.value instanceof WriteBatch) {
+      this.value.update(docRef, data)
+    } else {
+      await updateDoc(docRef, data)
+    }
+  }
+
+  public async delete(docRef: DocumentReference<any>) {
+    if (this.value instanceof Transaction) {
+      this.value.delete(docRef)
+    } else if (this.value instanceof WriteBatch) {
+      this.value.delete(docRef)
+    } else {
+      await deleteDoc(docRef)
+    }
   }
 }
 
@@ -27,12 +61,25 @@ export class FirestoreTransaction implements ITransaction {
       try {
         scope.setTransaction(transaction)
         await callback()
-      } catch(error) {
+      } catch (error) {
         // TODO: errorでrollbackするか確認
         throw error
       } finally {
         scope.releaseTransaction()
       }
     })
+  }
+
+  async runBatch(callback: () => Promise<void>): Promise<void> {
+    try {
+      const batch = writeBatch(firestore)
+      scope.setTransaction(batch)
+      await callback()
+      await batch.commit()
+    } catch (error) {
+      throw error
+    } finally {
+      scope.releaseTransaction()
+    }
   }
 }
