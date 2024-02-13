@@ -16,7 +16,7 @@ type Entity<T> = Omit<
 
 export type TaskEntity = Entity<Task>
 
-export type TasklistEntitu = Entity<Tasklist>
+export type TasklistEntity = Entity<Tasklist>
 
 export type HabitEntity = Entity<Habit>
 
