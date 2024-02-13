@@ -1,7 +1,13 @@
 import { Config, Habit, Habitlist, Task, Tasklist } from "@timeup-tools/core/model"
 import { FieldValue } from "firebase/firestore"
 
-type FirebaseField = {
+export type IgnoreField = {
+  id: string
+  createdAt: Date | null
+  updatedAt: Date | null
+}
+
+export type FirebaseField = {
   createdAt?: FieldValue
   updatedAt?: FieldValue
 }
@@ -9,9 +15,9 @@ type FirebaseField = {
 /**
  * Firebaseのプロパティに上書きする
  */
-type Entity<T> = Omit<
+export type Entity<T> = Omit<
   T,
-  keyof FirebaseField | 'id' // Tにある同一プロパティを削除
+  keyof IgnoreField   // Tにある同一プロパティを削除
 > & FirebaseField     // 削除したプロパティを上書き
 
 export type TaskEntity = Entity<Task>
