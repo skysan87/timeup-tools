@@ -6,12 +6,16 @@ export class InMemoryTasklistRepository implements ITasklistRepository {
 
   private memory: Array<Tasklist> = new Array<Tasklist>()
 
-  public validateMaxSize(): boolean {
-    return this.memory.length <= 10
+  public validateMaxSize(userId: UserId): Promise<boolean> {
+    return Promise.resolve(this.memory.length <= 10)
   }
 
-  public getMaxIndex(): number {
-    return this.memory.map(i => i.maxIndex).reduce((a, b) => Math.max(a, b), 0)
+  public getMaxIndex(userId: UserId): Promise<number> {
+    return Promise.resolve(
+      this.memory
+        .map(i => i.maxIndex)
+        .reduce((a, b) => Math.max(a, b), 0)
+    )
   }
 
   public get(userId: UserId): Promise<Tasklist[]> {

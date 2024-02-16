@@ -60,12 +60,15 @@ export class TasklistUseCase {
    * @returns
    */
   public async addList(tasklist: Partial<Tasklist>): Promise<Tasklist> {
-    if (!this.tasklistRepository.validateMaxSize()) {
+    if (!await this.tasklistRepository.validateMaxSize(this.userId)) {
       throw new Error('これ以上登録できません')
     }
 
+    // TODO: firestoreの構造を変更時にmaxIndexを保持するようにする
+    const maxIndex = await this.tasklistRepository.getMaxIndex(this.userId)
+
     return new TasklistBehavior(tasklist as Tasklist).actionAsync(async behavior => {
-      behavior.update({ maxIndex: this.tasklistRepository.getMaxIndex() + 1 })
+      behavior.update({ maxIndex: maxIndex + 1 })
       const created = await this.tasklistRepository.save(this.userId, behavior.format())
       behavior.update(created)
     })
