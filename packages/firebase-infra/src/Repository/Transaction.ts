@@ -1,6 +1,7 @@
+import { Entity } from "@/Entity"
 import { firestore } from "../AppSetting"
 import { ITransaction, ITransactionScope } from "@timeup-tools/core/repository"
-import { DocumentReference, DocumentSnapshot, Transaction, WriteBatch, deleteDoc, getDoc, runTransaction, setDoc, updateDoc, writeBatch } from 'firebase/firestore'
+import { DocumentReference, DocumentSnapshot, Transaction, WriteBatch, deleteDoc, getDoc, runTransaction, serverTimestamp, setDoc, updateDoc, writeBatch } from 'firebase/firestore'
 
 class FirestoreTransactoinScope implements ITransactionScope {
   value: Transaction | WriteBatch | null = null
@@ -21,7 +22,10 @@ class FirestoreTransactoinScope implements ITransactionScope {
     }
   }
 
-  public async set(docRef: DocumentReference<any>, data: any) {
+  public async set(docRef: DocumentReference<any>, data: Entity<any>) {
+    data.createdAt = serverTimestamp()
+    data.updatedAt = serverTimestamp()
+
     if (this.value instanceof Transaction) {
       this.value.set(docRef, data)
     } else if (this.value instanceof WriteBatch) {
@@ -31,13 +35,18 @@ class FirestoreTransactoinScope implements ITransactionScope {
     }
   }
 
-  public async update(docRef: DocumentReference<any>, data: any) {
+  public async update(docRef: DocumentReference<any>, data: Entity<any>) {
+    data.updatedAt = serverTimestamp()
+
+    // 更新する項目のみ
+    const updateProps = Object.fromEntries(Object.entries(data).filter(([, v]) => v !== undefined))
+
     if (this.value instanceof Transaction) {
-      this.value.update(docRef, data)
+      this.value.update(docRef, updateProps)
     } else if (this.value instanceof WriteBatch) {
-      this.value.update(docRef, data)
+      this.value.update(docRef, updateProps)
     } else {
-      await updateDoc(docRef, data)
+      await updateDoc(docRef, updateProps)
     }
   }
 

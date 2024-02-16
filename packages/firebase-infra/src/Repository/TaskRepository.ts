@@ -1,4 +1,4 @@
-import { CollectionReference, DocumentData, DocumentSnapshot, Query, collection, doc, getCountFromServer, getDocs, query, serverTimestamp, where } from "firebase/firestore"
+import { CollectionReference, DocumentData, DocumentSnapshot, Query, collection, doc, getCountFromServer, getDocs, query, where } from "firebase/firestore"
 import { Task } from "@timeup-tools/core/model"
 import { ITaskRepository } from "@timeup-tools/core/repository"
 import { UserId, DateNumber, TaskType, TaskState } from "@timeup-tools/core/value-object"
@@ -133,8 +133,6 @@ export class TaskRepository implements ITaskRepository {
 
   public async save(userId: UserId, data: Task): Promise<Task> {
     const entity = toTaskEntity(data)
-    entity.createdAt = serverTimestamp()
-    entity.updatedAt = serverTimestamp()
 
     const newDocRef = doc(this.getRef(userId))
     await scope.set(newDocRef, entity)
@@ -152,8 +150,6 @@ export class TaskRepository implements ITaskRepository {
 
     for (const task of data) {
       const entity = toTaskEntity(task)
-      entity.createdAt = serverTimestamp()
-      entity.updatedAt = serverTimestamp()
 
       const newDocRef = doc(this.getRef(userId))
       await scope.set(newDocRef, entity)
@@ -171,11 +167,8 @@ export class TaskRepository implements ITaskRepository {
   public async update(userId: UserId, data: Partial<Task>): Promise<Task> {
     const docRef = doc(this.getRef(userId), data.id!)
     const entity = toTaskEntity(data as Task)
-    entity.updatedAt = serverTimestamp()
 
-    const updateParams = Object.fromEntries(Object.entries(entity).filter(([, v]) => v !== undefined))
-
-    await scope.update(docRef, updateParams)
+    await scope.update(docRef, entity)
 
     const newData = structuredClone(data)
     newData.updatedAt = new Date()
@@ -188,12 +181,9 @@ export class TaskRepository implements ITaskRepository {
 
     for (const task of data) {
       const entity = toTaskEntity(task as Task)
-      entity.updatedAt = serverTimestamp()
-
-      const updateParams = Object.fromEntries(Object.entries(entity).filter(([, v]) => v !== undefined))
 
       const docRef = doc(this.getRef(userId), task.id!)
-      await scope.set(docRef, updateParams)
+      await scope.update(docRef, entity)
 
       const newData = structuredClone(task)
       newData.updatedAt = new Date()
