@@ -3,6 +3,6 @@ import { UserId } from "../ValueObject"
 
 export interface IConfigRepository {
   get(userId: UserId): Promise<Config | null>
-  save(userId: UserId, data: Partial<Config>): Promise<Config>
+  save(userId: UserId, data: Config): Promise<Config>
   update(userId: UserId, data: Partial<Config>): Promise<Config>
 }

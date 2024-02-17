@@ -11,7 +11,7 @@ export class InMemoryConfigRepository implements IConfigRepository {
     return Promise.resolve(structuredClone(data))
   }
 
-  public save(userId: UserId, data: Partial<Config>): Promise<Config> {
+  public save(userId: UserId, data: Config): Promise<Config> {
     const _data = {
       ...data,
       userId: userId
