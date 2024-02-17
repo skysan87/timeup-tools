@@ -3,7 +3,7 @@ import { toConfigEntity } from "@/Converter"
 import { Config } from "@timeup-tools/core/model"
 import { IConfigRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
-import { CollectionReference, DocumentData, QuerySnapshot, collection, doc, getDocsFromCache, getDocsFromServer, limit, query, where } from "firebase/firestore"
+import { CollectionReference, DocumentData, collection, doc, getDocs, limit, query, where } from "firebase/firestore"
 import { scope } from "./Transaction"
 
 export class ConfigRepository implements IConfigRepository {
@@ -19,13 +19,7 @@ export class ConfigRepository implements IConfigRepository {
       , limit(1)
     )
 
-    let querySnapshot: QuerySnapshot
-
-    try {
-      querySnapshot = await getDocsFromCache(q)
-    } catch (error) {
-      querySnapshot = await getDocsFromServer(q)
-    }
+    const querySnapshot = await getDocs(q)
 
     if (querySnapshot.empty || querySnapshot.size === 0) {
       return null
