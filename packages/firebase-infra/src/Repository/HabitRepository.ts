@@ -58,8 +58,11 @@ export class HabitRepository implements IHabitRepository {
       , where('userId', '==', userId)
     )
 
-    return (await getDocsFromCache(q))
-      .docs.map(doc => this.convert(doc.id, doc.data()))
+    const snapshot = await getDocsFromCache(q)
+
+    console.log('get Data from cache: ', snapshot.metadata.fromCache)
+
+    return snapshot.docs.map(doc => this.convert(doc.id, doc.data()))
   }
 
   public async save(userId: UserId, habitlistId: string, data: Habit): Promise<Habit> {
