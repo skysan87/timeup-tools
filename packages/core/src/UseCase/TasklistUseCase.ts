@@ -1,5 +1,5 @@
 import { UserId } from "../Domain/ValueObject"
-import { ITasklistRepository, ITransaction, IUserRepository } from "../Domain/Repository"
+import { ITaskRepository, ITasklistRepository, ITransaction, IUserRepository } from "../Domain/Repository"
 import { Tasklist } from "../Domain/Model"
 import { TasklistBehavior } from "../Domain/Behavior/TasklistBehavior"
 
@@ -8,6 +8,7 @@ export class TasklistUseCase {
   constructor(
     private readonly userRepositpry: IUserRepository,
     private readonly tasklistRepository: ITasklistRepository,
+    private readonly taskRepository: ITaskRepository,
     private readonly transaction: ITransaction
   ) { }
 
@@ -95,8 +96,11 @@ export class TasklistUseCase {
    * @param tasklistId
    */
   public async deleteList(tasklistId: string): Promise<void> {
-    await this.transaction.run(async () => {
-      this.tasklistRepository.delete(this.userId, tasklistId)
+    const tasks = await this.taskRepository.get(this.userId, tasklistId)
+
+    await this.transaction.runBatch(async () => {
+      await this.tasklistRepository.delete(this.userId, tasklistId)
+      await this.taskRepository.delete(this.userId, tasks.map(t => t.id))
     })
   }
 

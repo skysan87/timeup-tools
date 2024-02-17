@@ -26,7 +26,7 @@ export class HabitUseCase {
   public async init(): Promise<Habit[]> {
     const results: Habit[] = []
 
-    await this.transaction.run(async () => {
+    await this.transaction.runBatch(async () => {
       let habitlist: Habitlist | null
 
       habitlist = await this.habitlistRepository.get(this.userId)

@@ -70,9 +70,19 @@ export class TaskUseCase {
     // 習慣タスク
     tasks.push(...habitTasks)
 
+    const addHabits = async (): Promise<Task[]> => {
+      const h: Task[] = []
+      this.transaction.runBatch(async () => {
+        if (missinglist.length > 0) {
+          h.push(...await this.taskRepository.saveAll(this.userId, missinglist))
+        }
+      })
+      return h
+    }
+
     const [newhabitTasks, todaysTasks, todaysDone] = await Promise.all([
       // 新たに追加された習慣タスク
-      missinglist.length > 0 ? this.taskRepository.saveAll(this.userId, missinglist) : Promise.resolve([]),
+      addHabits(),
       // 今日の残タスク
       this.taskRepository.getTodaysTasks(this.userId, today),
       // 今日完了したタスク
@@ -194,7 +204,6 @@ export class TaskUseCase {
       return habit !== null
     } else {
       const tasklist = await this.tasklistRepository.getById(this.userId, task.listId)
-      console.log(tasklist)
       return tasklist !== null
     }
   }
@@ -233,7 +242,7 @@ export class TaskUseCase {
    * @param taskIds
    */
   public async deleteTasks(taskIds: string[]): Promise<void> {
-    await this.transaction.run(async () => {
+    await this.transaction.runBatch(async () => {
       this.taskRepository.delete(this.userId, taskIds)
     })
   }
@@ -248,7 +257,7 @@ export class TaskUseCase {
 
     if (targets.length === 0) return result
 
-    await this.transaction.run(async () => {
+    await this.transaction.runBatch(async () => {
       // NOTE: プロジェクト単位でのみ一括変更できるので、1つ目の値のみチェック
       const task: Task | null = await this.taskRepository.getById(this.userId, targets[0].id)
       if (!await this.existsList(task!)) {
