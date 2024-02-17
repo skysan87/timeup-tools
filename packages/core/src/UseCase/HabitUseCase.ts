@@ -64,13 +64,14 @@ export class HabitUseCase {
    * @returns
    */
   public async addHabit(habit: Partial<Habit>): Promise<Habit> {
-    if (!this.habitRepository.validateMaxSize()) {
+    const habitlistId = this.habitlistRepository.getId()
+
+    if (!await this.habitRepository.validateMaxSize(this.userId, habitlistId)) {
       throw new Error('これ以上登録できません')
     }
 
     return new HabitBehavior(habit as Habit).actionAsync(async behavior => {
-      const habitlist = await this.habitlistRepository.get(this.userId)
-      const created = await this.habitRepository.save(this.userId, habitlist!.id, behavior.format())
+      const created = await this.habitRepository.save(this.userId, habitlistId, behavior.format())
       behavior.update(created)
     })
   }

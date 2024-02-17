@@ -6,8 +6,8 @@ export class InMemoryHabitRepository implements IHabitRepository {
 
   private memory: Array<Habit> = new Array<Habit>()
 
-  public validateMaxSize(): boolean {
-    return this.memory.length <= 50
+  public async validateMaxSize(userId?: UserId): Promise<boolean> {
+    return Promise.resolve(this.memory.length <= 50)
   }
 
   public get(userId: UserId, habitlistId: string): Promise<Habit[]> {
@@ -22,7 +22,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     })
   }
 
-  public getTodayListFromCache(): Promise<Habit[]> {
+  public async getTodayListFromCache(userId: UserId, habitlistId: string): Promise<Habit[]> {
     return new Promise(resolve => {
       resolve(this.memory.filter(h => h.isActive && h.isPlanDay))
     })
