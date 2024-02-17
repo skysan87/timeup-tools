@@ -12,7 +12,7 @@ export const useHabitStore = () => {
   const currentFilter = ref<HabitPage | ''>('')
 
   const init = async () => {
-    _habits.value.push(...await $habit.init())
+    _habits.value = await $habit.init()
   }
 
   const currentHabits = computed(() => {

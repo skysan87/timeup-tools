@@ -23,7 +23,7 @@ export default defineNuxtPlugin(() => {
 
   const auth = new AuthenticateUseCase(userRepo)
   const task = new TaskUseCase(userRepo, taskRepo, tasklistRepo, habitlistRepo, habitRepo, trunsaction)
-  const tasklist = new TasklistUseCase(userRepo, tasklistRepo, trunsaction)
+  const tasklist = new TasklistUseCase(userRepo, tasklistRepo, taskRepo, trunsaction)
   const habit = new HabitUseCase(userRepo, habitlistRepo, habitRepo, trunsaction)
   const config = new ConfigUseCase(userRepo, configRepo, trunsaction)
 
