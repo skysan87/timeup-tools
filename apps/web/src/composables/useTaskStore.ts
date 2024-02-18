@@ -84,7 +84,7 @@ export const useTaskStore = () => {
 
   const initTodaylist = async () => {
     initTasks('', await $task.getTodaysTasks())
-    console.log('init todaylist')
+    console.log('init todaylist', _tasks.value.length)
   }
 
   const initInProgressList = async () => {
