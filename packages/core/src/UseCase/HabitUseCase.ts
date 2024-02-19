@@ -59,6 +59,17 @@ export class HabitUseCase {
   }
 
   /**
+   * キャッシュから値を取得
+   * @returns
+   */
+  public async getFromCache(): Promise<Habit[]> {
+    const habitlistId = this.habitlistRepository.getId()
+    const tmp: Habit[] = await this.habitRepository.getFromCache(this.userId, habitlistId)
+    // actionで再計算を行う
+    return tmp.map(h => new HabitBehavior(h).action(() => { }))
+  }
+
+  /**
    * 習慣の追加
    * @param habit
    * @returns

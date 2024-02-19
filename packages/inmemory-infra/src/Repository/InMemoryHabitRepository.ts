@@ -16,6 +16,10 @@ export class InMemoryHabitRepository implements IHabitRepository {
     })
   }
 
+  public getFromCache(userId: UserId, habitlistId: string): Promise<Habit[]> {
+      return this.get(userId, habitlistId)
+  }
+
   public getById(userId: UserId, habitlistId: string, habitId: string): Promise<Habit | null> {
     return new Promise(resolve => {
       resolve(structuredClone(this.memory.find(h => h.id === habitId) ?? null))
@@ -32,6 +36,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     return new Promise(resolve => {
       const timestamp = new Date()
       data.id = Date.now().toString()
+      data.rootId = habitlistId
       data.userId = userId
       data.createdAt = timestamp
       data.updatedAt = timestamp

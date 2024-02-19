@@ -1,6 +1,5 @@
 import { Habit } from "@timeup-tools/core/model"
 import { HabitPage } from "@/const/page"
-import { Frequnecy, MonthlyType } from "@timeup-tools/core/value-object"
 
 export type HabitStore = ReturnType<typeof useHabitStore>
 
@@ -13,6 +12,10 @@ export const useHabitStore = () => {
 
   const init = async () => {
     _habits.value = await $habit.init()
+  }
+
+  const initFromCache = async () => {
+    _habits.value = await $habit.getFromCache()
   }
 
   const currentHabits = computed(() => {
@@ -63,6 +66,7 @@ export const useHabitStore = () => {
     currentFilter,
     currentHabits,
     init,
+    initFromCache,
     create,
     getHabitById,
     addHabit,

@@ -6,7 +6,10 @@ import { DocumentReference, DocumentSnapshot, Transaction, WriteBatch, deleteDoc
 class FirestoreTransactoinScope implements ITransactionScope {
   value: Transaction | WriteBatch | null = null
 
-  public setTransaction(value: Transaction | WriteBatch) {
+  public setTransaction(value: Transaction | WriteBatch | null) {
+    if (this.value !== null) {
+      throw new Error('TransactionScope is locked.')
+    }
     this.value = value
   }
 

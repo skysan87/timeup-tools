@@ -2,7 +2,7 @@ import { firestore } from "@/AppSetting"
 import { Habit } from "@timeup-tools/core/model"
 import { IHabitRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
-import { CollectionReference, DocumentData, DocumentSnapshot, Query, collection, doc, getCountFromServer, getDocs, getDocsFromCache, query, where } from "firebase/firestore"
+import { CollectionReference, DocumentData, DocumentSnapshot, collection, doc, getCountFromServer, getDocs, getDocsFromCache, query, where } from "firebase/firestore"
 import { getCount } from "firebase/firestore/lite"
 import { scope } from "./Transaction"
 import { toHabitEntity } from "@/Converter"
@@ -34,12 +34,22 @@ export class HabitRepository implements IHabitRepository {
     return count < HabitRepository.MAX_COUNT
   }
 
+  public async getFromCache(userId: UserId, habitlistId: string): Promise<Habit[]> {
+    const q = query(this.getRef(userId, habitlistId)
+      , where('userId', '==', userId)
+    )
+
+    const snapshot = await getDocsFromCache(q)
+    return snapshot.docs.map(doc => this.convert(doc.id, doc.data()))
+  }
+
   public async get(userId: UserId, habitlistId: string): Promise<Habit[]> {
     const q = query(this.getRef(userId, habitlistId)
       , where('userId', '==', userId)
     )
 
-    return await this.getRecords(q)
+    const snapshot = await getDocs(q)
+    return snapshot.docs.map(doc => this.convert(doc.id, doc.data()))
   }
 
   public async getById(userId: UserId, habitlistId: string, habitId: string): Promise<Habit | null> {
@@ -63,6 +73,7 @@ export class HabitRepository implements IHabitRepository {
     console.log('get Data from cache: ', snapshot.metadata.fromCache)
 
     return snapshot.docs.map(doc => this.convert(doc.id, doc.data()))
+      .filter(h => h.isActive && h.isPlanDay)
   }
 
   public async save(userId: UserId, habitlistId: string, data: Habit): Promise<Habit> {
@@ -101,12 +112,5 @@ export class HabitRepository implements IHabitRepository {
     habit.createdAt = data.createdAt?.toDate() ?? ''
     habit.updatedAt = data.createdAt?.toDate() ?? ''
     return habit
-  }
-
-  private async getRecords(q: Query): Promise<Habit[]> {
-    return (await getDocs(q))
-      .docs.map(doc => {
-        return this.convert(doc.id, doc.data())
-      })
   }
 }
