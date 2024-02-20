@@ -53,6 +53,83 @@ Authentication Emulator, Firestore Emulator
 ? Would you like to download the emulators now? Yes
 ```
 
+## firestore構成
+
+* configs
+  * documentId: ランダム
+    * createdAt: timestamp
+    * updatedAt: timestamp
+    * globalMessage: string
+    * userId: string
+
+* habits
+  * documentId: ランダム
+    * createdAt: timestamp
+    * updatedAt: timestamp
+    * maxIndex: number
+    * userId: string
+    * habits: collection
+      * documentId: ランダム
+        * createdAt: timestamp
+        * updatedAt: timestamp
+        * detail: string
+        * duration: number
+        * frequency: string
+        * isActive: boolean
+        * lastActivityDate: number(YYYYMMDD)
+        * maxduration: number
+        * monthlyType: string
+        * orderIndex: number
+        * plan: map<number, Array<string>>
+          * key: YYYY(西暦年)
+          * value: Array<string>(要素数12, 8桁の16進数)
+        * planDays: Array<number>(日付)
+        * planWeek: map
+          * day: number
+          * index: number
+        * result: map<number, Array<string>>
+          * key: YYYY(西暦年)
+          * value: Array<string>(要素数12, 8桁の16進数)
+        * rootId: string
+        * summaryUpdatedAt: number(YYYYMMDD)
+        * title: string
+        * totalActivityCount: number
+        * totalCount: number
+        * updatedAt: timestamp
+        * userId: string
+        * weekdays: Array<string>(曜日のindex(0-6))
+
+* todos
+  * documentId: ランダム
+    * createdAt: timestamp
+    * updatedAt: timestamp
+    * detail: string
+    * enddate: number(YYYYMMDD)
+    * isDone: boolean
+    * lastActivityDate: number(YYYYMMDD)
+    * listId: string
+    * orderIndex: number
+    * startdate: number(YYYYMMDD)
+    * state: number
+    * stateChangeDate: number(YYYYMMDD)
+    * subtasks: Array<Object>
+      * isDone: boolean
+      * title: string
+    * title: string
+    * type: string
+    * userId: string
+
+* lists
+  * documentId: ランダム
+    * createdAt: timestamp
+    * updatedAt: timestamp
+    * deleteFlag: boolean
+    * detail: string
+    * maxIndex: number
+    * orderIndex: number
+    * title: string
+    * userId: string
+
 ## NOTE: DBのタイムスタンプ
 * set, updateのtimestampには`firebase/firestore`の`serverTimestamp()`を利用している
 * この時点でclient側はタイムスタンプを取得できないので、一時的にDateの値を設定する
