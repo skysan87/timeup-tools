@@ -1,10 +1,10 @@
-import { firestore } from "@/AppSetting"
-import { toConfigEntity } from "@/Converter"
+import { CollectionReference, DocumentData, collection, doc, getDocs, limit, query, where } from "firebase/firestore"
 import { Config } from "@timeup-tools/core/model"
 import { IConfigRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
-import { CollectionReference, DocumentData, collection, doc, getDocs, limit, query, where } from "firebase/firestore"
 import { scope } from "./Transaction"
+import { firestore } from "../AppSetting"
+import { toConfigEntity } from "../Converter"
 
 export class ConfigRepository implements IConfigRepository {
 

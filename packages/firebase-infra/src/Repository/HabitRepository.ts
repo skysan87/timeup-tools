@@ -1,11 +1,10 @@
-import { firestore } from "@/AppSetting"
+import { CollectionReference, DocumentData, DocumentSnapshot, collection, doc, getCountFromServer, getDocs, getDocsFromCache, query, where } from "firebase/firestore"
 import { Habit } from "@timeup-tools/core/model"
 import { IHabitRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
-import { CollectionReference, DocumentData, DocumentSnapshot, collection, doc, getCountFromServer, getDocs, getDocsFromCache, query, where } from "firebase/firestore"
-import { getCount } from "firebase/firestore/lite"
 import { scope } from "./Transaction"
-import { toHabitEntity } from "@/Converter"
+import { firestore } from "../AppSetting"
+import { toHabitEntity } from "../Converter"
 
 export class HabitRepository implements IHabitRepository {
 
@@ -22,15 +21,8 @@ export class HabitRepository implements IHabitRepository {
     // TIPS:
     //  1000件で1Read
     //  https://cloud.google.com/firestore/pricing?hl=ja#aggregation_queries
-    let count: number
-    try {
-      const snapshot = await getCountFromServer(q)
-      count = snapshot.data().count
-    } catch (err) {
-      console.warn('Server Access Failed.', err)
-      const snapshot = await getCount(q)
-      count = snapshot.data().count
-    }
+    const snapshot = await getCountFromServer(q)
+    const count = snapshot.data().count
     return count < HabitRepository.MAX_COUNT
   }
 

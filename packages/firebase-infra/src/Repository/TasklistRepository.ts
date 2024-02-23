@@ -1,11 +1,10 @@
+import { CollectionReference, DocumentData, DocumentSnapshot, collection, doc, getCountFromServer, getDocs, getDocsFromServer, limit, orderBy, query, serverTimestamp, where } from "firebase/firestore"
 import { Tasklist } from "@timeup-tools/core/model"
 import { ITasklistRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
-import { scope } from "./Transaction"
 import { firestore } from "../AppSetting"
-import { CollectionReference, DocumentData, DocumentSnapshot, collection, doc, getCountFromServer, getDocs, getDocsFromServer, limit, orderBy, query, serverTimestamp, where } from "firebase/firestore"
-import { getCount } from "firebase/firestore/lite"
-import { toTasklistEntity } from "@/Converter"
+import { toTasklistEntity } from "../Converter"
+import { scope } from "./Transaction"
 
 export class TasklistRepository implements ITasklistRepository {
 
@@ -22,15 +21,8 @@ export class TasklistRepository implements ITasklistRepository {
       , where('deleteFlag', '==', false)
     )
 
-    let count: number
-    try {
-      const snapshot = await getCountFromServer(q)
-      count = snapshot.data().count
-    } catch (err) {
-      console.warn('Server Access Failed.', err)
-      const snapshot = await getCount(q)
-      count = snapshot.data().count
-    }
+    const snapshot = await getCountFromServer(q)
+    const count = snapshot.data().count
     return count < TasklistRepository.MAX_COUNT
   }
 

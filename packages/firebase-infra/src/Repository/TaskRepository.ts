@@ -3,9 +3,8 @@ import { Task } from "@timeup-tools/core/model"
 import { ITaskRepository } from "@timeup-tools/core/repository"
 import { UserId, DateNumber, TaskType, TaskState } from "@timeup-tools/core/value-object"
 import { firestore } from "../AppSetting"
+import { toTaskEntity } from "../Converter"
 import { scope } from "./Transaction"
-import { toTaskEntity } from "@/Converter"
-import { getCount } from "firebase/firestore/lite"
 
 export class TaskRepository implements ITaskRepository {
 
@@ -25,15 +24,8 @@ export class TaskRepository implements ITaskRepository {
     // TIPS:
     //  1000件で1Read
     //  https://cloud.google.com/firestore/pricing?hl=ja#aggregation_queries
-    let count: number
-    try {
-      const snapshot = await getCountFromServer(q)
-      count = snapshot.data().count
-    } catch (err) {
-      console.warn('Server Access Failed.', err)
-      const snapshot = await getCount(q)
-      count = snapshot.data().count
-    }
+    const snapshot = await getCountFromServer(q)
+    const count = snapshot.data().count
     return count < TaskRepository.MAX_COUNT
   }
 
