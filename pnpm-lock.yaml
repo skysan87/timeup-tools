@@ -63,6 +63,9 @@ importers:
       '@timeup-tools/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@timeup-tools/firebase-infra':
+        specifier: workspace:*
+        version: link:../../packages/firebase-infra
       '@timeup-tools/inmemory-infra':
         specifier: workspace:*
         version: link:../../packages/inmemory-infra

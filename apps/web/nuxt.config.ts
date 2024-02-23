@@ -5,7 +5,8 @@ console.log('ENV: ', process.env.APP_MODE)
 
 /** process.env.APP_MODEを参照 */
 const coreEnv = {
-  'dev-inmemory': '@/plugins/core/inmemory-infra'
+  'dev-inmemory': '@/plugins/core/inmemory-infra',
+  'dev-emulator': '@/plugins/core/firebase-local-infra',
 }
 
 // https://nuxt.com/docs/api/configuration/nuxt-config

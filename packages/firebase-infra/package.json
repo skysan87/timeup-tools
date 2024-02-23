@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "exports": {
-    "./repository": "./src/Repository/*.ts",
+    "./repository": "./src/Repository/index.ts",
     "./Emulator": "./src/Emulator.ts",
     "./package.json": "./package.json"
   },
