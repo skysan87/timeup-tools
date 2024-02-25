@@ -1,5 +1,7 @@
+import { UserId } from "../ValueObject"
+
 export interface ITransactionScope {
-  value: any
+  get userId(): UserId
 }
 
 export interface ITransaction {
@@ -9,10 +11,10 @@ export interface ITransaction {
    * 関連オブジェクトの参照・追加・更新・削除する場合に使用
    * @param callback
    */
-  run(callback: () => Promise<void>): Promise<void>
+  run(userId: UserId, callback: (scope: ITransactionScope) => Promise<void>): Promise<void>
   /**
    * 複数オブジェクトの追加・更新・削除する場合に使用
    * @param callback
    */
-  runBatch(callback: () => Promise<void>): Promise<void>
+  runBatch(userId: UserId, callback: (scope: ITransactionScope) => Promise<void>): Promise<void>
 }

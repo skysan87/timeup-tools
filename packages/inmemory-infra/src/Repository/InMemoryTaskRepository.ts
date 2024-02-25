@@ -1,6 +1,7 @@
 import { Task } from "@timeup-tools/core/model"
 import { ITaskRepository } from "@timeup-tools/core/repository"
-import { UserId, DateNumber, TaskType, TaskState } from "@timeup-tools/core/value-object"
+import { DateNumber, TaskType, TaskState } from "@timeup-tools/core/value-object"
+import { InMemoryTransactionScope as Scope } from "./InMemoryTransaction"
 
 export class InMemoryTaskRepository implements ITaskRepository {
 
@@ -10,11 +11,11 @@ export class InMemoryTaskRepository implements ITaskRepository {
     return Promise.resolve(this.memory.length <= 100)
   }
 
-  public getHabits(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public getHabits(scope: Scope, today: DateNumber): Promise<Task[]> {
     return Promise.resolve(this.memory.filter(t => t.type === TaskType.HABIT && t.startdate === today))
   }
 
-  public getTodaysTasks(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public getTodaysTasks(scope: Scope, today: DateNumber): Promise<Task[]> {
     const states: TaskState[] = [TaskState.Todo, TaskState.InProgress]
     return Promise.resolve(
       this.memory.filter(t =>
@@ -26,7 +27,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     )
   }
 
-  public getInProgressTasks(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public getInProgressTasks(scope: Scope, today: DateNumber): Promise<Task[]> {
     return Promise.resolve(
       this.memory.filter(t =>
         t.type === TaskType.TODO
@@ -35,7 +36,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     )
   }
 
-  public getTodaysDone(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public getTodaysDone(scope: Scope, today: DateNumber): Promise<Task[]> {
     return Promise.resolve(
       this.memory.filter(t =>
         t.type === TaskType.TODO
@@ -45,7 +46,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     )
   }
 
-  public get(userId: UserId, tasklistId: string): Promise<Task[]> {
+  public get(scope: Scope, tasklistId: string): Promise<Task[]> {
     return Promise.resolve(
       this.memory.filter(t =>
         t.type === TaskType.TODO
@@ -54,17 +55,17 @@ export class InMemoryTaskRepository implements ITaskRepository {
     )
   }
 
-  public getById(userId: UserId, taskId: string): Promise<Task | null> {
+  public getById(scope: Scope, taskId: string): Promise<Task | null> {
     return new Promise(resolve => {
       resolve(structuredClone(this.memory.find(h => h.id === taskId) ?? null))
     })
   }
 
-  public save(userId: UserId, data: Task): Promise<Task> {
+  public save(scope: Scope, data: Task): Promise<Task> {
     return new Promise(resolve => {
       const timestamp = new Date()
       data.id = this.createId()
-      data.userId = userId
+      data.userId = scope.userId
       data.createdAt = timestamp
       data.updatedAt = timestamp
       this.memory.push(data)
@@ -72,13 +73,13 @@ export class InMemoryTaskRepository implements ITaskRepository {
     })
   }
 
-  public saveAll(userId: UserId, data: Task[]): Promise<Task[]> {
+  public saveAll(scope: Scope, data: Task[]): Promise<Task[]> {
     return new Promise(resolve => {
       const updated: Task[] = []
       for (const task of data) {
         const timestamp = new Date()
         task.id = this.createId()
-        task.userId = userId
+        task.userId = scope.userId
         task.createdAt = timestamp
         task.updatedAt = timestamp
         this.memory.push(task)
@@ -88,7 +89,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     })
   }
 
-  public update(userId: UserId, data: Partial<Task>): Promise<Task> {
+  public update(scope: Scope, data: Partial<Task>): Promise<Task> {
     const index = this.memory.findIndex(h => h.id === data.id!)
     const clone = {
       ...this.memory[index],
@@ -99,7 +100,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     return Promise.resolve(structuredClone(clone))
   }
 
-  public updateAll(userId: UserId, data: Partial<Task>[]): Promise<Task[]> {
+  public updateAll(scope: Scope, data: Partial<Task>[]): Promise<Task[]> {
     return new Promise(resolve => {
       const updated: Task[] = []
       for (const task of data) {
@@ -116,7 +117,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
     })
   }
 
-  public delete(userId: UserId, taskIds: string[]): Promise<void> {
+  public delete(scope: Scope, taskIds: string[]): Promise<void> {
     return new Promise(resolve => {
       for (const id of taskIds) {
         const index = this.memory.findIndex(h => h.id === id)

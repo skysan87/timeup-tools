@@ -32,8 +32,8 @@ export class TasklistUseCase {
   public async getList(): Promise<Tasklist[]> {
     let result: Tasklist[] = []
 
-    await this.transaction.run(async () => {
-      const lists = await this.tasklistRepository.get(this.userId)
+    await this.transaction.run(this.userId, async (scope) => {
+      const lists = await this.tasklistRepository.get(scope)
 
       if (lists.length > 0) {
         result.push(...lists)
@@ -46,7 +46,7 @@ export class TasklistUseCase {
       } as Tasklist
 
       const newList = await new TasklistBehavior(data).actionAsync(async behavior => {
-        const created = await this.tasklistRepository.save(this.userId, behavior.format())
+        const created = await this.tasklistRepository.save(scope, behavior.format())
         behavior.update(created)
       })
       result.push(newList)
@@ -61,18 +61,23 @@ export class TasklistUseCase {
    * @returns
    */
   public async addList(tasklist: Partial<Tasklist>): Promise<Tasklist> {
-    if (!await this.tasklistRepository.validateMaxSize(this.userId)) {
-      throw new Error('これ以上登録できません')
-    }
+    let _tasklist: Tasklist
+    await this.transaction.run(this.userId, async (scope) => {
 
-    // TODO: firestoreの構造を変更時にmaxIndexを保持するようにする
-    const maxIndex = await this.tasklistRepository.getMaxIndex(this.userId)
+      if (!await this.tasklistRepository.validateMaxSize(scope)) {
+        throw new Error('これ以上登録できません')
+      }
 
-    return new TasklistBehavior(tasklist as Tasklist).actionAsync(async behavior => {
-      behavior.update({ maxIndex: maxIndex + 1 })
-      const created = await this.tasklistRepository.save(this.userId, behavior.format())
-      behavior.update(created)
+      // TODO: firestoreの構造を変更時にmaxIndexを保持するようにする
+      const maxIndex = await this.tasklistRepository.getMaxIndex(scope)
+
+      _tasklist = await new TasklistBehavior(tasklist as Tasklist).actionAsync(async behavior => {
+        behavior.update({ maxIndex: maxIndex + 1, userId: this.userId })
+        const created = await this.tasklistRepository.save(scope, behavior.format())
+        behavior.update(created)
+      })
     })
+    return _tasklist!
   }
 
   /**
@@ -82,9 +87,9 @@ export class TasklistUseCase {
    */
   public async updateList(updateProps: Partial<Tasklist>) {
     let result: Tasklist
-    await this.transaction.run(async () => {
+    await this.transaction.run(this.userId, async (scope) => {
       result = await new TasklistBehavior(updateProps as Tasklist).actionAsync(async behavior => {
-        const updated = await this.tasklistRepository.update(this.userId, updateProps)
+        const updated = await this.tasklistRepository.update(scope, updateProps)
         behavior.update(updated)
       })
     })
@@ -96,11 +101,10 @@ export class TasklistUseCase {
    * @param tasklistId
    */
   public async deleteList(tasklistId: string): Promise<void> {
-    const tasks = await this.taskRepository.get(this.userId, tasklistId)
-
-    await this.transaction.runBatch(async () => {
-      await this.tasklistRepository.delete(this.userId, tasklistId)
-      await this.taskRepository.delete(this.userId, tasks.map(t => t.id))
+    await this.transaction.runBatch(this.userId, async (scope) => {
+      const tasks = await this.taskRepository.get(scope, tasklistId)
+      await this.tasklistRepository.delete(scope, tasklistId)
+      await this.taskRepository.delete(scope, tasks.map(t => t.id))
     })
   }
 

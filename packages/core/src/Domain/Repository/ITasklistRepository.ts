@@ -1,12 +1,12 @@
+import { ITransactionScope } from "./ITransaction"
 import { Tasklist } from "../Model/Tasklist"
-import { UserId } from "../ValueObject"
 
 export interface ITasklistRepository {
-  validateMaxSize(userId: UserId): Promise<boolean>
-  getMaxIndex(userId: UserId): Promise<number>
-  get(userId: UserId): Promise<Tasklist[]>
-  getById(userId: UserId, tasklistId: string): Promise<Tasklist | null>
-  save(userId: UserId, data: Tasklist): Promise<Tasklist>
-  update(userId: UserId, data: Partial<Tasklist>): Promise<Tasklist>
-  delete(userId: UserId, tasklistId: string): Promise<void>
+  validateMaxSize(scope: ITransactionScope): Promise<boolean>
+  getMaxIndex(scope: ITransactionScope): Promise<number>
+  get(scope: ITransactionScope): Promise<Tasklist[]>
+  getById(scope: ITransactionScope, tasklistId: string): Promise<Tasklist | null>
+  save(scope: ITransactionScope, data: Tasklist): Promise<Tasklist>
+  update(scope: ITransactionScope, data: Partial<Tasklist>): Promise<Tasklist>
+  delete(scope: ITransactionScope, tasklistId: string): Promise<void>
 }

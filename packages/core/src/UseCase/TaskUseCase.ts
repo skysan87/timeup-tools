@@ -1,5 +1,5 @@
 import { dateFactory } from "../Util/DateUtil"
-import { IHabitRepository, IHabitlistRepository, ITaskRepository, ITasklistRepository, ITransaction, IUserRepository } from "../Domain/Repository"
+import { IHabitRepository, IHabitlistRepository, ITaskRepository, ITasklistRepository, ITransaction, ITransactionScope, IUserRepository } from "../Domain/Repository"
 import { DateNumber, TaskState, TaskType, UserId } from "../Domain/ValueObject"
 import { Habit, Task } from "../Domain/Model"
 import { TaskBehavior } from "../Domain/Behavior/TaskBehavior"
@@ -28,7 +28,11 @@ export class TaskUseCase {
   }
 
   public async getCurrentTasks(tasklistId: string): Promise<Task[]> {
-    return this.taskRepository.get(this.userId, tasklistId)
+    let t: Task[]
+    await this.transaction.run(this.userId, async (scope) => {
+      t = await this.taskRepository.get(scope, tasklistId)
+    })
+    return t!
   }
 
   /**
@@ -42,9 +46,17 @@ export class TaskUseCase {
 
     // 1. 今日の習慣を取得
     const habitlistId = this.habitlistRepository.getId()
-    const todaysHabits: Habit[] = await this.habitRepository.getTodayListFromCache(this.userId, habitlistId)
+    const todaysHabits: Habit[] = (await this.habitRepository.getFromCache(this.userId, habitlistId))
+      .map(h => new HabitBehavior(h).action(() => { }))
+      .filter(h => h.isActive && h.isPlanDay)
     // 2. 習慣のToDoをサーバーから取得
-    const habitTasks: Task[] = await this.taskRepository.getHabits(this.userId, today)
+    const habitTasks: Task[] = await (async () => {
+      let t: Task[]
+      await this.transaction.run(this.userId, async (scope) => {
+        t = await this.taskRepository.getHabits(scope, today)
+      })
+      return t!
+    })()
     // 3. 1と2を比較して、2が存在しないものは、追加する
     const missinglist = todaysHabits.reduce((pre: Task[], _habit: Habit) => {
       // Habit.id === Todo.listId
@@ -72,21 +84,37 @@ export class TaskUseCase {
 
     const addHabits = async (): Promise<Task[]> => {
       const h: Task[] = []
-      this.transaction.runBatch(async () => {
+      await this.transaction.runBatch(this.userId, async (scope) => {
         if (missinglist.length > 0) {
-          h.push(...await this.taskRepository.saveAll(this.userId, missinglist))
+          h.push(...await this.taskRepository.saveAll(scope, missinglist))
         }
       })
       return h
+    }
+
+    const todayTask = async (): Promise<Task[]> => {
+      let h: Task[]
+      await this.transaction.run(this.userId, async (scope) => {
+        h = await this.taskRepository.getTodaysTasks(scope, today)
+      })
+      return h!
+    }
+
+    const todayDoneTask = async (): Promise<Task[]> => {
+      let h: Task[]
+      await this.transaction.run(this.userId, async (scope) => {
+        h = await this.taskRepository.getTodaysDone(scope, today)
+      })
+      return h!
     }
 
     const [newhabitTasks, todaysTasks, todaysDone] = await Promise.all([
       // 新たに追加された習慣タスク
       addHabits(),
       // 今日の残タスク
-      this.taskRepository.getTodaysTasks(this.userId, today),
+      todayTask(),
       // 今日完了したタスク
-      this.taskRepository.getTodaysDone(this.userId, today)
+      todayDoneTask()
     ])
 
     tasks.push(...newhabitTasks, ...todaysTasks, ...todaysDone)
@@ -98,21 +126,25 @@ export class TaskUseCase {
    * 作業中のタスクを取得
    */
   public async getInProgressTasks(): Promise<Task[]> {
-    const today = dateFactory().getDateNumber() as DateNumber
-    return this.taskRepository.getInProgressTasks(this.userId, today)
+    let result: Task[]
+    await this.transaction.run(this.userId, async (scope) => {
+      const today = dateFactory().getDateNumber() as DateNumber
+      result = await this.taskRepository.getInProgressTasks(scope, today)
+    })
+    return result!
   }
 
   /**
    * タスクの追加
    */
   public async addTask(tasklistId: string, task: Partial<Task>): Promise<Task> {
-    if (!await this.taskRepository.validateMaxSize(this.userId, tasklistId)) {
-      throw new Error('これ以上登録できません')
-    }
     let result: Task
 
-    await this.transaction.run(async () => {
-      const tasklist = await this.tasklistRepository.getById(this.userId, tasklistId)
+    await this.transaction.run(this.userId, async (scope) => {
+      if (!await this.taskRepository.validateMaxSize(scope, tasklistId)) {
+        throw new Error('これ以上登録できません')
+      }
+      const tasklist = await this.tasklistRepository.getById(scope, tasklistId)
       if (!tasklist) {
         throw new Error('Tasklist does not exist.')
       }
@@ -120,13 +152,14 @@ export class TaskUseCase {
       await new TasklistBehavior(tasklist).actionAsync(async behavior => {
         const newMaxIndex = behavior.get('maxIndex') + 1
         behavior.update({ maxIndex: newMaxIndex })
-        this.tasklistRepository.update(this.userId, behavior.format())
+        this.tasklistRepository.update(scope, behavior.format())
       })
 
       task.listId = tasklistId
+      task.userId = this.userId
       result = await new TaskBehavior(task as Task).actionAsync(async behvior => {
         behvior.update({ stateChangeDate: dateFactory().getDateNumber() as DateNumber } as Task)
-        const data = await this.taskRepository.save(this.userId, behvior.format())
+        const data = await this.taskRepository.save(scope, behvior.format())
         behvior.update(data)
       })
     })
@@ -142,17 +175,17 @@ export class TaskUseCase {
   public async updateTask(taskId: string, newTask: Task): Promise<Task> {
     let result: Task
 
-    await this.transaction.run(async () => {
-      const oldTask: Task | null = await this.taskRepository.getById(this.userId, taskId)
+    await this.transaction.run(this.userId, async (scope) => {
+      const oldTask: Task | null = await this.taskRepository.getById(scope, taskId)
       if (!oldTask) {
         throw new Error('task does not exist.')
       }
-      if (!this.existsList(oldTask)) {
+      if (!this.existsList(scope, oldTask)) {
         throw new Error('listId is missing.')
       }
       newTask.stateChangeDate = dateFactory().getDateNumber() as DateNumber
 
-      result = await this.updateTaskAndHabit(oldTask, newTask)
+      result = await this.updateTaskAndHabit(scope, oldTask, newTask)
     })
 
     return result!
@@ -166,13 +199,13 @@ export class TaskUseCase {
   public async changeState(taskId: string): Promise<Task> {
     let result: Task
 
-    await this.transaction.run(async () => {
-      const oldTask: Task | null = await this.taskRepository.getById(this.userId, taskId)
+    await this.transaction.run(this.userId, async (scope) => {
+      const oldTask: Task | null = await this.taskRepository.getById(scope, taskId)
       if (!oldTask) {
         throw new Error('task does not exist.')
       }
 
-      if (!this.existsList(oldTask)) {
+      if (!this.existsList(scope, oldTask)) {
         throw new Error('listId is missing.')
       }
 
@@ -191,19 +224,19 @@ export class TaskUseCase {
       }
       newTask.stateChangeDate = dateFactory().getDateNumber() as DateNumber
 
-      result = await this.updateTaskAndHabit(oldTask, newTask)
+      result = await this.updateTaskAndHabit(scope, oldTask, newTask)
     })
 
     return result!
   }
 
-  private async existsList(task: Task): Promise<boolean> {
+  private async existsList(scope: ITransactionScope, task: Task): Promise<boolean> {
     if (task.type === TaskType.HABIT) {
-      const habitlist = await this.habitlistRepository.get(this.userId)
-      const habit = await this.habitRepository.getById(this.userId, habitlist!.id, task.listId)
+      const habitlist = await this.habitlistRepository.get(scope)
+      const habit = await this.habitRepository.getById(scope, habitlist!.id, task.listId)
       return habit !== null
     } else {
-      const tasklist = await this.tasklistRepository.getById(this.userId, task.listId)
+      const tasklist = await this.tasklistRepository.getById(scope, task.listId)
       return tasklist !== null
     }
   }
@@ -215,10 +248,10 @@ export class TaskUseCase {
    * @param newTask 更新する状態のタスク
    * @returns
    */
-  private async updateTaskAndHabit(oldTask: Task, newTask: Task): Promise<Task> {
+  private async updateTaskAndHabit(scope: ITransactionScope, oldTask: Task, newTask: Task): Promise<Task> {
     if (newTask.type === TaskType.HABIT) {
-      const habitlist = await this.habitlistRepository.get(this.userId)
-      const habit = await this.habitRepository.getById(this.userId, habitlist!.id, newTask.listId)
+      const habitlist = await this.habitlistRepository.get(scope)
+      const habit = await this.habitRepository.getById(scope, habitlist!.id, newTask.listId)
       if (!habit) {
         throw new Error('対象の習慣はすでに削除されています')
       }
@@ -226,13 +259,13 @@ export class TaskUseCase {
         const habitBehavior = behavior as HabitBehavior
         habitBehavior.calcSummaryFromTask(oldTask, newTask)
         // TODO: 更新した値のみ
-        await this.habitRepository.update(this.userId, habitlist!.id, habitBehavior.format())
+        await this.habitRepository.update(scope, habitlist!.id, habitBehavior.format())
       })
     }
 
     return new TaskBehavior(newTask).actionAsync(async behavior => {
       // TODO: 更新した値のみ
-      const updated = await this.taskRepository.update(this.userId, behavior.format())
+      const updated = await this.taskRepository.update(scope, behavior.format())
       behavior.update(updated)
     })
   }
@@ -242,8 +275,8 @@ export class TaskUseCase {
    * @param taskIds
    */
   public async deleteTasks(taskIds: string[]): Promise<void> {
-    await this.transaction.runBatch(async () => {
-      this.taskRepository.delete(this.userId, taskIds)
+    await this.transaction.runBatch(this.userId, async (scope) => {
+      this.taskRepository.delete(scope, taskIds)
     })
   }
 
@@ -257,14 +290,14 @@ export class TaskUseCase {
 
     if (targets.length === 0) return result
 
-    await this.transaction.runBatch(async () => {
+    await this.transaction.runBatch(this.userId, async (scope) => {
       // NOTE: プロジェクト単位でのみ一括変更できるので、1つ目の値のみチェック
-      const task: Task | null = await this.taskRepository.getById(this.userId, targets[0].id)
-      if (!await this.existsList(task!)) {
+      const task: Task | null = await this.taskRepository.getById(scope, targets[0].id)
+      if (!await this.existsList(scope, task!)) {
         throw new Error('listId is missing.')
       }
 
-      const data = await this.taskRepository.updateAll(this.userId, targets.map(item => {
+      const data = await this.taskRepository.updateAll(scope, targets.map(item => {
         return {
           id: item.id,
           startdate: item.startdate as DateNumber,

@@ -7,7 +7,11 @@
     "./repository": "./src/Repository/index.ts",
     "./package.json": "./package.json"
   },
-  "scripts": {},
+  "scripts": {
+    "clean": "rm -rf build tsconfig.tsbuildinfo",
+    "build": "tsc --incremental",
+    "type-check": "tsc -noEmit"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",

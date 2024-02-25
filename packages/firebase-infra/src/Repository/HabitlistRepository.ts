@@ -2,13 +2,13 @@ import { CollectionReference, DocumentData, collection, doc, getDocs, limit, que
 import { Habitlist } from "@timeup-tools/core/model"
 import { IHabitlistRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
-import { scope } from "./Transaction"
 import { firestore } from "../AppSetting"
 import { toHabitlistEntity } from "../Converter"
+import { FirestoreTransactoinScope as Scope } from "../Repository/Transaction"
 
 export class HabitlistRepository implements IHabitlistRepository {
 
-  private habitlist?: Habitlist
+  private habitlistId?: string
 
   private getRef(userId: UserId): CollectionReference {
     // TODO: 将来的にuserIdに変更する(userIdを利用)
@@ -16,15 +16,15 @@ export class HabitlistRepository implements IHabitlistRepository {
   }
 
   public getId(): string {
-    if (!this.habitlist) {
+    if (!this.habitlistId) {
       throw new Error('Habitlist is not initialized.')
     }
-    return this.habitlist.id
+    return this.habitlistId
   }
 
-  public async get(userId: UserId): Promise<Habitlist | null> {
-    const q = query(this.getRef(userId!)
-      , where('userId', '==', userId)
+  public async get(scope: Scope): Promise<Habitlist | null> {
+    const q = query(this.getRef(scope.userId)
+      , where('userId', '==', scope.userId)
       , limit(1)
     )
     const querySnapshot = await getDocs(q)
@@ -34,14 +34,15 @@ export class HabitlistRepository implements IHabitlistRepository {
     }
 
     const doc = querySnapshot.docs[0]
-    this.habitlist = this.convert(doc.id, doc.data())
-    return structuredClone(this.habitlist)
+    const data = this.convert(doc.id, doc.data())
+    this.habitlistId = data.id
+    return structuredClone(data)
   }
 
-  public async save(userId: UserId, data: Habitlist): Promise<Habitlist> {
+  public async save(scope: Scope, data: Habitlist): Promise<Habitlist> {
     const entity = toHabitlistEntity(data)
 
-    const newDocRef = doc(this.getRef(userId))
+    const newDocRef = doc(this.getRef(scope.userId))
     await scope.set(newDocRef, entity)
 
     const systemDate = new Date()
@@ -49,11 +50,12 @@ export class HabitlistRepository implements IHabitlistRepository {
     newData.id = newDocRef.id
     newData.createdAt = systemDate
     newData.updatedAt = systemDate
+    this.habitlistId = newData.id
     return newData
   }
 
-  public async update(userId: UserId, data: Partial<Habitlist>): Promise<Habitlist> {
-    const docRef = doc(this.getRef(userId), data.id!)
+  public async update(scope: Scope, data: Partial<Habitlist>): Promise<Habitlist> {
+    const docRef = doc(this.getRef(scope.userId), data.id!)
     const entity = toHabitlistEntity(data as Habitlist)
 
     await scope.update(docRef, entity)

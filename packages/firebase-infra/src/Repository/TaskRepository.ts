@@ -4,7 +4,7 @@ import { ITaskRepository } from "@timeup-tools/core/repository"
 import { UserId, DateNumber, TaskType, TaskState } from "@timeup-tools/core/value-object"
 import { firestore } from "../AppSetting"
 import { toTaskEntity } from "../Converter"
-import { scope } from "./Transaction"
+import { FirestoreTransactoinScope as Scope } from "./Transaction"
 
 export class TaskRepository implements ITaskRepository {
 
@@ -15,10 +15,10 @@ export class TaskRepository implements ITaskRepository {
     return collection(firestore, 'todos')
   }
 
-  public async validateMaxSize(userId?: UserId, tasklistId?: string): Promise<boolean> {
-    const q = query(this.getRef(userId!)
+  public async validateMaxSize(scope: Scope, tasklistId?: string): Promise<boolean> {
+    const q = query(this.getRef(scope.userId)
       , where('listId', '==', tasklistId!)
-      , where('userId', '==', userId!)
+      , where('userId', '==', scope.userId)
     )
 
     // TIPS:
@@ -29,12 +29,12 @@ export class TaskRepository implements ITaskRepository {
     return count < TaskRepository.MAX_COUNT
   }
 
-  public async getHabits(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public async getHabits(scope: Scope, today: DateNumber): Promise<Task[]> {
     const tasks: Task[] = []
 
-    const q = query(this.getRef(userId)
+    const q = query(this.getRef(scope.userId)
       , where('type', '==', TaskType.HABIT)
-      , where('userId', '==', userId)
+      , where('userId', '==', scope.userId)
       , where('startdate', '==', today)
     )
 
@@ -43,13 +43,13 @@ export class TaskRepository implements ITaskRepository {
     return tasks
   }
 
-  public async getTodaysTasks(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public async getTodaysTasks(scope: Scope, today: DateNumber): Promise<Task[]> {
     const tasks: Task[] = []
 
     const q = (state: TaskState) => {
-      return query(this.getRef(userId)
+      return query(this.getRef(scope.userId)
         , where('type', '==', TaskType.TODO)
-        , where('userId', '==', userId)
+        , where('userId', '==', scope.userId)
         , where('state', '==', state)
         , where('startdate', '<=', today)
       )
@@ -61,20 +61,20 @@ export class TaskRepository implements ITaskRepository {
     return tasks
   }
 
-  public async getInProgressTasks(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public async getInProgressTasks(scope: Scope, today: DateNumber): Promise<Task[]> {
     const tasks: Task[] = []
 
-    const qTodo = query(this.getRef(userId)
+    const qTodo = query(this.getRef(scope.userId)
       , where('type', '==', TaskType.TODO)
-      , where('userId', '==', userId)
+      , where('userId', '==', scope.userId)
       , where('state', '==', TaskState.InProgress)
     )
 
     tasks.push(...await this.getRecords(qTodo))
 
-    const qHabit = query(this.getRef(userId)
+    const qHabit = query(this.getRef(scope.userId)
       , where('type', '==', TaskType.HABIT)
-      , where('userId', '==', userId)
+      , where('userId', '==', scope.userId)
       , where('startdate', '==', today)
       , where('state', '==', TaskState.InProgress)
     )
@@ -84,12 +84,12 @@ export class TaskRepository implements ITaskRepository {
     return tasks
   }
 
-  public async getTodaysDone(userId: UserId, today: DateNumber): Promise<Task[]> {
+  public async getTodaysDone(scope: Scope, today: DateNumber): Promise<Task[]> {
     const tasks: Task[] = []
 
-    const q = query(this.getRef(userId)
+    const q = query(this.getRef(scope.userId)
       , where('type', '==', TaskType.TODO)
-      , where('userId', '==', userId)
+      , where('userId', '==', scope.userId)
       , where('state', '==', TaskState.Done)
       , where('stateChangeDate', '==', today)
     )
@@ -99,12 +99,12 @@ export class TaskRepository implements ITaskRepository {
     return tasks
   }
 
-  public async get(userId: UserId, tasklistId: string): Promise<Task[]> {
+  public async get(scope: Scope, tasklistId: string): Promise<Task[]> {
     const tasks: Task[] = []
 
-    const q = query(this.getRef(userId)
+    const q = query(this.getRef(scope.userId)
       , where('listId', '==', tasklistId)
-      , where('userId', '==', userId)
+      , where('userId', '==', scope.userId)
     )
 
     tasks.push(...await this.getRecords(q))
@@ -112,8 +112,8 @@ export class TaskRepository implements ITaskRepository {
     return tasks
   }
 
-  public async getById(userId: UserId, taskId: string): Promise<Task | null> {
-    const docRef = doc(this.getRef(userId), taskId)
+  public async getById(scope: Scope, taskId: string): Promise<Task | null> {
+    const docRef = doc(this.getRef(scope.userId), taskId)
     const snapshot: DocumentSnapshot = await scope.get(docRef)
 
     if (!snapshot.exists()) {
@@ -123,10 +123,10 @@ export class TaskRepository implements ITaskRepository {
     return this.convert(snapshot.id, snapshot.data())
   }
 
-  public async save(userId: UserId, data: Task): Promise<Task> {
+  public async save(scope: Scope, data: Task): Promise<Task> {
     const entity = toTaskEntity(data)
 
-    const newDocRef = doc(this.getRef(userId))
+    const newDocRef = doc(this.getRef(scope.userId))
     await scope.set(newDocRef, entity)
 
     const systemDate = new Date()
@@ -137,13 +137,13 @@ export class TaskRepository implements ITaskRepository {
     return newData
   }
 
-  public async saveAll(userId: UserId, data: Task[]): Promise<Task[]> {
+  public async saveAll(scope: Scope, data: Task[]): Promise<Task[]> {
     const result: Task[] = []
 
     for (const task of data) {
       const entity = toTaskEntity(task)
 
-      const newDocRef = doc(this.getRef(userId))
+      const newDocRef = doc(this.getRef(scope.userId))
       await scope.set(newDocRef, entity)
 
       const systemDate = new Date()
@@ -156,8 +156,8 @@ export class TaskRepository implements ITaskRepository {
     return result
   }
 
-  public async update(userId: UserId, data: Partial<Task>): Promise<Task> {
-    const docRef = doc(this.getRef(userId), data.id!)
+  public async update(scope: Scope, data: Partial<Task>): Promise<Task> {
+    const docRef = doc(this.getRef(scope.userId), data.id!)
     const entity = toTaskEntity(data as Task)
 
     await scope.update(docRef, entity)
@@ -168,13 +168,13 @@ export class TaskRepository implements ITaskRepository {
     return newData as Task
   }
 
-  public async updateAll(userId: UserId, data: Partial<Task>[]): Promise<Task[]> {
+  public async updateAll(scope: Scope, data: Partial<Task>[]): Promise<Task[]> {
     const result: Task[] = []
 
     for (const task of data) {
       const entity = toTaskEntity(task as Task)
 
-      const docRef = doc(this.getRef(userId), task.id!)
+      const docRef = doc(this.getRef(scope.userId), task.id!)
       await scope.update(docRef, entity)
 
       const newData = structuredClone(task)
@@ -186,9 +186,9 @@ export class TaskRepository implements ITaskRepository {
     return result
   }
 
-  public async delete(userId: UserId, taskIds: string[]): Promise<void> {
+  public async delete(scope: Scope, taskIds: string[]): Promise<void> {
     for (const taskId of taskIds) {
-      const docRef = doc(this.getRef(userId), taskId)
+      const docRef = doc(this.getRef(scope.userId), taskId)
       await scope.delete(docRef)
     }
   }

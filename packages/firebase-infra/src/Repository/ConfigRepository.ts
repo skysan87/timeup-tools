@@ -2,20 +2,29 @@ import { CollectionReference, DocumentData, collection, doc, getDocs, limit, que
 import { Config } from "@timeup-tools/core/model"
 import { IConfigRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
-import { scope } from "./Transaction"
 import { firestore } from "../AppSetting"
 import { toConfigEntity } from "../Converter"
+import { FirestoreTransactoinScope as Scope } from "../Repository/Transaction"
 
 export class ConfigRepository implements IConfigRepository {
+
+  private _id?: string
+
+  public getId(): string {
+    if (!this._id) {
+      throw new Error('Config is not initialized.')
+    }
+    return this._id
+  }
 
   private getRef(userId: UserId): CollectionReference {
     // TODO: 将来的にuserIdに変更する(userIdを利用)
     return collection(firestore, 'configs')
   }
 
-  public async get(userId: UserId): Promise<Config | null> {
-    const q = query(this.getRef(userId)
-      , where('userId', '==', userId)
+  public async get(scope: Scope): Promise<Config | null> {
+    const q = query(this.getRef(scope.userId)
+      , where('userId', '==', scope.userId)
       , limit(1)
     )
 
@@ -26,13 +35,14 @@ export class ConfigRepository implements IConfigRepository {
     }
 
     const doc = querySnapshot.docs[0]
+    this._id = doc.id
     return this.convert(doc.id, doc.data())
   }
 
-  public async save(userId: UserId, data: Config): Promise<Config> {
+  public async save(scope: Scope, data: Config): Promise<Config> {
     const entity = toConfigEntity(data)
 
-    const newDocRef = doc(this.getRef(userId))
+    const newDocRef = doc(this.getRef(scope.userId))
     await scope.set(newDocRef, entity)
 
     const systemDate = new Date()
@@ -40,11 +50,14 @@ export class ConfigRepository implements IConfigRepository {
     newData.id = newDocRef.id
     newData.createdAt = systemDate
     newData.updatedAt = systemDate
+
+    this._id = newData.id
+
     return newData
   }
 
-  public async update(userId: UserId, data: Partial<Config>): Promise<Config> {
-    const docRef = doc(this.getRef(userId), data.id!)
+  public async update(scope: Scope, data: Partial<Config>): Promise<Config> {
+    const docRef = doc(this.getRef(scope.userId), data.id!)
     const entity = toConfigEntity(data as Config)
 
     await scope.update(docRef, entity)

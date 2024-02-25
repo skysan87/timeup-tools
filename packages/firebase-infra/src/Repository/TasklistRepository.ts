@@ -4,7 +4,7 @@ import { ITasklistRepository } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
 import { firestore } from "../AppSetting"
 import { toTasklistEntity } from "../Converter"
-import { scope } from "./Transaction"
+import { FirestoreTransactoinScope as Scope } from "./Transaction"
 
 export class TasklistRepository implements ITasklistRepository {
 
@@ -15,9 +15,9 @@ export class TasklistRepository implements ITasklistRepository {
     return collection(firestore, 'lists')
   }
 
-  public async validateMaxSize(userId: UserId): Promise<boolean> {
-    const q = query(this.getRef(userId!)
-      , where('userId', '==', userId!)
+  public async validateMaxSize(scope: Scope): Promise<boolean> {
+    const q = query(this.getRef(scope.userId)
+      , where('userId', '==', scope.userId)
       , where('deleteFlag', '==', false)
     )
 
@@ -26,10 +26,10 @@ export class TasklistRepository implements ITasklistRepository {
     return count < TasklistRepository.MAX_COUNT
   }
 
-  public async getMaxIndex(userId: UserId): Promise<number> {
+  public async getMaxIndex(scope: Scope): Promise<number> {
     // TODO: firestoreの構造を変更時にmaxIndexを保持するようにする
-    const q = query(this.getRef(userId!)
-      , where('userId', '==', userId!)
+    const q = query(this.getRef(scope.userId)
+      , where('userId', '==', scope.userId)
       , where('deleteFlag', '==', false)
       , orderBy('maxIndex', 'desc')
       , limit(1)
@@ -42,10 +42,9 @@ export class TasklistRepository implements ITasklistRepository {
     }
   }
 
-  public async get(userId: UserId): Promise<Tasklist[]> {
-    const q = query(this.getRef(userId!)
-      , where('userId', '==', userId!)
-      , where('deleteFlag', '==', false)
+  public async get(scope: Scope): Promise<Tasklist[]> {
+    const q = query(this.getRef(scope.userId)
+      , where('userId', '==', scope.userId)
     )
 
     const querySnapshot = await getDocs(q)
@@ -55,8 +54,8 @@ export class TasklistRepository implements ITasklistRepository {
     return lists
   }
 
-  public async getById(userId: UserId, tasklistId: string): Promise<Tasklist | null> {
-    const docRef = doc(this.getRef(userId), tasklistId)
+  public async getById(scope: Scope, tasklistId: string): Promise<Tasklist | null> {
+    const docRef = doc(this.getRef(scope.userId), tasklistId)
     const snapshot: DocumentSnapshot = await scope.get(docRef)
 
     if (!snapshot.exists()) {
@@ -66,10 +65,10 @@ export class TasklistRepository implements ITasklistRepository {
     return this.convert(snapshot.id, snapshot.data())
   }
 
-  public async save(userId: UserId, data: Tasklist): Promise<Tasklist> {
+  public async save(scope: Scope, data: Tasklist): Promise<Tasklist> {
     const entity = toTasklistEntity(data)
 
-    const newDocRef = doc(this.getRef(userId))
+    const newDocRef = doc(this.getRef(scope.userId))
     await scope.set(newDocRef, entity)
 
     const systemDate = new Date()
@@ -80,10 +79,10 @@ export class TasklistRepository implements ITasklistRepository {
     return newData
   }
 
-  public async update(userId: UserId, data: Partial<Tasklist>): Promise<Tasklist> {
+  public async update(scope: Scope, data: Partial<Tasklist>): Promise<Tasklist> {
     const entity = toTasklistEntity(data as Tasklist)
 
-    const docRef = doc(this.getRef(userId), data.id!)
+    const docRef = doc(this.getRef(scope.userId), data.id!)
     await scope.update(docRef, entity)
 
     const newData = structuredClone(data)
@@ -92,8 +91,8 @@ export class TasklistRepository implements ITasklistRepository {
     return newData as Tasklist
   }
 
-  public async delete(userId: UserId, tasklistId: string): Promise<void> {
-    const docRef = doc(this.getRef(userId), tasklistId)
+  public async delete(scope: Scope, tasklistId: string): Promise<void> {
+    const docRef = doc(this.getRef(scope.userId), tasklistId)
     await scope.delete(docRef)
   }
 
