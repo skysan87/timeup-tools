@@ -31,7 +31,9 @@ export class HabitRepository implements IHabitRepository {
       , where('userId', '==', userId)
     )
 
-    const snapshot = await getDocsFromCache(q)
+    // TODO: 保存された値が更新されていないため要検証
+    // const snapshot = await getDocsFromCache(q)
+    const snapshot = await getDocs(q)
     return snapshot.docs.map(doc => this.convert(doc.id, doc.data()))
   }
 
