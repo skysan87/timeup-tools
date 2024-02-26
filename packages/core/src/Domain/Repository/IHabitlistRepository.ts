@@ -1,11 +1,12 @@
+import { ITransactionScope } from "./ITransaction"
 import { Habitlist } from "../Model/Habitlist"
-import { UserId } from "../ValueObject"
 
 /**
  * ユーザ毎に1つのレコード
  */
 export interface IHabitlistRepository {
-  get(userId: UserId): Promise<Habitlist | null>
-  save(userId: UserId, data: Partial<Habitlist>): Promise<Habitlist>
-  update(userId: UserId, data: Partial<Habitlist>): Promise<Habitlist>
+  getId(): string
+  get(scope: ITransactionScope): Promise<Habitlist | null>
+  save(scope: ITransactionScope, data: Habitlist): Promise<Habitlist>
+  update(scope: ITransactionScope, data: Partial<Habitlist>): Promise<Habitlist>
 }

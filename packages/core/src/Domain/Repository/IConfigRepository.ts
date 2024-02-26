@@ -1,8 +1,12 @@
+import { ITransactionScope } from "./ITransaction"
 import { Config } from "../Model/Config"
-import { UserId } from "../ValueObject"
 
+/**
+ * ユーザ毎に1つのレコード
+ */
 export interface IConfigRepository {
-  get(userId: UserId): Promise<Config | null>
-  save(userId: UserId, data: Partial<Config>): Promise<Config>
-  update(userId: UserId, data: Partial<Config>): Promise<Config>
+  getId(): string
+  get(scope: ITransactionScope): Promise<Config | null>
+  save(scope: ITransactionScope, data: Config): Promise<Config>
+  update(scope: ITransactionScope, data: Partial<Config>): Promise<Config>
 }

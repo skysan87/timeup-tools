@@ -1,24 +1,28 @@
 {
-  "name": "@timeup-tools/inmemory-infra",
+  "name": "@timeup-tools/firebase-infra",
   "version": "1.0.0",
   "description": "",
   "private": true,
   "exports": {
     "./repository": "./src/Repository/index.ts",
+    "./Emulator": "./src/Emulator.ts",
     "./package.json": "./package.json"
   },
   "scripts": {
     "clean": "rm -rf build tsconfig.tsbuildinfo",
     "build": "tsc --incremental",
-    "type-check": "tsc -noEmit"
+    "type-check": "tsc -noEmit",
+    "dev-emulator-start": "firebase emulators:start --import=emulator_data --export-on-exit=emulator_data"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@timeup-tools/core": "workspace:*"
+    "@timeup-tools/core": "workspace:*",
+    "firebase": "^10.8.0"
   },
   "devDependencies": {
+    "firebase-tools": "^13.2.1",
     "typescript": "5.2.2"
   }
 }

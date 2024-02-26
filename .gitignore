@@ -111,7 +111,8 @@ sw.*
 !**/config/.gitkeep
 .env
 
-emulator_data/
+**/emulator_data/*
+!**/emulator_data/.gitkeep
 
 build/
 

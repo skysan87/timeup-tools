@@ -1,12 +1,13 @@
+import { ITransactionScope } from "./ITransaction"
 import { Habit } from "../Model/Habit"
-import { DateNumber, UserId } from "../ValueObject"
+import { UserId } from "../ValueObject"
 
 export interface IHabitRepository {
-  validateMaxSize(): boolean
-  get(userId: UserId, habitlistId: string): Promise<Habit[]>
-  getById(userId: UserId, habitlistId: string, habitId: string): Promise<Habit | null>
-  getTodayListFromCache(): Promise<Habit[]>
-  save(userId: UserId, habitlistId: string, data: Habit): Promise<Habit>
-  update(userId: UserId, habitlistId: string, data: Partial<Habit>): Promise<Habit>
-  delete(userId: UserId, habitlistId: string, habitId: string): Promise<void>
+  validateMaxSize(scope: ITransactionScope, habitlistId?: string): Promise<boolean>
+  get(scope: ITransactionScope, habitlistId: string): Promise<Habit[]>
+  getFromCache(userId: UserId, habitlistId: string): Promise<Habit[]>
+  getById(scope: ITransactionScope, habitlistId: string, habitId: string): Promise<Habit | null>
+  save(scope: ITransactionScope, habitlistId: string, data: Habit): Promise<Habit>
+  update(scope: ITransactionScope, habitlistId: string, data: Partial<Habit>): Promise<Habit>
+  delete(scope: ITransactionScope, habitlistId: string, habitId: string): Promise<void>
 }

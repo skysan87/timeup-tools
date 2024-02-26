@@ -44,7 +44,7 @@ beforeEach(async () => {
 
   await habitUseCase.init()
 
-  const tasklistUseCase = new TasklistUseCase(userRepositpry, tasklistRepo, trunsaction)
+  const tasklistUseCase = new TasklistUseCase(userRepositpry, tasklistRepo, taskRepo, trunsaction)
   const tasklist = await tasklistUseCase.addList({ title: 'list_title' } as Tasklist)
   listId = tasklist.id
 })

@@ -26,28 +26,28 @@ export class HabitUseCase {
   public async init(): Promise<Habit[]> {
     const results: Habit[] = []
 
-    await this.transaction.run(async () => {
+    await this.transaction.runBatch(this.userId, async (scope) => {
       let habitlist: Habitlist | null
 
-      habitlist = await this.habitlistRepository.get(this.userId)
+      habitlist = await this.habitlistRepository.get(scope)
 
       if (!habitlist) {
         const data = { userId: this.userId } as Habitlist
 
         habitlist = await new HabitlistBehavior(data).actionAsync(async behavior => {
-          const created = await this.habitlistRepository.save(this.userId, behavior.format())
+          const created = await this.habitlistRepository.save(scope, behavior.format())
           behavior.update(created)
         })
       }
 
-      const tmp: Habit[] = await this.habitRepository.get(this.userId, habitlist.id)
+      const tmp: Habit[] = await this.habitRepository.get(scope, habitlist.id)
 
       tmp.forEach(async h => {
         const habit = await new HabitBehavior(h).actionAsync(async behavior => {
           const habitBehavior = (behavior as HabitBehavior)
           const data = habitBehavior.updateData()
           if (data.needServerUpdate) {
-            const updated = await this.habitRepository.update(this.userId, habitlist!.id, data)
+            const updated = await this.habitRepository.update(scope, habitlist!.id, data)
             habitBehavior.update(updated)
           }
         })
@@ -59,20 +59,40 @@ export class HabitUseCase {
   }
 
   /**
+   * キャッシュから値を取得
+   * @returns
+   */
+  public async getFromCache(): Promise<Habit[]> {
+    const habitlistId = this.habitlistRepository.getId()
+    const tmp: Habit[] = await this.habitRepository.getFromCache(this.userId, habitlistId)
+    // actionで再計算を行う
+    return tmp.map(h => new HabitBehavior(h).action(() => { }))
+  }
+
+  /**
    * 習慣の追加
    * @param habit
    * @returns
    */
   public async addHabit(habit: Partial<Habit>): Promise<Habit> {
-    if (!this.habitRepository.validateMaxSize()) {
-      throw new Error('これ以上登録できません')
-    }
+    let result: Habit
 
-    return new HabitBehavior(habit as Habit).actionAsync(async behavior => {
-      const habitlist = await this.habitlistRepository.get(this.userId)
-      const created = await this.habitRepository.save(this.userId, habitlist!.id, behavior.format())
-      behavior.update(created)
+    await this.transaction.run(this.userId, async (scope) => {
+
+      const habitlistId = this.habitlistRepository.getId()
+
+      if (!await this.habitRepository.validateMaxSize(scope, habitlistId)) {
+        throw new Error('これ以上登録できません')
+      }
+
+      result = await new HabitBehavior(habit as Habit).actionAsync(async behavior => {
+        behavior.update({ rootId: habitlistId, userId: this.userId })
+        const created = await this.habitRepository.save(scope, habitlistId, behavior.format())
+        behavior.update(created)
+      })
     })
+
+    return result!
   }
 
   /**
@@ -82,10 +102,10 @@ export class HabitUseCase {
    */
   public async updateHabit(updateProps: Partial<Habit>): Promise<Habit> {
     let result: Habit
-    await this.transaction.run(async () => {
+    await this.transaction.run(this.userId, async (scope) => {
       result = await new HabitBehavior(updateProps as Habit).actionAsync(async behavior => {
-        const habitlist = await this.habitlistRepository.get(this.userId)
-        const updated = await this.habitRepository.update(this.userId, habitlist!.id, behavior.format())
+        const habitlist = await this.habitlistRepository.get(scope)
+        const updated = await this.habitRepository.update(scope, habitlist!.id, behavior.format())
         behavior.update(updated)
       })
     })
@@ -97,9 +117,9 @@ export class HabitUseCase {
    * @param habitId
    */
   public async deleteHabit(habitId: string): Promise<void> {
-    await this.transaction.run(async () => {
-      const habitlist = await this.habitlistRepository.get(this.userId)
-      this.habitRepository.delete(this.userId, habitlist!.id, habitId)
+    await this.transaction.run(this.userId, async (scope) => {
+      const habitlist = await this.habitlistRepository.get(scope)
+      this.habitRepository.delete(scope, habitlist!.id, habitId)
     })
   }
 

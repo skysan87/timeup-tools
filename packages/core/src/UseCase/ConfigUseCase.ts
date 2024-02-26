@@ -22,8 +22,8 @@ export class ConfigUseCase {
   public async getConfig(): Promise<Config> {
     let result: Config
 
-    await this.transaction.run(async () => {
-      const config = await this.configRepository.get(this.userId)
+    await this.transaction.run(this.userId, async (scope) => {
+      const config = await this.configRepository.get(scope)
 
       if (config) {
         result = config
@@ -35,7 +35,7 @@ export class ConfigUseCase {
       } as Config
 
       result = await new ConfigBehavior(data).actionAsync(async behavior => {
-        const created = await this.configRepository.save(this.userId, behavior.format())
+        const created = await this.configRepository.save(scope, behavior.format())
         behavior.update(created)
       })
     })
@@ -50,10 +50,13 @@ export class ConfigUseCase {
    */
   public async updateMessage(message: string): Promise<Config> {
     let result: Config
-    await this.transaction.run(async () => {
-      const data = { globalMessage: message } as Config
+    await this.transaction.run(this.userId, async (scope) => {
+      const data = {
+        id: this.configRepository.getId(),
+        globalMessage: message
+      } as Config
       result = await new ConfigBehavior(data).actionAsync(async behavior => {
-        const updated = await this.configRepository.update(this.userId, data)
+        const updated = await this.configRepository.update(scope, data)
         behavior.update(updated)
       })
     })

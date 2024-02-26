@@ -5,12 +5,11 @@ import HabitDialog from '@/components/Habit/Dialog.vue'
 import { Habit } from '@timeup-tools/core/model'
 import { LayoutKey } from '~~/.nuxt/types/layouts'
 
-const { currentHabits, currentFilter } = inject('habit') as HabitStore
+const { currentHabits, currentFilter, initFromCache } = inject('habit') as HabitStore
 const dialog = ref<InstanceType<typeof HabitDialog>>()
 
 const route = useRoute()
 const filter: HabitPage = route.params.filter.toString() as HabitPage
-currentFilter.value = filter
 
 const showNewDialog = async () => {
   await dialog.value?.openAsync({ isCreateMode: true, habit: {} as Habit })
@@ -19,6 +18,11 @@ const showNewDialog = async () => {
 const showEditDialg = async (id: string) => {
   await dialog.value?.openAsync({ isCreateMode: false, habit: { id } as Habit })
 }
+
+onMounted(async () => {
+  currentFilter.value = filter
+  await initFromCache()
+})
 
 definePageMeta({
   layout: computed<LayoutKey>(() => {

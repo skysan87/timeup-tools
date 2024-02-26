@@ -1,38 +1,38 @@
-import { Habit } from "@timeup-tools/core/model";
-import { IHabitRepository } from "@timeup-tools/core/repository";
-import { UserId } from "@timeup-tools/core/value-object";
+import { Habit } from "@timeup-tools/core/model"
+import { IHabitRepository } from "@timeup-tools/core/repository"
+import { InMemoryTransactionScope as Scope } from "./InMemoryTransaction"
+import { UserId } from "@timeup-tools/core/value-object"
 
 export class InMemoryHabitRepository implements IHabitRepository {
 
   private memory: Array<Habit> = new Array<Habit>()
 
-  public validateMaxSize(): boolean {
-    return this.memory.length <= 50
+  public async validateMaxSize(scope: Scope): Promise<boolean> {
+    return Promise.resolve(this.memory.length <= 50)
   }
 
-  public get(userId: UserId, habitlistId: string): Promise<Habit[]> {
+  public get(scope: Scope, habitlistId: string): Promise<Habit[]> {
     return new Promise(resolve => {
       resolve(structuredClone(this.memory))
     })
   }
 
-  public getById(userId: UserId, habitlistId: string, habitId: string): Promise<Habit | null> {
+  public getFromCache(userId: UserId, habitlistId: string): Promise<Habit[]> {
+    return this.get(new Scope(userId), habitlistId)
+  }
+
+  public getById(scope: Scope, habitlistId: string, habitId: string): Promise<Habit | null> {
     return new Promise(resolve => {
       resolve(structuredClone(this.memory.find(h => h.id === habitId) ?? null))
     })
   }
 
-  public getTodayListFromCache(): Promise<Habit[]> {
-    return new Promise(resolve => {
-      resolve(this.memory.filter(h => h.isActive && h.isPlanDay))
-    })
-  }
-
-  public save(userId: UserId, habitlistId: string, data: Habit): Promise<Habit> {
+  public save(scope: Scope, habitlistId: string, data: Habit): Promise<Habit> {
     return new Promise(resolve => {
       const timestamp = new Date()
       data.id = Date.now().toString()
-      data.userId = userId
+      data.rootId = habitlistId
+      data.userId = scope.userId
       data.createdAt = timestamp
       data.updatedAt = timestamp
       this.memory.push(data)
@@ -40,7 +40,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     })
   }
 
-  public update(userId: UserId, habitlistId: string, data: Partial<Habit>): Promise<Habit> {
+  public update(scope: Scope, habitlistId: string, data: Partial<Habit>): Promise<Habit> {
     const index = this.memory.findIndex(h => h.id === data.id!)
     const clone = {
       ...this.memory[index],
@@ -51,7 +51,7 @@ export class InMemoryHabitRepository implements IHabitRepository {
     return Promise.resolve(structuredClone(clone))
   }
 
-  public delete(userId: UserId, habitlistId: string, habitId: string): Promise<void> {
+  public delete(scope: Scope, habitlistId: string, habitId: string): Promise<void> {
     return new Promise(resolve => {
       const index = this.memory.findIndex(h => h.id === habitId)
       if (index > -1) {
