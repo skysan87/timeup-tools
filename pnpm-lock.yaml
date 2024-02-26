@@ -152,6 +152,16 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
 
+  packages/web-storage-infra:
+    dependencies:
+      '@timeup-tools/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: 5.2.2
+        version: 5.2.2
+
 packages:
 
   /@alloc/quick-lru@5.2.0:
