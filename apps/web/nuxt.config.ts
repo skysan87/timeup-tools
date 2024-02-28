@@ -7,6 +7,7 @@ console.log('ENV: ', process.env.APP_MODE)
 const coreEnv = {
   'dev-inmemory': '@/plugins/core/inmemory-infra',
   'dev-emulator': '@/plugins/core/firebase-local-infra',
+  'dev-storage': '@/plugins/core/web-storage-infra'
 }
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
