@@ -7,14 +7,18 @@ export class TaskRepository implements ITaskRepository {
 
   private static readonly KEY: string = 'TASK'
 
+  private getData(scope: Scope): Task[] {
+    return scope.get(TaskRepository.KEY) ?? []
+  }
+
   public validateMaxSize(scope: Scope): Promise<boolean> {
-    const data: Task[] = scope.get(TaskRepository.KEY)
+    const data: Task[] = this.getData(scope)
     return Promise.resolve(data.length <= 100)
   }
 
   public getHabits(scope: Scope, today: DateNumber): Promise<Task[]> {
     return new Promise(resolve => {
-      const data: Task[] = scope.get(TaskRepository.KEY)
+      const data: Task[] = this.getData(scope)
       resolve(
         data.filter(t => t.type === TaskType.HABIT && t.startdate === today)
       )
@@ -24,7 +28,7 @@ export class TaskRepository implements ITaskRepository {
   public getTodaysTasks(scope: Scope, today: DateNumber): Promise<Task[]> {
     return new Promise(resolve => {
       const states: TaskState[] = [TaskState.Todo, TaskState.InProgress]
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
       resolve(
         memory.filter(t =>
           t.type === TaskType.TODO
@@ -38,7 +42,7 @@ export class TaskRepository implements ITaskRepository {
 
   public getInProgressTasks(scope: Scope, today: DateNumber): Promise<Task[]> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
       resolve(
         memory.filter(t =>
           t.type === TaskType.TODO
@@ -50,7 +54,7 @@ export class TaskRepository implements ITaskRepository {
 
   public getTodaysDone(scope: Scope, today: DateNumber): Promise<Task[]> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
       resolve(
         memory.filter(t =>
           t.type === TaskType.TODO
@@ -63,7 +67,7 @@ export class TaskRepository implements ITaskRepository {
 
   public get(scope: Scope, tasklistId: string): Promise<Task[]> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
       resolve(
         memory.filter(t =>
           t.type === TaskType.TODO
@@ -75,7 +79,7 @@ export class TaskRepository implements ITaskRepository {
 
   public getById(scope: Scope, taskId: string): Promise<Task | null> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
       resolve(memory.find(h => h.id === taskId) ?? null)
     })
   }
@@ -88,7 +92,7 @@ export class TaskRepository implements ITaskRepository {
       data.createdAt = timestamp
       data.updatedAt = timestamp
 
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
       memory.push(data)
       scope.save(TaskRepository.KEY, memory)
 
@@ -98,7 +102,7 @@ export class TaskRepository implements ITaskRepository {
 
   public saveAll(scope: Scope, data: Task[]): Promise<Task[]> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
 
       const updated: Task[] = []
       for (const task of data) {
@@ -118,7 +122,7 @@ export class TaskRepository implements ITaskRepository {
 
   public update(scope: Scope, data: Partial<Task>): Promise<Task> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
 
       const index = memory.findIndex(h => h.id === data.id!)
       const clone = {
@@ -135,7 +139,7 @@ export class TaskRepository implements ITaskRepository {
 
   public updateAll(scope: Scope, data: Partial<Task>[]): Promise<Task[]> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
 
       const updated: Task[] = []
       for (const task of data) {
@@ -156,7 +160,7 @@ export class TaskRepository implements ITaskRepository {
 
   public delete(scope: Scope, taskIds: string[]): Promise<void> {
     return new Promise(resolve => {
-      const memory: Task[] = scope.get(TaskRepository.KEY)
+      const memory: Task[] = this.getData(scope)
 
       for (const id of taskIds) {
         const index = memory.findIndex(h => h.id === id)

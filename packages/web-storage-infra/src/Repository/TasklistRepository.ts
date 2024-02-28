@@ -6,14 +6,18 @@ export class TasklistRepository implements ITasklistRepository {
 
   private static readonly KEY: string = 'TASKLIST'
 
+  private getData(scope: Scope): Tasklist[] {
+    return scope.get(TasklistRepository.KEY) ?? []
+  }
+
   public validateMaxSize(scope: Scope): Promise<boolean> {
-    const data: Tasklist[] = scope.get(TasklistRepository.KEY)
+    const data: Tasklist[] = this.getData(scope)
     return Promise.resolve(data.length <= 10)
   }
 
   public getMaxIndex(scope: Scope): Promise<number> {
     return new Promise((resolve) => {
-      const data: Tasklist[] = scope.get(TasklistRepository.KEY)
+      const data: Tasklist[] = this.getData(scope)
       resolve(data
         .map(i => i.maxIndex)
         .reduce((a, b) => Math.max(a, b), 0)
@@ -22,12 +26,12 @@ export class TasklistRepository implements ITasklistRepository {
   }
 
   public get(scope: Scope): Promise<Tasklist[]> {
-    return Promise.resolve(scope.get(TasklistRepository.KEY))
+    return Promise.resolve(this.getData(scope))
   }
 
   public getById(scope: Scope, tasklistId: string): Promise<Tasklist | null> {
     return new Promise(resolve => {
-      const memory: Tasklist[] = scope.get(TasklistRepository.KEY)
+      const memory: Tasklist[] = this.getData(scope)
       resolve(structuredClone(memory.find(t => t.id === tasklistId) ?? null))
     })
   }
@@ -40,7 +44,7 @@ export class TasklistRepository implements ITasklistRepository {
       data.createdAt = timestamp
       data.updatedAt = timestamp
 
-      const memory: Tasklist[] = scope.get(TasklistRepository.KEY)
+      const memory: Tasklist[] = this.getData(scope)
       memory.push(data)
       scope.save(TasklistRepository.KEY, memory)
 
@@ -49,7 +53,7 @@ export class TasklistRepository implements ITasklistRepository {
   }
 
   public update(scope: Scope, data: Partial<Tasklist>): Promise<Tasklist> {
-    const memory: Tasklist[] = scope.get(TasklistRepository.KEY)
+    const memory: Tasklist[] = this.getData(scope)
 
     const index = memory.findIndex(h => h.id === data.id!)
     const clone = {
@@ -65,7 +69,7 @@ export class TasklistRepository implements ITasklistRepository {
 
   public delete(scope: Scope, tasklistId: string): Promise<void> {
     return new Promise(resolve => {
-      const memory: Tasklist[] = scope.get(TasklistRepository.KEY)
+      const memory: Tasklist[] = this.getData(scope)
 
       const index = memory.findIndex(t => t.id === tasklistId)
       if (index > -1) {

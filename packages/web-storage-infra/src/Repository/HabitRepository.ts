@@ -7,13 +7,17 @@ export class HabitRepository implements IHabitRepository {
 
   private static readonly KEY: string = 'HABIT'
 
+  private getData(scope: Scope): Habit[] {
+    return scope.get(HabitRepository.KEY) ?? []
+  }
+
   public async validateMaxSize(scope: Scope): Promise<boolean> {
-    const data: Habit[] = scope.get(HabitRepository.KEY)
+    const data: Habit[] = this.getData(scope)
     return Promise.resolve(data.length <= 50)
   }
 
   public get(scope: Scope, habitlistId: string): Promise<Habit[]> {
-    return Promise.resolve(scope.get(HabitRepository.KEY))
+    return Promise.resolve(this.getData(scope))
   }
 
   public getFromCache(userId: UserId, habitlistId: string): Promise<Habit[]> {
@@ -22,7 +26,7 @@ export class HabitRepository implements IHabitRepository {
 
   public getById(scope: Scope, habitlistId: string, habitId: string): Promise<Habit | null> {
     return new Promise(resolve => {
-      const data: Habit[] = scope.get(HabitRepository.KEY)
+      const data: Habit[] = this.getData(scope)
       resolve(structuredClone(data.find(h => h.id === habitId) ?? null))
     })
   }
@@ -36,7 +40,7 @@ export class HabitRepository implements IHabitRepository {
       data.createdAt = timestamp
       data.updatedAt = timestamp
 
-      const memory: Habit[] = scope.get(HabitRepository.KEY)
+      const memory: Habit[] = this.getData(scope)
       memory.push(data)
       scope.save(HabitRepository.KEY, memory)
 
@@ -46,7 +50,7 @@ export class HabitRepository implements IHabitRepository {
 
   public update(scope: Scope, habitlistId: string, data: Partial<Habit>): Promise<Habit> {
     return new Promise(resolve => {
-      const memory: Habit[] = scope.get(HabitRepository.KEY)
+      const memory: Habit[] = this.getData(scope)
 
       const index = memory.findIndex(h => h.id === data.id!)
       const clone = {
@@ -63,7 +67,7 @@ export class HabitRepository implements IHabitRepository {
 
   public delete(scope: Scope, habitlistId: string, habitId: string): Promise<void> {
     return new Promise(resolve => {
-      const memory: Habit[] = scope.get(HabitRepository.KEY)
+      const memory: Habit[] = this.getData(scope)
 
       const index = memory.findIndex(h => h.id === habitId)
       if (index > -1) {
