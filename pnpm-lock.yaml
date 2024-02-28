@@ -13,6 +13,9 @@ importers:
       '@timeup-tools/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@timeup-tools/web-storage-infra':
+        specifier: workspace:^
+        version: link:../../packages/web-storage-infra
     devDependencies:
       '@types/jest':
         specifier: 29.5.5
