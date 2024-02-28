@@ -6,12 +6,12 @@ import {
   TaskRepository,
   TasklistRepository,
   DummyUserRepository,
-  InMemoryTransaction
+  SessionStorageTransaction
 } from '@timeup-tools/web-storage-infra/repository'
 
 export default defineNuxtPlugin(() => {
 
-  console.log('=== install app_mode: inmemory-infra ===')
+  console.log('=== install app_mode: web-storage-infra ===')
 
   const userRepo = new DummyUserRepository(false)
   const habitlistRepo = new HabitlistRepository()
@@ -19,7 +19,7 @@ export default defineNuxtPlugin(() => {
   const taskRepo = new TaskRepository()
   const tasklistRepo = new TasklistRepository()
   const configRepo = new ConfigRepository()
-  const trunsaction = new InMemoryTransaction()
+  const trunsaction = new SessionStorageTransaction()
 
   const auth = new AuthenticateUseCase(userRepo)
   const task = new TaskUseCase(userRepo, taskRepo, tasklistRepo, habitlistRepo, habitRepo, trunsaction)

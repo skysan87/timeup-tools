@@ -6,23 +6,16 @@ settings:
 
 importers:
 
-  .:
-    dependencies:
-      '@timeup-tools/core':
-        specifier: workspace:*
-        version: link:packages/core
-      '@timeup-tools/inmemory-infra':
-        specifier: workspace:*
-        version: link:packages/inmemory-infra
+  .: {}
 
   apps/unit-tester:
     dependencies:
       '@timeup-tools/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@timeup-tools/inmemory-infra':
-        specifier: workspace:*
-        version: link:../../packages/inmemory-infra
+      '@timeup-tools/web-storage-infra':
+        specifier: workspace:^
+        version: link:../../packages/web-storage-infra
     devDependencies:
       '@types/jest':
         specifier: 29.5.5
@@ -66,9 +59,9 @@ importers:
       '@timeup-tools/firebase-infra':
         specifier: workspace:*
         version: link:../../packages/firebase-infra
-      '@timeup-tools/inmemory-infra':
+      '@timeup-tools/web-storage-infra':
         specifier: workspace:*
-        version: link:../../packages/inmemory-infra
+        version: link:../../packages/web-storage-infra
       tailvue:
         specifier: ^1.0.0
         version: 1.0.0(vue@3.3.4)
@@ -142,7 +135,9 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
 
-  packages/inmemory-infra:
+  packages/inmemory-infra: {}
+
+  packages/web-storage-infra:
     dependencies:
       '@timeup-tools/core':
         specifier: workspace:*

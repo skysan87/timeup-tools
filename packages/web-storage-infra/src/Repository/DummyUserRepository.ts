@@ -2,7 +2,7 @@ import { User } from "@timeup-tools/core/model"
 import { IUserRepository } from "@timeup-tools/core/repository"
 import { DisplayName, Mail, UserId } from "@timeup-tools/core/value-object"
 
-export class InMemoryUserRepository implements IUserRepository {
+export class DummyUserRepository implements IUserRepository {
 
   private user: User | null = null
 

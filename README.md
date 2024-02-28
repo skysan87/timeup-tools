@@ -19,16 +19,19 @@
 ## モジュールの追加方法
 
 ```bash
-$ mkdire packages/モジュール名
+$ mkdir packages/モジュール名
 $ cd packages/モジュール名
 $ pnpm init
 
+# package.jsonのnameを設定する
+# name: "@timeup-tools/モジュール名"
+
 # at root directory
-$ pnpm -F モジュール名 add 参照するモジュール名 -E
+$ pnpm -F @timeup-tools/モジュール名 add @timeup-tools/参照するモジュール名 -E
 
 # TypeScript
 # at module directory
-$ pnpm add -D typescript
+$ pnpm add -D typescript@5.2.2
 # create tsconfig.json
 $ pnpm tsc --init
 ```

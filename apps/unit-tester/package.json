@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "@timeup-tools/core": "workspace:*",
-    "@timeup-tools/inmemory-infra": "workspace:*"
+    "@timeup-tools/web-storage-infra": "workspace:^"
   }
 }

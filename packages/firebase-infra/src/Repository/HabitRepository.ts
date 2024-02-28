@@ -26,9 +26,9 @@ export class HabitRepository implements IHabitRepository {
     return count < HabitRepository.MAX_COUNT
   }
 
-  public async getFromCache(userId: UserId, habitlistId: string): Promise<Habit[]> {
-    const q = query(this.getRef(userId, habitlistId)
-      , where('userId', '==', userId)
+  public async getFromCache(scope: Scope, habitlistId: string): Promise<Habit[]> {
+    const q = query(this.getRef(scope.userId, habitlistId)
+      , where('userId', '==', scope.userId)
     )
 
     // TODO: 保存された値が更新されていないため要検証
