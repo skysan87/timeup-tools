@@ -15,4 +15,9 @@ export class InMemoryStorage extends AbstractStorage {
   public delete(key: string): void {
     InMemoryStorage.memory.delete(key)
   }
+
+  public static clear(): void {
+    // for unit-test
+    InMemoryStorage.memory.clear()
+  }
 }

@@ -2,28 +2,30 @@ import { Habit, SubTask, Task, Tasklist } from '@timeup-tools/core/model'
 import { TaskState, TaskType } from '@timeup-tools/core/value-object'
 import { HabitUseCase, TaskUseCase, TasklistUseCase } from '@timeup-tools/core/usecase'
 import {
-  InMemoryUserRepository
-  , InMemoryTaskRepository
-  , InMemoryTasklistRepository
-  , InMemoryHabitRepository
-  , InMemoryTransaction
-  , InMemoryHabitlistRepository
-} from '@timeup-tools/inmemory-infra/repository'
+  HabitRepository,
+  HabitlistRepository,
+  TaskRepository,
+  TasklistRepository,
+  DummyUserRepository,
+  InMemoryTransaction
+} from '@timeup-tools/web-storage-infra/repository'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
 
 let usecase: TaskUseCase
 let habitUseCase: HabitUseCase
 let listId: string
 
-const userRepositpry = new InMemoryUserRepository()
+const userRepositpry = new DummyUserRepository()
 
 beforeEach(async () => {
+  InMemoryTransaction.reset()
+
   await userRepositpry.login()
 
-  const habitlistRepo = new InMemoryHabitlistRepository()
-  const habitRepo = new InMemoryHabitRepository()
-  const taskRepo = new InMemoryTaskRepository()
-  const tasklistRepo = new InMemoryTasklistRepository()
+  const habitlistRepo = new HabitlistRepository()
+  const habitRepo = new HabitRepository()
+  const taskRepo = new TaskRepository()
+  const tasklistRepo = new TasklistRepository()
   const trunsaction = new InMemoryTransaction()
 
   usecase = new TaskUseCase(

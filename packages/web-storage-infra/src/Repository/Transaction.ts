@@ -19,4 +19,8 @@ export class InMemoryTransaction implements ITransaction {
   async runBatch(userId: UserId, callback: (scope: ITransactionScope) => Promise<void>): Promise<void> {
     await callback(new InMemoryStorage(userId))
   }
+  public static reset() {
+    // for unit-test
+    InMemoryStorage.clear()
+  }
 }
