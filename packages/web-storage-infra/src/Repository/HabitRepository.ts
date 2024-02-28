@@ -1,7 +1,6 @@
 import { Habit } from "@timeup-tools/core/model"
 import { IHabitRepository } from "@timeup-tools/core/repository"
-import { WebStorageTransactionScope as Scope } from "./Transaction"
-import { UserId } from "@timeup-tools/core/value-object"
+import { AbstractStorage as Scope } from "../Storage/AbstractStorage"
 
 export class HabitRepository implements IHabitRepository {
 
@@ -20,8 +19,8 @@ export class HabitRepository implements IHabitRepository {
     return Promise.resolve(this.getData(scope))
   }
 
-  public getFromCache(userId: UserId, habitlistId: string): Promise<Habit[]> {
-    return this.get(new Scope(userId), habitlistId)
+  public getFromCache(scope: Scope, habitlistId: string): Promise<Habit[]> {
+    return this.get(scope, habitlistId)
   }
 
   public getById(scope: Scope, habitlistId: string, habitId: string): Promise<Habit | null> {

@@ -1,32 +1,22 @@
 import { ITransaction, ITransactionScope } from "@timeup-tools/core/repository"
 import { UserId } from "@timeup-tools/core/value-object"
+import { SessionStorage } from "../Storage/SessionStorage"
+import { InMemoryStorage } from "../Storage/InMemoryStorage"
 
-export class WebStorageTransactionScope implements ITransactionScope {
-  constructor(private _userId: UserId) { }
-
-  public get userId(): UserId {
-    return this._userId
+export class SessionStorageTransaction implements ITransaction {
+  async run(userId: UserId, callback: (scope: ITransactionScope) => Promise<void>): Promise<void> {
+    await callback(new SessionStorage(userId))
   }
-
-  public get(key: string): any {
-    const jsonStr = sessionStorage.getItem(key)
-    return !jsonStr ? null : JSON.parse(jsonStr)
-  }
-
-  public save(key: string, data: any): void {
-    sessionStorage.setItem(key, JSON.stringify(data))
-  }
-
-  public delete(key: string): void {
-    sessionStorage.removeItem(key)
+  async runBatch(userId: UserId, callback: (scope: ITransactionScope) => Promise<void>): Promise<void> {
+    await callback(new SessionStorage(userId))
   }
 }
 
-export class WebStorageTransaction implements ITransaction {
+export class InMemoryTransaction implements ITransaction {
   async run(userId: UserId, callback: (scope: ITransactionScope) => Promise<void>): Promise<void> {
-    await callback(new WebStorageTransactionScope(userId))
+    await callback(new InMemoryStorage(userId))
   }
   async runBatch(userId: UserId, callback: (scope: ITransactionScope) => Promise<void>): Promise<void> {
-    await callback(new WebStorageTransactionScope(userId))
+    await callback(new InMemoryStorage(userId))
   }
 }

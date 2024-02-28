@@ -1,6 +1,6 @@
 import { Tasklist } from "@timeup-tools/core/model"
 import { ITasklistRepository } from "@timeup-tools/core/repository"
-import { WebStorageTransactionScope as Scope } from "./Transaction"
+import { AbstractStorage as Scope } from "../Storage/AbstractStorage"
 
 export class TasklistRepository implements ITasklistRepository {
 

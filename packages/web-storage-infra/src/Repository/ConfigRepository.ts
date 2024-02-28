@@ -1,6 +1,6 @@
 import { Config } from "@timeup-tools/core/model"
 import { IConfigRepository } from "@timeup-tools/core/repository"
-import { WebStorageTransactionScope as Scope } from "./Transaction"
+import { AbstractStorage as Scope } from "../Storage/AbstractStorage"
 
 export class ConfigRepository implements IConfigRepository {
 

@@ -1,6 +1,6 @@
 import { Habitlist } from "@timeup-tools/core/model"
 import { IHabitlistRepository } from "@timeup-tools/core/repository"
-import { WebStorageTransactionScope as Scope } from "./Transaction"
+import { AbstractStorage as Scope } from "../Storage/AbstractStorage"
 
 export class HabitlistRepository implements IHabitlistRepository {
 

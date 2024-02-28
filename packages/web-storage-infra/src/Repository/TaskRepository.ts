@@ -1,7 +1,7 @@
 import { Task } from "@timeup-tools/core/model"
 import { ITaskRepository } from "@timeup-tools/core/repository"
 import { DateNumber, TaskType, TaskState } from "@timeup-tools/core/value-object"
-import { WebStorageTransactionScope as Scope } from "./Transaction"
+import { AbstractStorage as Scope } from "../Storage/AbstractStorage"
 
 export class TaskRepository implements ITaskRepository {
 
