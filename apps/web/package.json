@@ -7,6 +7,7 @@
     "release-build": "cross-env APP_MODE=production nuxt build && cross-env APP_MODE=production nuxt generate",
     "dev:build": "cross-env APP_MODE=dev-inmemory nuxt build",
     "dev:inmemory": "cross-env APP_MODE=dev-inmemory nuxt dev",
+    "dev:storage": "cross-env APP_MODE=dev-storage nuxt dev",
     "dev:emulator": "cross-env APP_MODE=dev-emulator nuxt dev",
     "clean": "nuxi cleanup",
     "type-check": "tsc -noEmit"
@@ -32,7 +33,7 @@
     "@popperjs/core": "^2.11.8",
     "@timeup-tools/core": "workspace:*",
     "@timeup-tools/firebase-infra": "workspace:*",
-    "@timeup-tools/inmemory-infra": "workspace:*",
+    "@timeup-tools/web-storage-infra": "workspace:*",
     "tailvue": "^1.0.0",
     "v-calendar": "^3.1.1"
   }

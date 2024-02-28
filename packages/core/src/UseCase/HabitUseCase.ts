@@ -63,10 +63,14 @@ export class HabitUseCase {
    * @returns
    */
   public async getFromCache(): Promise<Habit[]> {
-    const habitlistId = this.habitlistRepository.getId()
-    const tmp: Habit[] = await this.habitRepository.getFromCache(this.userId, habitlistId)
-    // actionで再計算を行う
-    return tmp.map(h => new HabitBehavior(h).action(() => { }))
+    const result: Habit[] = []
+    await this.transaction.run(this.userId, async scope => {
+      const habitlistId = this.habitlistRepository.getId()
+      const tmp: Habit[] = await this.habitRepository.getFromCache(scope, habitlistId)
+      // actionで再計算を行う
+      result.push(...tmp.map(h => new HabitBehavior(h).action(() => { })))
+    })
+    return result
   }
 
   /**

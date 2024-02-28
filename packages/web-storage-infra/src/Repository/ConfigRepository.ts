@@ -1,11 +1,10 @@
 import { Config } from "@timeup-tools/core/model"
 import { IConfigRepository } from "@timeup-tools/core/repository"
-import { UserId } from "@timeup-tools/core/value-object"
-import { InMemoryTransactionScope as Scope } from "./InMemoryTransaction"
+import { AbstractStorage as Scope } from "../Storage/AbstractStorage"
 
-export class InMemoryConfigRepository implements IConfigRepository {
+export class ConfigRepository implements IConfigRepository {
 
-  private memory: Map<UserId, Config> = new Map<UserId, Config>()
+  private static readonly KEY: string = 'CONFIG'
 
   private _id?: string
 
@@ -17,7 +16,7 @@ export class InMemoryConfigRepository implements IConfigRepository {
   }
 
   public get(scope: Scope): Promise<Config | null> {
-    const data = this.memory.get(scope.userId) ?? null
+    const data = scope.get(ConfigRepository.KEY)
     if (data) {
       this._id = data.id
     }
@@ -25,22 +24,27 @@ export class InMemoryConfigRepository implements IConfigRepository {
   }
 
   public save(scope: Scope, data: Config): Promise<Config> {
+    const timestamp = new Date()
     const _data = {
       ...data,
-      userId: scope.userId
+      userId: scope.userId,
+      id: 'dummyConfig',
+      createdAt: timestamp,
+      updatedAt: timestamp
     } as Config
-    this.memory.set(scope.userId, _data)
+    scope.save(ConfigRepository.KEY, _data)
     this._id = _data.id
     return Promise.resolve(structuredClone(_data))
   }
 
   public update(scope: Scope, data: Partial<Config>): Promise<Config> {
-    const base = this.memory.get(scope.userId) ?? {} as Config
+    const base = scope.get(ConfigRepository.KEY) ?? {} as Config
     const clone = {
       ...base,
-      ...data
+      ...data,
+      updatedAt: new Date()
     } as Config
-    this.memory.set(scope.userId, clone)
+    scope.save(ConfigRepository.KEY, clone)
     return Promise.resolve(structuredClone(clone))
   }
 }

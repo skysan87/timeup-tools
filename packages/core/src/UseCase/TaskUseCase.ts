@@ -44,19 +44,18 @@ export class TaskUseCase {
   public async getTodaysTasks(): Promise<Task[]> {
     const today = dateFactory().getDateNumber() as DateNumber
 
-    // 1. 今日の習慣を取得
-    const habitlistId = this.habitlistRepository.getId()
-    const todaysHabits: Habit[] = (await this.habitRepository.getFromCache(this.userId, habitlistId))
-      .map(h => new HabitBehavior(h).action(() => { }))
-      .filter(h => h.isActive && h.isPlanDay)
-    // 2. 習慣のToDoをサーバーから取得
-    const habitTasks: Task[] = await (async () => {
-      let t: Task[]
-      await this.transaction.run(this.userId, async (scope) => {
-        t = await this.taskRepository.getHabits(scope, today)
-      })
-      return t!
-    })()
+    const todaysHabits: Habit[] = []
+    const habitTasks: Task[] = []
+    await this.transaction.run(this.userId, async scope => {
+      // 1. 今日の習慣を取得
+      const habitlistId = this.habitlistRepository.getId()
+      const result = await this.habitRepository.getFromCache(scope, habitlistId)
+      todaysHabits.push(...result.map(h => new HabitBehavior(h).action(() => { }))
+        .filter(h => h.isActive && h.isPlanDay))
+
+      // 2. 習慣のToDoをサーバーから取得
+      habitTasks.push(...await this.taskRepository.getHabits(scope, today))
+    })
     // 3. 1と2を比較して、2が存在しないものは、追加する
     const missinglist = todaysHabits.reduce((pre: Task[], _habit: Habit) => {
       // Habit.id === Todo.listId
