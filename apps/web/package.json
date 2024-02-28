@@ -33,7 +33,6 @@
     "@popperjs/core": "^2.11.8",
     "@timeup-tools/core": "workspace:*",
     "@timeup-tools/firebase-infra": "workspace:*",
-    "@timeup-tools/inmemory-infra": "workspace:*",
     "@timeup-tools/web-storage-infra": "workspace:*",
     "tailvue": "^1.0.0",
     "v-calendar": "^3.1.1"

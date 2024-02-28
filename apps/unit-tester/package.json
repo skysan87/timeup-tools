@@ -19,7 +19,6 @@
     "typescript": "5.2.2"
   },
   "dependencies": {
-    "@timeup-tools/core": "workspace:*",
-    "@timeup-tools/inmemory-infra": "workspace:*"
+    "@timeup-tools/core": "workspace:*"
   }
 }
