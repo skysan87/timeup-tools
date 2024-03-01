@@ -54,7 +54,7 @@ const handleCheck = () => {
   <div class="box flex items-center w-full" @click.stop="handleSelect">
     <fa v-if="props.option.showPointer" :icon="['fas', 'ellipsis-v']" class="move-icon px-1" />
     <div v-show="props.option.showEdit == false" class="px-1" @click.stop="changeState(task.id)">
-      <span :style="getStateColor(task.state)" class="circle-button cursor-pointer" />
+      <span :class="getStateColor(task.state)" class="circle-button cursor-pointer" />
     </div>
     <div class="no-wrap flex-1 text-left p-1">
       {{ task.title }}

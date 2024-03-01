@@ -37,14 +37,14 @@ const reload = async () => {
   <div class="w-full flex items-center justify-center flex-wrap py-1">
     <label class="flex items-center">
       <span class="ml-1">Total</span>
-      <span class="ml-1 badge" :style="getStateColor()">
+      <span class="ml-1 badge" :class="getStateColor()">
         {{ getTaskCount() }}
       </span>
     </label>
     <label v-for="state in TaskState" :key="state" class="ml-2 flex items-center">
       <input v-model="selectedState" type="checkbox" :value="state">
       <span class="ml-1">{{ TaskStateLabel[state] }}</span>
-      <span class="ml-1 badge" :style="getStateColor(state)">
+      <span class="ml-1 badge" :class="getStateColor(state)">
         {{ getTaskCount(state) }}
       </span>
     </label>
