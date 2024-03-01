@@ -2,7 +2,7 @@
 import { TaskStateLabel, TaskState } from '@timeup-tools/core/value-object'
 import TasklistDialog from '@/components/Tasklist/Dialog.vue'
 
-const { getTaskCount, deleteDone, switchEdit, init, changeFilter, selectedState, currentListId, editMode } = inject('task') as TaskStore
+const { getTaskCount, deleteDone, switchEdit, init, selectedState, currentListId, editMode } = inject('task') as TaskStore
 const { getStateColor } = useStateColor()
 
 interface Props {
@@ -14,31 +14,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const dialog = ref<InstanceType<typeof TasklistDialog>>()
-const isAllSelected = ref(false)
-const filterOption = computed({
-  get(): TaskState[] {
-    return selectedState.value.concat()
-  },
-  set(value: TaskState[]) {
-    changeFilter(value)
-  }
-})
-
-/**
- * すべて表示
- */
-const selectAll = () => {
-  // イベント発生時,値は更新されていない
-  if (isAllSelected.value === false) {
-    filterOption.value = Object.values(TaskState)
-  } else {
-    filterOption.value.length = 0
-  }
-}
-
-const filterChanged = () => {
-  isAllSelected.value = Object.values(TaskState).length === filterOption.value.length
-}
 
 /**
  * 完了済みのタスクを削除
@@ -61,14 +36,13 @@ const reload = async () => {
 <template>
   <div class="w-full flex items-center justify-center flex-wrap py-1">
     <label class="flex items-center">
-      <input v-model="isAllSelected" type="checkbox" @click="selectAll">
-      <span class="ml-1">All</span>
+      <span class="ml-1">Total</span>
       <span class="ml-1 badge" :style="getStateColor()">
         {{ getTaskCount() }}
       </span>
     </label>
     <label v-for="state in TaskState" :key="state" class="ml-2 flex items-center">
-      <input v-model="filterOption" type="checkbox" :value="state" @change="filterChanged">
+      <input v-model="selectedState" type="checkbox" :value="state">
       <span class="ml-1">{{ TaskStateLabel[state] }}</span>
       <span class="ml-1 badge" :style="getStateColor(state)">
         {{ getTaskCount(state) }}

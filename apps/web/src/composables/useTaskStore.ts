@@ -157,10 +157,6 @@ export const useTaskStore = () => {
     checkSelected()
   }
 
-  const changeFilter = (states: TaskState[]) => {
-    selectedState.value = [...states]
-  }
-
   const addTask = async (task: Partial<Task>) => {
     const newTask = await $task.addTask(_listId.value, task)
     _tasks.value.push(newTask)
@@ -203,7 +199,7 @@ export const useTaskStore = () => {
     filterdTasks,
     taskSize: _tasks.value.length,
     editMode: readonly(editMode),
-    selectedState: readonly(selectedState),
+    selectedState,
     currentListId: readonly(_listId),
     selectedItem: readonly(selectedItem),
     create,
@@ -218,7 +214,6 @@ export const useTaskStore = () => {
     deleteDone,
     changeOrderTask,
     changeState,
-    changeFilter,
     setDeadline,
     selectTask,
     switchEdit,
