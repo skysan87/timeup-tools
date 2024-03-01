@@ -96,6 +96,7 @@ export const useTaskStore = () => {
     _listId.value = listId
     _tasks.value.length = 0
     _tasks.value.push(...tasks)
+    selectedState.value = DEFAULT_STATE
     checkSelected()
   }
 
