@@ -3,7 +3,6 @@ import { TaskState } from "@timeup-tools/core/value-object"
 export const useStateColor = () => {
   return {
     getStateColor: (state?: TaskState) => {
-      console.log('getStateColor', state)
       switch (state) {
         case TaskState.Todo:
           return 'circle-button-todo'
