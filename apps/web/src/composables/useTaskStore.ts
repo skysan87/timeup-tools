@@ -29,28 +29,23 @@ export const useTaskStore = () => {
   }
 
   const filterdTasks = computed(() => {
-    const selectecCount = selectedState.value.length
-    const selectAll = Object.values(TaskState).length === selectecCount
-    const filterd = (selectAll === false) ?
-      _tasks.value.filter(task => selectedState.value.includes(task.state)) :
-      _tasks.value.concat()
-    return getOrderBy(filterd)
+    return _tasks.value
+      .filter(task => selectedState.value.includes(task.state))
+      .toSorted(orderByCallback)
   })
 
   /**
    * リスト、表示順で並び替え(昇順)
    * @see https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
    */
-  const getOrderBy = (array: Task[]): Task[] => {
+  const orderByCallback = (a: Task, b: Task) => {
     const FORWORD = -1
     const BACKWORD = 1
-    return array.toSorted((a, b) => {
-      if (a.listId < b.listId) return FORWORD
-      if (a.listId > b.listId) return BACKWORD
-      if (a.orderIndex < b.orderIndex) return FORWORD
-      if (a.orderIndex > b.orderIndex) return BACKWORD
-      return 0
-    })
+    if (a.listId < b.listId) return FORWORD
+    if (a.listId > b.listId) return BACKWORD
+    if (a.orderIndex < b.orderIndex) return FORWORD
+    if (a.orderIndex > b.orderIndex) return BACKWORD
+    return 0
   }
 
   const getTaskById = (id: string): Task => {
@@ -96,6 +91,7 @@ export const useTaskStore = () => {
     _listId.value = listId
     _tasks.value.length = 0
     _tasks.value.push(...tasks)
+    selectedState.value = DEFAULT_STATE
     checkSelected()
   }
 
@@ -105,7 +101,7 @@ export const useTaskStore = () => {
     const src: Task = structuredClone(filtered[oldIndex])
     const dest: Task = structuredClone(filtered[newIndex])
 
-    const sorted = getOrderBy(_tasks.value)
+    const sorted = _tasks.value.toSorted(orderByCallback)
     const actualNewIndex = sorted.findIndex(v => v.id === dest.id)
 
     let prevOrderIndex, nextOrderIndex
@@ -157,10 +153,6 @@ export const useTaskStore = () => {
     checkSelected()
   }
 
-  const changeFilter = (states: TaskState[]) => {
-    selectedState.value = [...states]
-  }
-
   const addTask = async (task: Partial<Task>) => {
     const newTask = await $task.addTask(_listId.value, task)
     _tasks.value.push(newTask)
@@ -203,7 +195,7 @@ export const useTaskStore = () => {
     filterdTasks,
     taskSize: _tasks.value.length,
     editMode: readonly(editMode),
-    selectedState: readonly(selectedState),
+    selectedState,
     currentListId: readonly(_listId),
     selectedItem: readonly(selectedItem),
     create,
@@ -218,7 +210,6 @@ export const useTaskStore = () => {
     deleteDone,
     changeOrderTask,
     changeState,
-    changeFilter,
     setDeadline,
     selectTask,
     switchEdit,

@@ -5,26 +5,13 @@ export const useStateColor = () => {
     getStateColor: (state?: TaskState) => {
       switch (state) {
         case TaskState.Todo:
-          return {
-            color: '#212529',
-            backgroundColor: '#fff',
-            border: '1px solid #000000'
-          }
+          return 'circle-button-todo'
         case TaskState.InProgress:
-          return {
-            color: '#212529',
-            backgroundColor: '#ffc107'
-          }
+          return 'circle-button-inprogress'
         case TaskState.Done:
-          return {
-            color: '#fff',
-            backgroundColor: '#28a745'
-          }
+          return 'circle-button-done'
         default:
-          return {
-            color: '#fff',
-            backgroundColor: '#17a2b8'
-          }
+          return 'circle-button-default'
       }
     }
   }

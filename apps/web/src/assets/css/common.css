@@ -15,6 +15,27 @@
   -moz-border-radius: 50%;
 }
 
+.circle-button-todo {
+  color: #212529;
+  background-color: #fff;
+  border: 1px solid #000000;
+}
+
+.circle-button-inprogress {
+  color: #212529;
+  background-color: #ffc107;
+}
+
+.circle-button-done {
+  color: #fff;
+  background-color: #28a745;
+}
+
+.circle-button-default {
+  color: #fff;
+  background-color: #17a2b8;
+}
+
 .omit-text {
   white-space: nowrap;
   overflow: hidden;
