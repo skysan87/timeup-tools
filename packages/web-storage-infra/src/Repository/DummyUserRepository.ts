@@ -8,11 +8,17 @@ export class DummyUserRepository implements IUserRepository {
 
   private _skipAuth: boolean = false
 
+  private isInitalized: boolean = false
+
   constructor(skipAuth = false) {
     this._skipAuth = skipAuth
-    if (skipAuth) {
-      this.login() // 起動時のみ自動ログイン
+  }
+
+  public async initalize(): Promise<void> {
+    if (this._skipAuth) {
+      await this.login() // 起動時のみ自動ログイン
     }
+    this.isInitalized = true
   }
 
   public get(): Promise<User> {
@@ -29,8 +35,11 @@ export class DummyUserRepository implements IUserRepository {
     return this.user
   }
 
-  public authenticated(): Promise<boolean> {
-    return Promise.resolve(this.user !== null)
+  public authenticated(): boolean {
+    if (!this.isInitalized) {
+      return false
+    }
+    return this.user !== null
   }
 
   public login(): Promise<User> {

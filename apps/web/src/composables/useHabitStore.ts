@@ -12,6 +12,7 @@ export const useHabitStore = () => {
 
   const init = async () => {
     _habits.value = await $habit.init()
+    console.log('init HabitStore')
   }
 
   const initFromCache = async () => {

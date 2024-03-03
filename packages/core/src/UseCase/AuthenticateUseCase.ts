@@ -8,7 +8,7 @@ export class AuthenticateUseCase {
   ) { }
 
   public async login(): Promise<User> {
-    if (await this.repo.authenticated()) {
+    if (this.repo.authenticated()) {
       return await this.repo.get()
     }
     return await this.repo.login()
@@ -22,12 +22,17 @@ export class AuthenticateUseCase {
     return await this.repo.get()
   }
 
+  public authenticated(): boolean {
+    return this.repo.authenticated()
+  }
+
   /**
    * 認証済み状態かチェックする
    * @description
-   *  アプリケーション実行時に一度だけ実行する。(app.vueなどで初期化)
+   *  アプリケーション実行時に一度だけ実行する(app.vueで初期化)
    */
-  public async checkLogin(): Promise<boolean> {
-    return await this.repo.authenticated()
+  public async initalize(): Promise<boolean> {
+    await this.repo.initalize()
+    return this.repo.authenticated()
   }
 }
