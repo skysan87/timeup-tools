@@ -1,11 +1,9 @@
 import { Tasklist } from "@timeup-tools/core/model"
 
-export type TasklistStore = ReturnType<typeof useTasklistStore>
-
 export const useTasklistStore = () => {
   const { $tasklist, $toast } = useNuxtApp()
 
-  const tasklists = ref<Tasklist[]>([])
+  const tasklists = useState<Tasklist[]>('tasklist', () => [])
 
   return {
     tasklists: readonly(tasklists),

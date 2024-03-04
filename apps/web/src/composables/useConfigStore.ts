@@ -1,11 +1,9 @@
 import { Config } from '@timeup-tools/core/model'
 
-export type ConfigStore = ReturnType<typeof useConfigStore>
-
 export const useConfigStore = () => {
   const { $user_config } = useNuxtApp()
 
-  const config = ref<Config>({} as Config)
+  const config = useState<Config>('config', () => $user_config.create())
 
   return {
     config: readonly(config),

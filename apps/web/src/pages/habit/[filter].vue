@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { HabitPage, HabitPageLabel } from '@/const/page'
-import { HabitStore } from '@/composables/useHabitStore'
 import HabitDialog from '@/components/Habit/Dialog.vue'
 import { Habit } from '@timeup-tools/core/model'
 import { LayoutKey } from '~~/.nuxt/types/layouts'
 
-const { currentHabits, currentFilter, initFromCache } = inject('habit') as HabitStore
+const { currentHabits, currentFilter, initFromCache } = useHabitStore()
 const dialog = ref<InstanceType<typeof HabitDialog>>()
 
 const route = useRoute()

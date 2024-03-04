@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { TaskStore } from '@/composables/useTaskStore'
 import GanttChart from '@/components/Gantt/Chart.vue'
 import { LayoutKey } from '~~/.nuxt/types/layouts'
 
-const { filterdTasks, init, setDeadline, selectTask } = inject('task') as TaskStore
-const { tasklists } = inject('tasklist') as TasklistStore
+const { filterdTasks, init, setDeadline, selectTask } = useTaskStore()
+const { tasklists } = useTasklistStore()
 const { $toast } = useNuxtApp()
 const gantt = ref<InstanceType<typeof GanttChart>>()
 

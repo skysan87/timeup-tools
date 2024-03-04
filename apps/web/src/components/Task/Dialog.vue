@@ -10,8 +10,8 @@ import { ValidateError } from '@timeup-tools/core/error'
 const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
 const { subTasks, isNewSubtask, doneCount, addButton, init, addSubTask, updateSubtask, deleteSubtask } = useSubTask()
-const { tasklists } = inject('tasklist') as TasklistStore
-const { create, getTaskById, addTask, deleteTask, updateTask, currentListId } = inject('task') as TaskStore
+const { tasklists } = useTasklistStore()
+const { create, getTaskById, addTask, deleteTask, updateTask, currentListId } = useTaskStore()
 
 type Input = {
   isCreateMode: boolean

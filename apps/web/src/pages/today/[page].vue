@@ -4,7 +4,7 @@ import { Task } from '@timeup-tools/core/model'
 import { TodayPage } from '~/const/page'
 import { LayoutKey } from '~~/.nuxt/types/layouts'
 
-const { filterdTasks, selectTask, initTodaylist, initInProgressList } = inject('task') as TaskStore
+const { filterdTasks, selectTask, initTodaylist, initInProgressList } = useTaskStore()
 const dialog = ref<InstanceType<typeof TaskDialog>>()
 
 const showEditDialog = async (id: string) => {

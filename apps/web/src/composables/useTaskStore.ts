@@ -1,19 +1,17 @@
 import { Task } from "@timeup-tools/core/model"
 import { DateNumber, TaskState } from "@timeup-tools/core/value-object"
 
-export type TaskStore = ReturnType<typeof useTaskStore>
-
 export const useTaskStore = () => {
   const { $task } = useNuxtApp()
 
   const DEFAULT_STATE = [TaskState.Todo, TaskState.InProgress]
 
-  const _tasks = ref<Task[]>([])
-  const _listId = ref<string>('')
+  const _tasks = useState<Task[]>('task', () => [])
+  const _listId = useState<string>('listId', () => '')
 
-  const selectedState = ref<TaskState[]>(DEFAULT_STATE)
-  const selectedItem = ref<Task | null>(null)
-  const editMode = ref<boolean>(false)
+  const selectedState = useState<TaskState[]>('selectedState', () => DEFAULT_STATE)
+  const selectedItem = useState<Task | null>('selectedItem', () => null)
+  const editMode = useState<boolean>('editMode', () => false)
 
   const switchEdit = () => {
     editMode.value = !editMode.value

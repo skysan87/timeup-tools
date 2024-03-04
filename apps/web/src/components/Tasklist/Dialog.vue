@@ -3,7 +3,7 @@ import { Tasklist } from '@timeup-tools/core/model'
 import { useDialog } from '@/composables/useDialog'
 
 const { dialog, open, cancel, submit } = useDialog()
-const { create, getTasklist, addTasklist, updateTasklist, deleteTasklist } = inject('tasklist') as TasklistStore
+const { create, getTasklist, addTasklist, updateTasklist, deleteTasklist } = useTasklistStore()
 
 const _isCreateMode = ref<boolean>(false)
 const tasklist = ref<Tasklist>({} as Tasklist)
