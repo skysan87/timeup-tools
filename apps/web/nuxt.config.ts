@@ -15,6 +15,8 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   srcDir: 'src',
   ssr: false,
+  // TIPS: pluginsを読み込み中に表示するローディング
+  spaLoadingTemplate: true,
   // call from useRuntimeConfig
   runtimeConfig: {
     public: {
@@ -36,9 +38,11 @@ export default defineNuxtConfig({
     }
   },
 
+  // TIPS: 記載順に読み込まれる
   plugins: [
     // @ts-ignore
-    { src: coreEnv[process.env.APP_MODE], mode: 'client' }
+    { src: coreEnv[process.env.APP_MODE], mode: 'client' },
+    { src: '@/plugins/app/auth', mode: 'client' },
   ],
 
   postcss: {
