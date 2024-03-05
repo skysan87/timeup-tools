@@ -2,7 +2,7 @@
 import PartInputDialog from '@/components/Part/InputDialog.vue'
 
 const dialog = ref<InstanceType<typeof PartInputDialog>>()
-const { config, updateMessage } = inject('config') as ConfigStore
+const { config, updateMessage } = useConfigStore()
 const { $toast } = useNuxtApp()
 
 const updateHeaderText = async () => {

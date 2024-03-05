@@ -85,3 +85,12 @@ pnpm run dev:build
 * ログアウト
 * プロジェクトの追加・編集・削除
 * ヘッダーメッセージの編集
+
+## 初期化処理順
+
+1. plugins/core/***-infra.ts
+  * コア機能の初期化
+2. plugins/app/auth.ts
+  * 認証機能の初期化
+3. app.vue
+4. (pages/index.vue)

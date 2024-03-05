@@ -1,17 +1,16 @@
 import { Habit } from "@timeup-tools/core/model"
 import { HabitPage } from "@/const/page"
 
-export type HabitStore = ReturnType<typeof useHabitStore>
-
 export const useHabitStore = () => {
   const { $habit } = useNuxtApp()
 
-  const _habits = ref<Habit[]>([])
+  const _habits = useState<Habit[]>('habit', () => [])
 
   const currentFilter = ref<HabitPage | ''>('')
 
   const init = async () => {
     _habits.value = await $habit.init()
+    console.log('init HabitStore')
   }
 
   const initFromCache = async () => {

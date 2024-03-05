@@ -16,6 +16,10 @@ export class ConfigUseCase {
     return this._userId ?? this.userRepositpry.getFromCache().id
   }
 
+  public create(): Config {
+    return new ConfigBehavior({} as Config).format()
+  }
+
   /**
    * 取得
    */

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 const { login, checkLogin } = useAuth()
-const { init: initTasklist } = inject('tasklist') as TasklistStore
-const { init: initHabit } = inject('habit') as HabitStore
-const { init: initConfig } = inject('config') as ConfigStore
+const { init: initTasklist } = useTasklistStore()
+const { init: initHabit } = useHabitStore()
+const { init: initConfig } = useConfigStore()
 const config = useRuntimeConfig()
 
 const isMounted = ref(false)
 const isClicked = ref(false)
 const isLogin = ref(false)
 
-const navigigate = async () => {
+const navigate = async () => {
   await Promise.all([
     initHabit(),
     initTasklist(),
@@ -22,7 +22,7 @@ const navigigate = async () => {
 const doLogin = async () => {
   isClicked.value = true
   await login((_user) => {
-    navigigate()
+    navigate()
   }, (error) => {
     isLogin.value = false
     throw showError(error)
@@ -30,16 +30,12 @@ const doLogin = async () => {
 }
 
 onMounted(async () => {
-  // ログイン後リダイレクト時
-  // FIXME:
-  // onMounted is called when there is no active component instance to be associated with.
-  // Lifecycle injection APIs can only be used during execution of setup().
-  // If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
-  const loginSucceeded = await checkLogin()
+  const loginSucceeded = checkLogin()
   if (loginSucceeded) {
-    await navigigate()
+    await navigate()
+  } else {
+    isMounted.value = true
   }
-  isMounted.value = true
 })
 </script>
 

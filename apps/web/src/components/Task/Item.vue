@@ -2,10 +2,9 @@
 import { Task } from '@timeup-tools/core/model'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
 import { useStateColor } from '~/composables/useStateColor'
-import { TaskStore } from '~/composables/useTaskStore'
 
 const { getStateColor } = useStateColor()
-const { changeState } = inject('task') as TaskStore
+const { changeState } = useTaskStore()
 
 interface Props {
   task: Task

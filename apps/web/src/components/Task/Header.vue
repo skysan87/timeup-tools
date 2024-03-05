@@ -2,7 +2,7 @@
 import { TaskStateLabel, TaskState } from '@timeup-tools/core/value-object'
 import TasklistDialog from '@/components/Tasklist/Dialog.vue'
 
-const { getTaskCount, deleteDone, switchEdit, init, selectedState, currentListId, editMode } = inject('task') as TaskStore
+const { getTaskCount, deleteDone, switchEdit, init, selectedState, currentListId, editMode } = useTaskStore()
 const { getStateColor } = useStateColor()
 
 interface Props {

@@ -1,15 +1,21 @@
 <script setup lang="ts">
-provide('tasklist', useTasklistStore())
-provide('viewstate', useViewState())
-provide('task', useTaskStore())
-provide('habit', useHabitStore())
-provide('config', useConfigStore())
+const { checkLogin } = useAuth()
+const { init: initTasklist } = useTasklistStore()
+const { init: initHabit } = useHabitStore()
+const { init: initConfig } = useConfigStore()
+
+if (checkLogin()) {
+  await Promise.all([
+    initHabit(),
+    initTasklist(),
+    initConfig()
+  ])
+}
 </script>
 
 <template>
-  <div>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </div>
+  <NuxtLayout>
+    <NuxtLoadingIndicator />
+    <NuxtPage />
+  </NuxtLayout>
 </template>

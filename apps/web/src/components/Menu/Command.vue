@@ -2,9 +2,9 @@
 import { useAuth } from '@/composables/useAuth'
 
 const { logout, getUserName } = useAuth()
-const { init: initTasklist } = inject('tasklist') as TasklistStore
-const { init: initHabit } = inject('habit') as HabitStore
-const { init: initConfig } = inject('config') as ConfigStore
+const { init: initTasklist } = useTasklistStore()
+const { init: initHabit } = useHabitStore()
+const { init: initConfig } = useConfigStore()
 
 const config = useRuntimeConfig()
 

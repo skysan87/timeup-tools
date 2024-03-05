@@ -3,8 +3,8 @@ import { dateFactory } from '@timeup-tools/core/util/DateUtil'
 import { useBoard } from '@/composables/useBoard'
 
 const { sideWidth, dragStartSidebar, draggingSidebar, registerEvents, unregisterEvents } = useBoard()
-const { selectedItem } = inject('task') as TaskStore
-const { config } = inject('config') as ConfigStore
+const { selectedItem } = useTaskStore()
+const { config } = useConfigStore()
 
 const currentDate: string = dateFactory().format('YYYY.M.D(ddd)')
 

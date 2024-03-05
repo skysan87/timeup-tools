@@ -3,7 +3,7 @@ import { useMenu } from '@/composables/useMenu'
 import { MainPage } from '@/const/page'
 import TasklistDialog from '@/components/Tasklist/Dialog.vue'
 
-const { tasklists } = inject('tasklist') as TasklistStore
+const { tasklists } = useTasklistStore()
 const { isSelected } = useMenu()
 
 const activeItemId = ref<string>('')

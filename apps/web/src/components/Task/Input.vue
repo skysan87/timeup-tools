@@ -7,7 +7,7 @@ import { DateNumber, TaskType } from '@timeup-tools/core/value-object'
 
 type DeadlineType = 'today' | 'tomorrow' | 'later'
 
-const { addTask, currentListId } = inject('task') as TaskStore
+const { addTask, currentListId } = useTaskStore()
 const { $toast } = useNuxtApp()
 
 const task = ref<Task>({ type: TaskType.TODO, listId: currentListId.value } as Task)

@@ -6,7 +6,7 @@ const { isMenuExpanded, switchMenu, close } = useMobileLayout()
 const route = useRoute()
 
 const currentDate: string = dateFactory().format('YYYY.M.D(ddd)')
-const { config } = inject('config') as ConfigStore
+const { config } = useConfigStore()
 
 watch(
   () => route.path,

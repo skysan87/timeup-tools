@@ -2,8 +2,8 @@
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
 import { DateNumber, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
 
-const { selectedItem: task, selectTask } = inject('task') as TaskStore
-const { getTasklistName } = inject('tasklist') as TasklistStore
+const { selectedItem: task, selectTask } = useTaskStore()
+const { getTasklistName } = useTasklistStore()
 const options = Object.values(TaskState)
 
 const dtFormat = (value: DateNumber | null) => {

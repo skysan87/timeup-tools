@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import TaskDialog from '@/components/Task/Dialog.vue'
-import { TaskStore } from '@/composables/useTaskStore'
-import { Task } from '@timeup-tools/core/model';
-import { dateFactory } from '@timeup-tools/core/util/DateUtil';
-import { DateNumber, DateRange } from '@timeup-tools/core/value-object';
+import { Task } from '@timeup-tools/core/model'
+import { dateFactory } from '@timeup-tools/core/util/DateUtil'
+import { DateNumber, DateRange } from '@timeup-tools/core/value-object'
 import { DatePicker } from 'v-calendar'
 import { LayoutKey } from '~~/.nuxt/types/layouts'
 
 const route = useRoute()
-const { editMode, filterdTasks, init, setDeadline, deleteTasks, switchEdit, selectTask } = inject('task') as TaskStore
+const { editMode, filterdTasks, init, setDeadline, deleteTasks, switchEdit, selectTask } = useTaskStore()
 const { $toast } = useNuxtApp()
 
 const dialog = ref<InstanceType<typeof TaskDialog>>()
