@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Tasklist } from '@timeup-tools/core/model'
 import { useDialog } from '@/composables/useDialog'
+import { ValidateError } from '@timeup-tools/core/error';
 
 const { dialog, open, cancel, submit } = useDialog()
 const { create, getTasklist, addTasklist, updateTasklist, deleteTasklist } = useTasklistStore()
 
 const _isCreateMode = ref<boolean>(false)
 const tasklist = ref<Tasklist>({} as Tasklist)
-const errorMsg = ref<string>('')
 
 type Input = {
   /** 削除ボタンを非表示 */
@@ -15,8 +15,14 @@ type Input = {
   tasklistId?: string
 }
 
+const errorMsg = reactive({
+  common: '',
+  title: ''
+})
+
 const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
   return open(() => {
+    initErrorMsg()
     _isCreateMode.value = input.isCreateMode
     if (input.isCreateMode) {
       tasklist.value = create()
@@ -31,8 +37,8 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 }
 
 const _submit = async () => {
-  errorMsg.value = ''
   try {
+    initErrorMsg()
     if (null === (tasklist.value.id ?? null)) {
       await addTasklist(tasklist.value)
     } else {
@@ -40,13 +46,29 @@ const _submit = async () => {
     }
     submit()
   } catch (error: any) {
-    errorMsg.value = error.message
+    if (error instanceof ValidateError) {
+      const err = error as ValidateError<Tasklist>
+      errorMsg.title = err.get('title')
+    } else {
+      console.error(error)
+      errorMsg.common = error.message
+    }
   }
 }
 
 const _delete = async () => {
-  await deleteTasklist(tasklist.value.id)
-  submit()
+  try {
+    await deleteTasklist(tasklist.value.id)
+    submit()
+  } catch (error: any) {
+    console.error(error)
+    errorMsg.common = error.message
+  }
+}
+
+const initErrorMsg = () => {
+  errorMsg.common = ''
+  errorMsg.title = ''
 }
 
 defineExpose({
@@ -61,9 +83,9 @@ defineExpose({
         <div class="mx-2 mb-6">
           <label class="input-label">プロジェクト名</label>
           <input ref="inputField" v-model="tasklist.title" class="input-text"
-            :class="{ 'border border-red-500': errorMsg !== '' }" type="text" placeholder="Add New List Title...">
-          <p v-show="(errorMsg !== '')" class="text-red-500 text-xs italic">
-            {{ errorMsg }}
+            :class="{ 'border border-red-500': errorMsg.title !== '' }" type="text" placeholder="Add New List Title...">
+          <p class="text-red-500 text-xs italic">
+            <span>{{ errorMsg.title }}</span>
           </p>
         </div>
 
@@ -74,6 +96,10 @@ defineExpose({
       </div>
 
       <div class="flex-none border-t my-1" />
+
+      <div class="flex-none px-2">
+        <span class="text-red-500 text-xs italic">{{ errorMsg.common }}</span>
+      </div>
 
       <div class="flex-none flex flex-row mt-2 mx-2">
         <button class="btn btn-regular mx-1" @click="_submit">

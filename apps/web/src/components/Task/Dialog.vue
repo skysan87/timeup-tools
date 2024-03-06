@@ -23,7 +23,10 @@ const isCreateMode = ref(false)
 const task = ref<Task>({} as Task)
 const range = ref<DateRange>({ start: null, end: null })
 const options = Object.values(TaskState)
-const errorMsg = ref<string>('')
+const errorMsg = reactive({
+  common: '',
+  title: ''
+})
 const forbid = reactive({
   title: false,
   detail: false,
@@ -56,6 +59,8 @@ const openAsync = (input: Input): Promise<{ isSuccess: boolean }> => {
 }
 
 const _init = (input: Input) => {
+  initErrorMsg()
+
   isCreateMode.value = input.isCreateMode
   if (input.isCreateMode) {
     task.value = create({ ...input.task, listId: currentListId.value } as Task)
@@ -86,7 +91,7 @@ const _init = (input: Input) => {
 const _submit = async (isUpdate: boolean) => {
   try {
     // reset
-    errorMsg.value = ''
+    initErrorMsg()
     // set fileds
     task.value.subTasks = subTasks.value.concat()
     task.value.startdate = range.value?.start ? dateFactory(range.value.start).getDateNumber() as DateNumber : null
@@ -102,10 +107,10 @@ const _submit = async (isUpdate: boolean) => {
   } catch (error: any) {
     if (error instanceof ValidateError) {
       const err = error as ValidateError<Task>
-      errorMsg.value = err.get('title')
+      errorMsg.title = err.get('title')
     } else {
       console.error(error)
-      $toast.error(error.message)
+      errorMsg.common = error.message
     }
   }
 }
@@ -130,6 +135,11 @@ const initRange = () => {
 const setTodayInRange = () => {
   const today = dateFactory()
   range.value = { start: today.toDate(), end: today.toDate() }
+}
+
+const initErrorMsg = () => {
+  errorMsg.common = ''
+  errorMsg.title = ''
 }
 
 defineExpose({
@@ -167,10 +177,10 @@ defineExpose({
         <div class="modal-body">
           <label class="input-label">タイトル</label>
           <input ref="title" v-model="task.title" class="input-text"
-            :class="{ 'border border-red-500': errorMsg !== '', 'btn-disabled': forbid.title }" type="text"
+            :class="{ 'border border-red-500': errorMsg.title !== '', 'btn-disabled': forbid.title }" type="text"
             :disabled="forbid.title">
-          <p v-show="(errorMsg !== '')" class="text-red-500 text-xs italic">
-            {{ errorMsg }}
+          <p class="text-red-500 text-xs italic">
+            {{ errorMsg.title }}
           </p>
         </div>
         <div class="modal-body">
@@ -247,6 +257,10 @@ defineExpose({
       </div>
 
       <div class="flex-none border-t my-1" />
+
+      <div class="flex-none px-2">
+        <span class="text-red-500 text-xs italic">{{ errorMsg.common }}</span>
+      </div>
 
       <div class="flex-none flex flex-row mt-2 mx-2">
         <button v-if="isCreateMode" class="btn btn-regular ml-2" @click="_submit(false)">
