@@ -7,7 +7,6 @@ import { getTargetMonth } from '@timeup-tools/core/util/ZippedDataUtil'
 import { Calendar } from 'v-calendar'
 import { Page } from 'v-calendar/dist/types/src/utils/page.js'
 
-const { $toast } = useNuxtApp()
 const { dialog, open, cancel, submit } = useDialog()
 const { create, getHabitById, addHabit, updateHabit, deleteHabit } = useHabitStore()
 
@@ -20,6 +19,7 @@ const isCreateMode = ref(false)
 
 const habit = ref<Habit>({} as Habit)
 const errorMsg = reactive({
+  common: '',
   title: '',
   frequency: ''
 })
@@ -94,7 +94,7 @@ const _submit = async () => {
       errorMsg.frequency = err.get('frequency')
     } else {
       console.error(error)
-      $toast.error(error.message)
+      errorMsg.common = error.message
     }
   }
 }
@@ -108,7 +108,7 @@ const _delete = async () => {
     submit()
   } catch (error: any) {
     console.error(error)
-    $toast.error(error.message)
+    errorMsg.common = error.message
   }
 }
 
@@ -142,6 +142,7 @@ const setCalendar = (year: number, month: number) => {
 }
 
 const initErrorMsg = () => {
+  errorMsg.common = ''
   errorMsg.title = ''
   errorMsg.frequency = ''
 }
@@ -254,6 +255,10 @@ defineExpose({
       </div>
 
       <div class="flex-none border-t my-1" />
+
+      <div class="flex-none px-2">
+        <span class="text-red-500 text-xs italic">{{ errorMsg.common }}</span>
+      </div>
 
       <div class="flex-none flex flex-row mt-2 mx-2">
         <button class="btn btn-regular ml-2" @click="_submit">
