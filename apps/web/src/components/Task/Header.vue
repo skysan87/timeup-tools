@@ -25,7 +25,7 @@ const deleteDoneTasks = () => {
 }
 
 const openListDialog = async () => {
-  await dialog.value?.openAsync({ tasklistId: currentListId.value, isCreateMode: true })
+  await dialog.value?.openAsync({ tasklistId: currentListId.value, isCreateMode: false })
 }
 
 const reload = async () => {
