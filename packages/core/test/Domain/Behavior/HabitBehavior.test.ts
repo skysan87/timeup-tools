@@ -5,7 +5,6 @@ import { IBehavior } from "../../../src/Domain/Behavior/IBehavior"
 
 const TEST_DAY = 20221001 // 土曜
 
-// DateUtilのmock化
 jest.mock('@/Util/DateUtil', () => {
   // 実際のモジュールを取得
   const utils = jest.requireActual('@/Util/DateUtil')
@@ -21,7 +20,7 @@ jest.mock('@/Util/DateUtil', () => {
   }
 })
 
-describe('main', () => {
+describe('HabitBehavior #action', () => {
   test('初回の実施予定の集計ができること', () => {
 
     const data: Habit = {
@@ -29,6 +28,7 @@ describe('main', () => {
       rootId: '',
       title: '毎日実施するタスク',
       frequency: Frequnecy.DAILY,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -58,7 +58,8 @@ describe('main', () => {
       title: '毎週の水・木のタスク',
       frequency: Frequnecy.WEEKLY,
       weekdays: [Weekdays.WEDNESDAY, Weekdays.THURSDAY],
-      summaryUpdatedAt: 20220830
+      summaryUpdatedAt: 20220830,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -88,7 +89,8 @@ describe('main', () => {
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.DAY,
       planDays: [1],
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -119,7 +121,8 @@ describe('main', () => {
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.DAY,
       planDays: [31],
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -148,7 +151,8 @@ describe('main', () => {
       title: '月末のタスク',
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.END,
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -178,7 +182,8 @@ describe('main', () => {
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.WEEK,
       planWeek: { index: 1, day: Weekdays.SATURDAY },
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -210,7 +215,8 @@ describe('main', () => {
       summaryUpdatedAt: 20211231,
       plan: {
         [2021 as FullYear]: Array.from({ length: 12 }, () => 'c0000000')
-      }
+      },
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
