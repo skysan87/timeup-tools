@@ -2,25 +2,13 @@ import { Habit } from "../../../src/Domain/Model/Habit"
 import { Frequnecy, FullYear, Weekdays, MonthlyType } from "../../../src/Domain/ValueObject"
 import { HabitBehavior } from "../../../src/Domain/Behavior/HabitBehavior"
 import { IBehavior } from "../../../src/Domain/Behavior/IBehavior"
-
-const TEST_DAY = 20221001 // 土曜
-
-jest.mock('@/Util/DateUtil', () => {
-  // 実際のモジュールを取得
-  const utils = jest.requireActual('@/Util/DateUtil')
-  return {
-    // モック化不要なものはそのまま
-    ...utils,
-    // テスト対象のみ置き換える
-    dateFactory: jest.fn().mockImplementation((param?) => {
-      // デフォルトの日付を固定にする
-      // TODO: これをtest単位で設定
-      return utils.dateFactory(param ?? TEST_DAY)
-    })
-  }
-})
+import * as DateUtil from "../../../src/Util/DateUtil"
+import DateWrapper from "../../../src/lib/DateWrapper"
 
 describe('HabitBehavior #action', () => {
+  const TEST_DAY = 20221001 // 土曜
+  jest.spyOn(DateUtil, "dateFactory").mockImplementation((date?, format?) => new DateWrapper(date ?? TEST_DAY, format))
+
   test('初回の実施予定の集計ができること', () => {
 
     const data: Habit = {
