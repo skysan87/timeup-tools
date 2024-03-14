@@ -1,0 +1,66 @@
+import { SubTask, Task } from "../../../src/Domain/Model"
+import { TaskBehavior } from "../../../src/Domain/Behavior/TaskBehavior"
+import { TaskState, TaskType } from "../../../src/Domain/ValueObject"
+import { ValidateError } from "../../../src/Error"
+
+function create(): Task {
+  return {
+    id: '',
+    title: null,
+    type: TaskType.TODO,
+    state: TaskState.Todo,
+    detail: null,
+    startdate: null,
+    enddate: null,
+    orderIndex: 0,
+    listId: '',
+    userId: '',
+    lastActivityDate: null,
+    stateChangeDate: null,
+    createdAt: null,
+    updatedAt: null,
+    subTasks: [] as SubTask[]
+  } as Task
+}
+
+describe('TaskBehavior #format', () => {
+  test('正常処理', () => {
+    const data = create()
+    const formatted = new TaskBehavior(data).format()
+    expect(data).toStrictEqual(formatted)
+  })
+})
+
+describe('TaskBehavior #action', () => {
+  test('正常処理', () => {
+    const data = create()
+    data.title = 'title'
+    const result = new TaskBehavior(data).action(() => { })
+    expect(data).toStrictEqual(result)
+  })
+
+  test('バリデーションエラー', () => {
+    function validateTest() {
+      const data = create()
+      new TaskBehavior(data).action(() => { })
+    }
+    expect(validateTest).toThrowError(ValidateError)
+  })
+})
+
+describe('TaskBehavior #actionAsync', () => {
+  test('正常処理', async () => {
+    const data = create()
+    data.title = 'title'
+    const result = await new TaskBehavior(data).actionAsync(async () => { })
+    expect(data).toStrictEqual(result)
+  })
+
+  test('バリデーションエラー', () => {
+    async function validateTest() {
+      const data = create()
+      await new TaskBehavior(data).actionAsync(async () => { })
+    }
+    expect(validateTest).rejects.toThrowError(ValidateError)
+  })
+})
