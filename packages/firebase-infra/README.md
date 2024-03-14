@@ -105,7 +105,6 @@ Authentication Emulator, Firestore Emulator
     * updatedAt: timestamp
     * detail: string
     * enddate: number(YYYYMMDD)
-    * isDone: boolean
     * lastActivityDate: number(YYYYMMDD)
     * listId: string
     * orderIndex: number

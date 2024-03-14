@@ -5,7 +5,6 @@ export function toTaskEntity(model: Task): TaskEntity {
   return {
     detail: model.detail,
     enddate: model.enddate,
-    isDone: model.isDone,
     lastActivityDate: model.lastActivityDate,
     listId: model.listId,
     orderIndex: model.orderIndex,
