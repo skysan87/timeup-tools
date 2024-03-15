@@ -38,3 +38,8 @@ $ pnpm run test test/Domain/Behavior/HabitBehavior.test.ts
 * ファイル内で指定したものをスキップする場合
   * describe.skip()
   * test.skip()
+
+### メモ
+* 非同期メソッド(async/await)の例外評価をする場合
+  * `expect(例外が発生するメソッド).rejects.toThrowError(対象のエラーオブジェクト)`
+  * rf. TaskBehavior.test.ts #バリデーションエラー

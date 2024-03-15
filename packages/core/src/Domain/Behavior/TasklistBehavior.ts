@@ -24,8 +24,8 @@ export class TasklistBehavior extends BehaviorBase<Tasklist> {
     const v = this.value
     return {
       id: v.id, // TODO: userId
-      title: v.title ?? '',
-      detail: v.detail ?? '',
+      title: v.title ?? null,
+      detail: v.detail ?? null,
       userId: v.userId ?? '',
       maxIndex: v.maxIndex ?? 0,
       orderIndex: v.orderIndex ?? 0,
