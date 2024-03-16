@@ -21,6 +21,14 @@
 
 ## ユニットテスト
 
+* coreモジュールでテストするもの
+  * Domain/Behavior
+  * Domain/Model
+  * Domain/ValueObject
+  * Util
+* UseCase -> apps/unit-testerで実施
+* Repository -> 各infraモジュールで実施
+
 ```bash
 # 全てのjest実行
 $ pnpm run test
