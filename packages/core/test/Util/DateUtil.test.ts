@@ -1,4 +1,4 @@
-import { dateDiff, dateFactory, forDayEach, forDayReverseEach } from "../../src/Util/DateUtil"
+import { dateDiff, dateFactory, forDayEach, forDayReverseEach } from "@/Util/DateUtil"
 
 describe('DateUtil #dateDiff', () => {
   test('差分が3日', () => {

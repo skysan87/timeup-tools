@@ -1,5 +1,5 @@
-import { SubTask } from "../../../src/Domain/Model"
-import { SubTaskBehavior } from "../../../src/Domain/Behavior/SubTaskBehavior"
+import { SubTask } from "@/Domain/Model"
+import { SubTaskBehavior } from "@/Domain/Behavior/SubTaskBehavior"
 
 describe('SubTaskBehavior #format', () => {
   test('正常処理', () => {

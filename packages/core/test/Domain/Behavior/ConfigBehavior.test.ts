@@ -1,6 +1,6 @@
-import { UserId } from "../../../src/Domain/ValueObject"
-import { Config } from "../../../src/Domain/Model"
-import { ConfigBehavior } from "../../../src/Domain/Behavior/ConfigBehavior"
+import { UserId } from "@/Domain/ValueObject"
+import { Config } from "@/Domain/Model"
+import { ConfigBehavior } from "@/Domain/Behavior/ConfigBehavior"
 
 describe('ConfigBehavior #format', () => {
   test('正常処理', () => {

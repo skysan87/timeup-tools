@@ -1,7 +1,7 @@
-import { SubTask, Task } from "../../../src/Domain/Model"
-import { TaskBehavior } from "../../../src/Domain/Behavior/TaskBehavior"
-import { TaskState, TaskType } from "../../../src/Domain/ValueObject"
-import { ValidateError } from "../../../src/Error"
+import { SubTask, Task } from "@/Domain/Model"
+import { TaskBehavior } from "@/Domain/Behavior/TaskBehavior"
+import { TaskState, TaskType } from "@/Domain/ValueObject"
+import { ValidateError } from "@/Error"
 
 function create(): Task {
   return {

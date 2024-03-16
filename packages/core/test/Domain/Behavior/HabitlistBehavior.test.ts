@@ -1,6 +1,6 @@
-import { UserId } from "../../../src/Domain/ValueObject"
-import { Habitlist } from "../../../src/Domain/Model"
-import { HabitlistBehavior } from "../../../src/Domain/Behavior/HabitlistBehavior"
+import { UserId } from "@/Domain/ValueObject"
+import { Habitlist } from "@/Domain/Model"
+import { HabitlistBehavior } from "@/Domain/Behavior/HabitlistBehavior"
 
 describe('HabitlistBehavior #format', () => {
   test('正常処理', () => {

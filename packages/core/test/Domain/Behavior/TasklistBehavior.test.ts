@@ -1,6 +1,6 @@
-import { Tasklist } from "../../../src/Domain//Model"
-import { TasklistBehavior } from "../../../src/Domain/Behavior/TasklistBehavior"
-import { ValidateError } from "../../../src/Error"
+import { Tasklist } from "@/Domain//Model"
+import { TasklistBehavior } from "@/Domain/Behavior/TasklistBehavior"
+import { ValidateError } from "@/Error"
 
 function create(): Tasklist {
   return {
