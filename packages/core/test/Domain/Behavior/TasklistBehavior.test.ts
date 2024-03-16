@@ -48,11 +48,11 @@ describe('TasklistBehavior #actionAsync', () => {
     expect(data).toStrictEqual(result)
   })
 
-  test('バリデーションエラー', () => {
+  test('バリデーションエラー', async () => {
     async function validateTest() {
       const data = create()
       await new TasklistBehavior(data).actionAsync(async () => { })
     }
-    expect(validateTest).rejects.toThrowError(ValidateError)
+    await expect(validateTest()).rejects.toThrowError(ValidateError)
   })
 })

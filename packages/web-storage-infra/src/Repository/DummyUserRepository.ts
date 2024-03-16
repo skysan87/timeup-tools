@@ -57,7 +57,9 @@ export class DummyUserRepository implements IUserRepository {
   }
 
   public async logout(): Promise<void> {
-    await this.sleep(800)
+    if (!this._skipAuth) {
+      await this.sleep(800)
+    }
     this.user = null
   }
 

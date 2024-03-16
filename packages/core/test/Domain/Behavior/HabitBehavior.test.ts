@@ -1,9 +1,50 @@
 import { Habit } from "@/Domain/Model/Habit"
-import { Frequnecy, FullYear, Weekdays, MonthlyType } from "@/Domain/ValueObject"
+import { Frequnecy, FullYear, Weekdays, MonthlyType, ZippedData, HexNumber, Array12 } from "@/Domain/ValueObject"
 import { HabitBehavior } from "@/Domain/Behavior/HabitBehavior"
 import { IBehavior } from "@/Domain/Behavior/IBehavior"
 import * as DateUtil from "@/Util/DateUtil"
 import DateWrapper from "@/lib/DateWrapper"
+
+describe('HabitBehavior #format', () => {
+  const TEST_DAY = 20221001 // 土曜
+  jest.spyOn(DateUtil, "dateFactory").mockImplementation((date?, format?) => new DateWrapper(date ?? TEST_DAY, format))
+
+  test('データ生成', () => {
+    const habit = new HabitBehavior({} as Habit).format()
+    const year = 2022 as FullYear
+    const zippedData: ZippedData = {
+      [year]: ['0','0','0','0','0','0','0','0','0','0','0','0'] as Array12<HexNumber>
+    }
+
+    expect(habit).toStrictEqual({
+      id: undefined,
+      rootId: undefined,
+      title: null,
+      detail: null,
+      isActive: false,
+      frequency: Frequnecy.DAILY,
+      weekdays: [],
+      monthlyType: null,
+      planDays: [],
+      planWeek: null,
+      orderIndex: 0,
+      userId: null,
+      lastActivityDate: null,
+      totalCount: 0,
+      totalActivityCount: 0,
+      duration: 0,
+      maxduration: 0,
+      summaryUpdatedAt: null,
+      plan: zippedData,
+      result: zippedData,
+      createdAt: null,
+      updatedAt: null,
+      needServerUpdate: false,
+      isPlanDay: false
+    })
+
+  })
+})
 
 describe('HabitBehavior #action', () => {
   const TEST_DAY = 20221001 // 土曜

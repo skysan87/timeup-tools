@@ -12,7 +12,7 @@ export class HabitRepository implements IHabitRepository {
 
   public async validateMaxSize(scope: Scope): Promise<boolean> {
     const data: Habit[] = this.getData(scope)
-    return Promise.resolve(data.length <= 50)
+    return Promise.resolve(data.length < 50)
   }
 
   public get(scope: Scope, habitlistId: string): Promise<Habit[]> {
@@ -33,7 +33,7 @@ export class HabitRepository implements IHabitRepository {
   public save(scope: Scope, habitlistId: string, data: Habit): Promise<Habit> {
     return new Promise(resolve => {
       const timestamp = new Date()
-      data.id = Date.now().toString()
+      data.id = this.createId()
       data.rootId = habitlistId
       data.userId = scope.userId
       data.createdAt = timestamp
@@ -78,4 +78,8 @@ export class HabitRepository implements IHabitRepository {
     })
   }
 
+  private createId(): string {
+    // 重複する場合があるので、乱数を追加(あくまで重複の可能性を下げるだけ)
+    return Date.now().toString() + Math.floor(Math.random() * 100).toString(16)
+  }
 }

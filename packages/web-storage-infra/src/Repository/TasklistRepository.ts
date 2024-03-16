@@ -12,7 +12,7 @@ export class TasklistRepository implements ITasklistRepository {
 
   public validateMaxSize(scope: Scope): Promise<boolean> {
     const data: Tasklist[] = this.getData(scope)
-    return Promise.resolve(data.length <= 10)
+    return Promise.resolve(data.length < 10)
   }
 
   public getMaxIndex(scope: Scope): Promise<number> {
