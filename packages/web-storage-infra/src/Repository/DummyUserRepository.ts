@@ -23,7 +23,7 @@ export class DummyUserRepository implements IUserRepository {
 
   public get(): Promise<User> {
     if (!this.authenticated()) {
-      return Promise.reject('auth error')
+      return Promise.reject(new Error('auth error'))
     }
     return Promise.resolve(this.user as User)
   }
@@ -57,7 +57,9 @@ export class DummyUserRepository implements IUserRepository {
   }
 
   public async logout(): Promise<void> {
-    await this.sleep(800)
+    if (!this._skipAuth) {
+      await this.sleep(800)
+    }
     this.user = null
   }
 

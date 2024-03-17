@@ -52,7 +52,6 @@ export class TaskBehavior extends BehaviorBase<Task> {
       updatedAt: v.updatedAt ?? null,
       // Proxy対応
       subTasks: v.subTasks ? v.subTasks.map(v => ({...v})) : [],
-      isDone: v.isDone ?? false
     } as Task
   }
 }

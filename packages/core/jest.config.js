@@ -4,5 +4,11 @@ module.exports = {
   testEnvironment: 'node',
   moduleNameMapper: {
     "@/(.*)$": "<rootDir>/src/$1"
+  },
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: './test/tsconfig.json'
+    }]
   }
 }

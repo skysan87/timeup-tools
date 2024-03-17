@@ -26,7 +26,7 @@ export class GanttViewModel {
 
   constructor(task: Task) {
     this.id = task.id
-    this.name = task.title
+    this.name = task.title ?? ''
     this.startDate = task.startdate ? dateFactory(task.startdate) : null
     this.endDate = task.enddate ? dateFactory(task.enddate) : null
     this.srcStartDate = task.startdate ?? null

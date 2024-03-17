@@ -14,8 +14,9 @@
   "scripts": {
     "clean": "rm -rf build tsconfig.tsbuildinfo",
     "build": "tsc --incremental",
-    "type-chcek": "tsc -noEmit",
-    "test": "jest"
+    "type-check": "tsc -noEmit",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",

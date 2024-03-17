@@ -4,9 +4,9 @@ import { SubTask } from "./SubTask";
 export type Task = Nominal<{
   id: string // random
   type: TaskType
-  title: string
+  title: string | null
   state: TaskState
-  detail: string
+  detail: string | null
   startdate: DateNumber | null
   enddate: DateNumber | null
   orderIndex: number
@@ -17,8 +17,5 @@ export type Task = Nominal<{
   stateChangeDate: DateNumber | null
   createdAt: Date | null
   updatedAt: Date | null
-  /** リスト名: 表示用 */
-  listName: string
   subTasks: SubTask[]
-  isDone: boolean // getter
 }, 'Task'>

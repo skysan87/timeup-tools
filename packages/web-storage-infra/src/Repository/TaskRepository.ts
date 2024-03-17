@@ -13,7 +13,7 @@ export class TaskRepository implements ITaskRepository {
 
   public validateMaxSize(scope: Scope): Promise<boolean> {
     const data: Task[] = this.getData(scope)
-    return Promise.resolve(data.length <= 100)
+    return Promise.resolve(data.length < 100)
   }
 
   public getHabits(scope: Scope, today: DateNumber): Promise<Task[]> {

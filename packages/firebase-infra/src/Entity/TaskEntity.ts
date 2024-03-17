@@ -4,9 +4,9 @@ import { FirebaseField } from "./common"
 
 export type TaskEntity = FirebaseField & {
   type: TaskType
-  title: string
+  title: string | null
   state: TaskState
-  detail: string
+  detail: string | null
   startdate: DateNumber | null
   enddate: DateNumber | null
   orderIndex: number
@@ -15,5 +15,4 @@ export type TaskEntity = FirebaseField & {
   lastActivityDate: DateNumber | null
   stateChangeDate: DateNumber | null
   subTasks: SubTask[]
-  isDone: boolean
 }

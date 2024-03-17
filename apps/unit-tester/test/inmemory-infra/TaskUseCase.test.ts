@@ -10,12 +10,13 @@ import {
   InMemoryTransaction
 } from '@timeup-tools/web-storage-infra/repository'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
+import { ValidateError } from '@timeup-tools/core/error'
 
 let usecase: TaskUseCase
 let habitUseCase: HabitUseCase
 let listId: string
 
-const userRepositpry = new DummyUserRepository()
+const userRepositpry = new DummyUserRepository(true)
 
 beforeEach(async () => {
   InMemoryTransaction.reset()
@@ -165,5 +166,72 @@ describe('基本動作', () => {
     const tasks: Task[] = await usecase.getTodaysTasks()
 
     expect(tasks.length).toBe(0)
+  })
+})
+
+describe('TaskUseCase #addTask', () => {
+  const MAX_NUM = 100
+
+  test('バリデーションエラー', async () => {
+    async function validateTest() {
+      const task = usecase.create()
+      task.title = ''
+      await usecase.addTask(listId, task)
+    }
+    await expect(validateTest()).rejects.toThrowError(ValidateError)
+  })
+
+  test('登録上限100件登録', async () => {
+    for (const num in Array.from({ length: MAX_NUM }, (_, n) => n)) {
+      const task = usecase.create()
+      task.title = `title_${num}`
+      await usecase.addTask(listId, task)
+    }
+
+    const tasks: Task[] = await usecase.getCurrentTasks(listId)
+    expect(tasks.length).toBe(MAX_NUM)
+  })
+
+  test('登録上限超えでエラー', async () => {
+    async function maxCountTest() {
+      for (const num in Array.from({ length: MAX_NUM + 1 }, (_, n) => n)) {
+        const task = usecase.create()
+        task.title = `title_${num}`
+        await usecase.addTask(listId, task)
+      }
+    }
+    await expect(maxCountTest()).rejects.toThrow(new Error('これ以上登録できません'))
+  })
+
+  test('登録上限超えでも100件までは登録できる', async () => {
+    try {
+      for (const num in Array.from({ length: MAX_NUM + 1 }, (_, n) => n)) {
+        const task = usecase.create()
+        task.title = `title_${num}`
+        await usecase.addTask(listId, task)
+      }
+    } catch {
+      // エラーは確認しない
+    }
+
+    const tasks: Task[] = await usecase.getCurrentTasks(listId)
+    expect(tasks.length).toBe(MAX_NUM)
+  })
+})
+
+describe('TaskUseCase #updateTask', () => {
+  test('バリデーションエラー', async () => {
+    async function validateTest() {
+      const task = usecase.create()
+      task.title = 'test'
+      await usecase.addTask(listId, task)
+
+      const tasks: Task[] = await usecase.getCurrentTasks(listId)
+      const _task = tasks[0]
+      _task.title = ''
+      await usecase.updateTask(_task.id, _task)
+    }
+
+    await expect(validateTest()).rejects.toThrowError(ValidateError)
   })
 })

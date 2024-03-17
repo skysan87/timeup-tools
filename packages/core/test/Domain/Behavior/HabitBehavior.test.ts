@@ -1,27 +1,55 @@
-import { Habit } from "../../../src/Domain/Model/Habit"
-import { Frequnecy, FullYear, Weekdays, MonthlyType } from "../../../src/Domain/ValueObject"
-import { HabitBehavior } from "../../../src/Domain/Behavior/HabitBehavior"
-import { IBehavior } from "../../../src/Domain/Behavior/IBehavior"
+import { Habit } from "@/Domain/Model/Habit"
+import { Frequnecy, FullYear, Weekdays, MonthlyType, ZippedData, HexNumber, Array12 } from "@/Domain/ValueObject"
+import { HabitBehavior } from "@/Domain/Behavior/HabitBehavior"
+import { IBehavior } from "@/Domain/Behavior/IBehavior"
+import * as DateUtil from "@/Util/DateUtil"
+import DateWrapper from "@/lib/DateWrapper"
 
-const TEST_DAY = 20221001 // 土曜
+describe('HabitBehavior #format', () => {
+  const TEST_DAY = 20221001 // 土曜
+  jest.spyOn(DateUtil, "dateFactory").mockImplementation((date?, format?) => new DateWrapper(date ?? TEST_DAY, format))
 
-// DateUtilのmock化
-jest.mock('@/Util/DateUtil', () => {
-  // 実際のモジュールを取得
-  const utils = jest.requireActual('@/Util/DateUtil')
-  return {
-    // モック化不要なものはそのまま
-    ...utils,
-    // テスト対象のみ置き換える
-    dateFactory: jest.fn().mockImplementation((param?) => {
-      // デフォルトの日付を固定にする
-      // TODO: これをtest単位で設定
-      return utils.dateFactory(param ?? TEST_DAY)
+  test('データ生成', () => {
+    const habit = new HabitBehavior({} as Habit).format()
+    const year = 2022 as FullYear
+    const zippedData: ZippedData = {
+      [year]: ['0','0','0','0','0','0','0','0','0','0','0','0'] as Array12<HexNumber>
+    }
+
+    expect(habit).toStrictEqual({
+      id: undefined,
+      rootId: undefined,
+      title: null,
+      detail: null,
+      isActive: false,
+      frequency: Frequnecy.DAILY,
+      weekdays: [],
+      monthlyType: null,
+      planDays: [],
+      planWeek: null,
+      orderIndex: 0,
+      userId: null,
+      lastActivityDate: null,
+      totalCount: 0,
+      totalActivityCount: 0,
+      duration: 0,
+      maxduration: 0,
+      summaryUpdatedAt: null,
+      plan: zippedData,
+      result: zippedData,
+      createdAt: null,
+      updatedAt: null,
+      needServerUpdate: false,
+      isPlanDay: false
     })
-  }
+
+  })
 })
 
-describe('main', () => {
+describe('HabitBehavior #action', () => {
+  const TEST_DAY = 20221001 // 土曜
+  jest.spyOn(DateUtil, "dateFactory").mockImplementation((date?, format?) => new DateWrapper(date ?? TEST_DAY, format))
+
   test('初回の実施予定の集計ができること', () => {
 
     const data: Habit = {
@@ -29,6 +57,7 @@ describe('main', () => {
       rootId: '',
       title: '毎日実施するタスク',
       frequency: Frequnecy.DAILY,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -58,7 +87,8 @@ describe('main', () => {
       title: '毎週の水・木のタスク',
       frequency: Frequnecy.WEEKLY,
       weekdays: [Weekdays.WEDNESDAY, Weekdays.THURSDAY],
-      summaryUpdatedAt: 20220830
+      summaryUpdatedAt: 20220830,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -88,7 +118,8 @@ describe('main', () => {
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.DAY,
       planDays: [1],
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -119,7 +150,8 @@ describe('main', () => {
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.DAY,
       planDays: [31],
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -148,7 +180,8 @@ describe('main', () => {
       title: '月末のタスク',
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.END,
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -178,7 +211,8 @@ describe('main', () => {
       frequency: Frequnecy.MONTHLY,
       monthlyType: MonthlyType.WEEK,
       planWeek: { index: 1, day: Weekdays.SATURDAY },
-      summaryUpdatedAt: 20220831
+      summaryUpdatedAt: 20220831,
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {
@@ -210,7 +244,8 @@ describe('main', () => {
       summaryUpdatedAt: 20211231,
       plan: {
         [2021 as FullYear]: Array.from({ length: 12 }, () => 'c0000000')
-      }
+      },
+      isActive: true
     } as Habit
 
     const result: Habit = new HabitBehavior(data).action((behavior: IBehavior<Habit>) => {

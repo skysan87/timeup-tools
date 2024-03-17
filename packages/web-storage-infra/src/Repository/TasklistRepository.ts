@@ -12,7 +12,7 @@ export class TasklistRepository implements ITasklistRepository {
 
   public validateMaxSize(scope: Scope): Promise<boolean> {
     const data: Tasklist[] = this.getData(scope)
-    return Promise.resolve(data.length <= 10)
+    return Promise.resolve(data.length < 10)
   }
 
   public getMaxIndex(scope: Scope): Promise<number> {
@@ -39,7 +39,7 @@ export class TasklistRepository implements ITasklistRepository {
   public save(scope: Scope, data: Tasklist): Promise<Tasklist> {
     return new Promise(resolve => {
       const timestamp = new Date()
-      data.id = Date.now().toString()
+      data.id = this.createId()
       data.userId = scope.userId
       data.createdAt = timestamp
       data.updatedAt = timestamp
@@ -56,6 +56,11 @@ export class TasklistRepository implements ITasklistRepository {
     const memory: Tasklist[] = this.getData(scope)
 
     const index = memory.findIndex(h => h.id === data.id!)
+
+    if (index < 0) {
+      throw new Error('存在しません')
+    }
+
     const clone = {
       ...memory[index],
       ...data,
@@ -81,4 +86,8 @@ export class TasklistRepository implements ITasklistRepository {
     })
   }
 
+  private createId(): string {
+    // 重複する場合があるので、乱数を追加(あくまで重複の可能性を下げるだけ)
+    return Date.now().toString() + Math.floor(Math.random() * 100).toString(16)
+  }
 }

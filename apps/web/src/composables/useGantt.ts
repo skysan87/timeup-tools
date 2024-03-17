@@ -5,6 +5,7 @@ import { DateNumber, DateRange } from "@timeup-tools/core/value-object"
 
 const BLOCK_SIZE = 20
 const TASK_WIDTH = 320
+const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土']
 
 export const useGantt = () => {
   const _today = dateFactory().getFirstDayOfMonth()
@@ -45,14 +46,12 @@ export const useGantt = () => {
   }
 
   const getDays = (startMonth: DateUtil) => {
-    const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土']
-
     const days: Array<{ date: number, dayOfWeek: string }> = []
     for (let i = 0; i < startMonth.daysInMonth(); i++) {
       const targetDate = startMonth.addDay(i)
       days.push({
-        date: targetDate.get('date'),
-        dayOfWeek: dayOfWeek[targetDate.get('day')]
+        date: targetDate.get('day'),
+        dayOfWeek: dayOfWeek[targetDate.get('dayOfWeek')]
       })
     }
     return days

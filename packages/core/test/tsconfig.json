@@ -1,7 +1,8 @@
 /**
-  * プロダクションコード設定
+  * テストコード設定
   *
-  * - importは相対パスを使用
+  * - testフォルダ配下はVSCodeがこちらの設定を読み込む
+  * - プロダクションコードからのimportは`@`を使用
   */
 {
   "compilerOptions": {
@@ -9,8 +10,12 @@
     "module": "nodenext",
     "composite": false,
     "moduleResolution": "nodenext",
-    "rootDir": "./src",
+    "rootDirs": ["../src", "../test"],
+    "paths": {
+      "@/*": ["../src/*"]
+    },
     "declaration": true,
+    "outDir": "./build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -20,6 +25,6 @@
     "noEmit": false,
   },
   "include": [
-    "src"
+    "./**/*"
   ]
 }

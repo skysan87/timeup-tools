@@ -35,3 +35,24 @@ $ pnpm add -D typescript@5.2.2
 # create tsconfig.json
 $ pnpm tsc --init
 ```
+
+## 各モジュールのフォルダ構成
+
+```
+.
+├── src                 : プロダクションコード
+│
+├── test                : テストコード
+│   └── tsconfig.json   : テストコードのtypescript設定
+│
+├── jest.config.js      : jestの設定ファイル
+├── package.json        : `exports`はsrc配下を直接指定
+└── tsconfig.json       : プロダクションコードのtypescript設定
+```
+
+## importのルール
+
+* src配下は相対パスを使用
+    * 理由: ビルドはapps側でするため
+* test配下は`@`エイリアスを使用
+    * test/tsconfig.jsonに設定
