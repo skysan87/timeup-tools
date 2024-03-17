@@ -182,9 +182,9 @@ describe('TaskUseCase #addTask', () => {
   })
 
   test('登録上限100件登録', async () => {
-    for (let index = 0; index < MAX_NUM; index++) {
+    for (const num in Array.from({ length: MAX_NUM }, (_, n) => n)) {
       const task = usecase.create()
-      task.title = `title_${index}`
+      task.title = `title_${num}`
       await usecase.addTask(listId, task)
     }
 
