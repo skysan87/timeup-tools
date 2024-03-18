@@ -33,9 +33,6 @@
 # 全てのjest実行
 $ pnpm run test
 
-# jest: カバレッジの出力 -> core/coverage/lcov-report/index.html
-$ pnpm run test:coverage
-
 # ファイル単体の実行例
 $ pnpm run test test/Domain/Behavior/HabitBehavior.test.ts
 ```
