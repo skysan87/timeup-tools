@@ -56,3 +56,13 @@ $ pnpm tsc --init
     * 理由: ビルドはapps側でするため
 * test配下は`@`エイリアスを使用
     * test/tsconfig.jsonに設定
+
+## ユニットテスト
+
+```bash
+# 全てのjest実行
+$ pnpm run test
+
+# jest: カバレッジの出力 -> coverage/lcov-report/index.html
+$ pnpm run test:coverage
+```
