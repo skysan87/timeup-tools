@@ -1,19 +1,10 @@
 // @ts-ignore
-import config from './config/app.config.js'
+import config from './config/app.config.js' // firebase consoleからfirebaseConfigを設定する
 import { getApps, getApp, initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { clearIndexedDbPersistence, getFirestore, initializeFirestore, persistentLocalCache, persistentSingleTabManager } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseApp = !getApps().length ? initializeApp(config) : getApp()
-
-// TODO: オフライン利用は要検証
-// export const firestore = initializeFirestore(firebaseApp,
-//   {
-//     localCache:
-//       persistentLocalCache({ tabManager: persistentSingleTabManager({}) })
-//   })
-
-// clearIndexedDbPersistence(firestore)
 
 export const firestore = getFirestore(firebaseApp)
 

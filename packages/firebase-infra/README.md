@@ -1,5 +1,21 @@
-## データ構造
-(TBD)
+## 初期設定
+* config/app.config.jsを作成
+* firebase consoleから構成オブジェクトを記載する
+
+```json
+export default {
+  projectId: "",
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
+  appId: ""
+}
+```
+
+## 利用しているFirebaseの機能
+* Hosting
+* Authentication
+* Firestore Database
 
 ## エミュレータ設定
 
