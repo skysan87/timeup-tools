@@ -8,3 +8,5 @@ if (checkLogin()) {
   navigateTo('/login', { replace: true })
 }
 </script>
+
+<template />
