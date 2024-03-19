@@ -88,6 +88,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      firebase-tools:
+        specifier: ^13.2.1
+        version: 13.2.1
       nuxt:
         specifier: ^3.7.4
         version: 3.7.4(sass@1.69.3)(typescript@5.2.2)

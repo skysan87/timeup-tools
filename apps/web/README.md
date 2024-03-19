@@ -11,6 +11,7 @@ pnpm install -D @nuxt/types -F @timeup-tools/web
 pnpm install v-calendar@next @popperjs/core -F @timeup-tools/web
 pnpm install -D cross-env -F @timeup-tools/web
 pnpm install tailvue -F @timeup-tools/web
+pnpm install -D firebase-tools -F @timeup-tools/web
 ```
 
 ## Scripts
@@ -94,3 +95,15 @@ pnpm run dev:build
   * 認証機能の初期化
 3. app.vue
 4. (pages/index.vue)
+
+## リリース手順
+
+```bash
+pnpm run release-build
+
+# プレビューデプロイ
+pnpm firebase hosting:channel:deploy <スペースを含まない文字列>
+
+# 本番デプロイ
+pnpm firebase deploy --only hosting
+```
