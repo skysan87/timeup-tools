@@ -72,7 +72,7 @@ export class TasklistUseCase {
       const maxIndex = await this.tasklistRepository.getMaxIndex(scope)
 
       _tasklist = await new TasklistBehavior(tasklist as Tasklist).actionAsync(async behavior => {
-        behavior.update({ maxIndex: maxIndex + 1, userId: this.userId })
+        behavior.update({ maxIndex: maxIndex + 1, orderIndex: maxIndex + 1, userId: this.userId })
         const created = await this.tasklistRepository.save(scope, behavior.format())
         behavior.update(created)
       })

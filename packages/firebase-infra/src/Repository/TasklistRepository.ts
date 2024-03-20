@@ -30,7 +30,6 @@ export class TasklistRepository implements ITasklistRepository {
     // TODO: firestoreの構造を変更時にmaxIndexを保持するようにする
     const q = query(this.getRef(scope.userId)
       , where('userId', '==', scope.userId)
-      , where('deleteFlag', '==', false)
       , orderBy('maxIndex', 'desc')
       , limit(1)
     )
@@ -45,6 +44,7 @@ export class TasklistRepository implements ITasklistRepository {
   public async get(scope: Scope): Promise<Tasklist[]> {
     const q = query(this.getRef(scope.userId)
       , where('userId', '==', scope.userId)
+      , orderBy('orderIndex')
     )
 
     const querySnapshot = await getDocs(q)

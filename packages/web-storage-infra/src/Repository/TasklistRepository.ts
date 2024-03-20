@@ -6,7 +6,7 @@ export class TasklistRepository implements ITasklistRepository {
 
   private static readonly KEY: string = 'TASKLIST'
 
-  private getData(scope: Scope): Tasklist[] {
+  private getData(scope: Scope): Array<Tasklist> {
     return scope.get(TasklistRepository.KEY) ?? []
   }
 
@@ -26,7 +26,9 @@ export class TasklistRepository implements ITasklistRepository {
   }
 
   public get(scope: Scope): Promise<Tasklist[]> {
-    return Promise.resolve(this.getData(scope))
+    return Promise.resolve(
+      this.getData(scope).sort((a: Tasklist, b: Tasklist) => a.orderIndex - b.orderIndex) // 昇順
+    )
   }
 
   public getById(scope: Scope, tasklistId: string): Promise<Tasklist | null> {

@@ -4,6 +4,9 @@ import { Tasklist } from "../Model/Tasklist"
 export interface ITasklistRepository {
   validateMaxSize(scope: ITransactionScope): Promise<boolean>
   getMaxIndex(scope: ITransactionScope): Promise<number>
+  /**
+   * orderIndexの昇順で取得すること
+   */
   get(scope: ITransactionScope): Promise<Tasklist[]>
   getById(scope: ITransactionScope, tasklistId: string): Promise<Tasklist | null>
   save(scope: ITransactionScope, data: Tasklist): Promise<Tasklist>
