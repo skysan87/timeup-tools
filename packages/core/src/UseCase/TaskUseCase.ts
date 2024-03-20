@@ -148,15 +148,16 @@ export class TaskUseCase {
         throw new Error('Tasklist does not exist.')
       }
 
-      await new TasklistBehavior(tasklist).actionAsync(async behavior => {
+      const updatedTasklist = await new TasklistBehavior(tasklist).actionAsync(async behavior => {
         const newMaxIndex = behavior.get('maxIndex') + 1
         behavior.update({ maxIndex: newMaxIndex })
-        this.tasklistRepository.update(scope, behavior.format())
+        await this.tasklistRepository.update(scope, behavior.format())
       })
 
       task.listId = tasklistId
       task.userId = this.userId
-      task.orderIndex = tasklist.maxIndex + 1
+      task.orderIndex = updatedTasklist.maxIndex
+
       result = await new TaskBehavior(task as Task).actionAsync(async behvior => {
         behvior.update({ stateChangeDate: dateFactory().getDateNumber() as DateNumber } as Task)
         const data = await this.taskRepository.save(scope, behvior.format())
@@ -180,10 +181,21 @@ export class TaskUseCase {
       if (!oldTask) {
         throw new Error('task does not exist.')
       }
-      if (!this.existsList(scope, oldTask)) {
+      if (!this.existsList(scope, newTask)) {
         throw new Error('listId is missing.')
       }
+
       newTask.stateChangeDate = dateFactory().getDateNumber() as DateNumber
+
+      if (oldTask.listId !== newTask.listId && newTask.type === TaskType.TODO) {
+        const tasklist = await this.tasklistRepository.getById(scope, newTask.listId)
+        const updated = await new TasklistBehavior(tasklist!).actionAsync(async behavior => {
+          const newMaxIndex = behavior.get('maxIndex') + 1
+          behavior.update({ maxIndex: newMaxIndex })
+          await this.tasklistRepository.update(scope, behavior.format())
+        })
+        newTask.orderIndex = updated.maxIndex
+      }
 
       result = await this.updateTaskAndHabit(scope, oldTask, newTask)
     })
@@ -314,7 +326,7 @@ export class TaskUseCase {
    * タスク種別、リスト、表示順で並び替え(昇順)
    * @see https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
    */
-  private async sort (tasks: Task[]) {
+  private async sort(tasks: Task[]) {
     const FORWORD = -1
     const BACKWORD = 1
 
