@@ -3,7 +3,10 @@ import { Tasklist } from "../Model/Tasklist"
 
 export interface ITasklistRepository {
   validateMaxSize(scope: ITransactionScope): Promise<boolean>
-  getMaxIndex(scope: ITransactionScope): Promise<number>
+  /**
+   * Tasklist.orderIndexの最大値を取得
+   */
+  getMaxOrderIndex(scope: ITransactionScope): Promise<number>
   /**
    * orderIndexの昇順で取得すること
    */

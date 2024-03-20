@@ -26,18 +26,17 @@ export class TasklistRepository implements ITasklistRepository {
     return count < TasklistRepository.MAX_COUNT
   }
 
-  public async getMaxIndex(scope: Scope): Promise<number> {
-    // TODO: firestoreの構造を変更時にmaxIndexを保持するようにする
+  public async getMaxOrderIndex(scope: Scope): Promise<number> {
     const q = query(this.getRef(scope.userId)
       , where('userId', '==', scope.userId)
-      , orderBy('maxIndex', 'desc')
+      , orderBy('orderIndex', 'desc')
       , limit(1)
     )
     const result = await getDocsFromServer(q)
     if (result.empty) {
       return 0
     } else {
-      return result.docs[0].data().maxIndex ?? 0
+      return result.docs[0].data().orderIndex ?? 0
     }
   }
 

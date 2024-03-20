@@ -15,11 +15,11 @@ export class TasklistRepository implements ITasklistRepository {
     return Promise.resolve(data.length < 10)
   }
 
-  public getMaxIndex(scope: Scope): Promise<number> {
+  public getMaxOrderIndex(scope: Scope): Promise<number> {
     return new Promise((resolve) => {
       const data: Tasklist[] = this.getData(scope)
       resolve(data
-        .map(i => i.maxIndex)
+        .map(i => i.orderIndex)
         .reduce((a, b) => Math.max(a, b), 0)
       )
     })

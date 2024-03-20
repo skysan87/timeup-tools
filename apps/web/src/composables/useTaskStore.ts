@@ -1,5 +1,5 @@
 import { Task } from "@timeup-tools/core/model"
-import { DateNumber, TaskState } from "@timeup-tools/core/value-object"
+import { DateNumber, TaskState, TaskType } from "@timeup-tools/core/value-object"
 
 export const useTaskStore = () => {
   const { $task } = useNuxtApp()
@@ -29,22 +29,7 @@ export const useTaskStore = () => {
   const filterdTasks = computed(() => {
     return _tasks.value
       .filter(task => selectedState.value.includes(task.state))
-      .toSorted(orderByCallback)
   })
-
-  /**
-   * リスト、表示順で並び替え(昇順)
-   * @see https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-   */
-  const orderByCallback = (a: Task, b: Task) => {
-    const FORWORD = -1
-    const BACKWORD = 1
-    if (a.listId < b.listId) return FORWORD
-    if (a.listId > b.listId) return BACKWORD
-    if (a.orderIndex < b.orderIndex) return FORWORD
-    if (a.orderIndex > b.orderIndex) return BACKWORD
-    return 0
-  }
 
   const getTaskById = (id: string): Task => {
     const item = _tasks.value.find(v => v.id === id)
@@ -91,46 +76,6 @@ export const useTaskStore = () => {
     _tasks.value.push(...tasks)
     selectedState.value = DEFAULT_STATE
     checkSelected()
-  }
-
-  // TODO: 並び替えロジックを共通化
-  const changeOrderTask = async (oldIndex: number, newIndex: number) => {
-    const filtered: Task[] = filterdTasks.value
-    const src: Task = structuredClone(filtered[oldIndex])
-    const dest: Task = structuredClone(filtered[newIndex])
-
-    const sorted = _tasks.value.toSorted(orderByCallback)
-    const actualNewIndex = sorted.findIndex(v => v.id === dest.id)
-
-    let prevOrderIndex, nextOrderIndex
-    if (oldIndex > newIndex) {
-      // 上へ移動
-      // newIndexにあったアイテムは下に移動する
-      if (actualNewIndex > 0) {
-        prevOrderIndex = sorted[actualNewIndex - 1].orderIndex
-      } else {
-        prevOrderIndex = 1
-      }
-      nextOrderIndex = dest.orderIndex
-    } else {
-      // 下へ移動
-      // newIndexにあったアイテムは上に移動する
-      prevOrderIndex = dest.orderIndex
-      if (filtered.length - 1 > actualNewIndex) {
-        nextOrderIndex = sorted[actualNewIndex + 1].orderIndex
-      } else {
-        nextOrderIndex = Math.ceil(dest.orderIndex) + 1
-      }
-    }
-
-    // NOTE: 並び替えは前後のorderから算出
-    const newOrderIndex = (prevOrderIndex + nextOrderIndex) / 2
-
-    if (newOrderIndex !== dest.orderIndex) {
-      src.orderIndex = newOrderIndex
-      const updated = await $task.updateTask(src.id, src)
-      updateArray(updated)
-    }
   }
 
   const deleteDone = async () => {
@@ -206,7 +151,6 @@ export const useTaskStore = () => {
     deleteTask,
     deleteTasks,
     deleteDone,
-    changeOrderTask,
     changeState,
     setDeadline,
     selectTask,

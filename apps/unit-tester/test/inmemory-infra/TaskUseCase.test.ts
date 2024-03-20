@@ -14,6 +14,7 @@ import { ValidateError } from '@timeup-tools/core/error'
 
 let usecase: TaskUseCase
 let habitUseCase: HabitUseCase
+let tasklistUseCase: TasklistUseCase
 let listId: string
 
 const userRepositpry = new DummyUserRepository(true)
@@ -47,7 +48,7 @@ beforeEach(async () => {
 
   await habitUseCase.init()
 
-  const tasklistUseCase = new TasklistUseCase(userRepositpry, tasklistRepo, taskRepo, trunsaction)
+  tasklistUseCase = new TasklistUseCase(userRepositpry, tasklistRepo, taskRepo, trunsaction)
   const tasklist = await tasklistUseCase.addList({ title: 'list_title' } as Tasklist)
   listId = tasklist.id
 })
@@ -171,6 +172,18 @@ describe('基本動作', () => {
 
 describe('TaskUseCase #addTask', () => {
   const MAX_NUM = 100
+
+  test('登録時の関連プロパティ更新', async () => {
+    const tasklists_before = await tasklistUseCase.getList()
+    const maxIndex = tasklists_before.find(t => t.id === listId)!.maxIndex
+
+    const task = usecase.create()
+    task.title = 'list1'
+    await usecase.addTask(listId, task)
+
+    const tasklists_after = await tasklistUseCase.getList()
+    expect(tasklists_after.find(t => t.id === listId)!.maxIndex).toBe(maxIndex + 1)
+  })
 
   test('バリデーションエラー', async () => {
     async function validateTest() {

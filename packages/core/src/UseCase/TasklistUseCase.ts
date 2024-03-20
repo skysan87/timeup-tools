@@ -69,10 +69,10 @@ export class TasklistUseCase {
       }
 
       // TODO: firestoreの構造を変更時にmaxIndexを保持するようにする
-      const maxIndex = await this.tasklistRepository.getMaxIndex(scope)
+      const maxIndex = await this.tasklistRepository.getMaxOrderIndex(scope)
 
       _tasklist = await new TasklistBehavior(tasklist as Tasklist).actionAsync(async behavior => {
-        behavior.update({ maxIndex: maxIndex + 1, orderIndex: maxIndex + 1, userId: this.userId })
+        behavior.update({ orderIndex: maxIndex + 1, userId: this.userId })
         const created = await this.tasklistRepository.save(scope, behavior.format())
         behavior.update(created)
       })
