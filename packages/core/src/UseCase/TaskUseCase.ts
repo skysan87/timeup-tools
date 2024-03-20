@@ -312,6 +312,7 @@ export class TaskUseCase {
       const data = await this.taskRepository.updateAll(scope, targets.map(item => {
         return {
           id: item.id,
+          listId: task?.listId, // 画面側処理で利用
           startdate: item.startdate as DateNumber,
           enddate: item.enddate as DateNumber
         }
