@@ -4,7 +4,9 @@ import { useDialog } from '@/composables/useDialog'
 import { ValidateError } from '@timeup-tools/core/error';
 
 const { dialog, open, cancel, submit } = useDialog()
-const { create, getTasklist, addTasklist, updateTasklist, deleteTasklist } = useTasklistStore()
+const { tasklists, create, getTasklist, addTasklist, updateTasklist, deleteTasklist } = useTasklistStore()
+const { currentListId } = useTaskStore()
+const config = useRuntimeConfig()
 
 const _isCreateMode = ref<boolean>(false)
 const tasklist = ref<Tasklist>({} as Tasklist)
@@ -58,8 +60,17 @@ const _submit = async () => {
 
 const _delete = async () => {
   try {
+    if (!confirm(`プロジェクト:${tasklist.value.title ?? '(未設定)'}を削除しますか？`)) {
+      return
+    }
     await deleteTasklist(tasklist.value.id)
     submit()
+
+    // 表示しているプロジェクトが削除された場合
+    if (tasklist.value.id === currentListId.value
+      && tasklists.value.findIndex(t => t.id === tasklist.value.id) < 0) {
+      navigateTo(config.public.rootPath, { replace: true })
+    }
   } catch (error: any) {
     console.error(error)
     errorMsg.common = error.message
