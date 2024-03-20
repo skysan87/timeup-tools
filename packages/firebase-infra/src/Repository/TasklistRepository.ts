@@ -84,7 +84,7 @@ export class TasklistRepository implements ITasklistRepository {
     const docRef = doc(this.getRef(scope.userId), data.id!)
     await scope.update(docRef, entity)
 
-    const newData = structuredClone(data)
+    const newData = structuredClone({ ...data })
     newData.updatedAt = new Date()
 
     return newData as Tasklist
