@@ -21,7 +21,11 @@ const habit = ref<Habit>({} as Habit)
 const errorMsg = reactive({
   common: '',
   title: '',
-  frequency: ''
+  frequency: '',
+  weekdays: '',
+  monthlyType: '',
+  planDays: '',
+  planWeek: ''
 })
 
 const defaultPlanWeek = { index: 1, day: Weekdays.SUNDAY }
@@ -92,6 +96,10 @@ const _submit = async () => {
       const err = error as ValidateError<Habit>
       errorMsg.title = err.get('title')
       errorMsg.frequency = err.get('frequency')
+      errorMsg.monthlyType = err.get('monthlyType')
+      errorMsg.weekdays = err.get('weekdays')
+      errorMsg.planDays = err.get('planDays')
+      errorMsg.planWeek = err.get('planWeek')
     } else {
       console.error(error)
       errorMsg.common = error.message
@@ -145,6 +153,10 @@ const initErrorMsg = () => {
   errorMsg.common = ''
   errorMsg.title = ''
   errorMsg.frequency = ''
+  errorMsg.weekdays = ''
+  errorMsg.monthlyType = ''
+  errorMsg.planDays = ''
+  errorMsg.planWeek = ''
 }
 
 defineExpose({
@@ -189,11 +201,17 @@ defineExpose({
               <span class="p-1 align-middle">{{ WeekdaysLabel[id] }}</span>
             </label>
           </div>
+          <p class="text-red-500 text-xs italic">
+            <span>{{ errorMsg.weekdays }}</span>
+          </p>
           <div>
             <label>
               <input v-model="habit.frequency" name="frequency" type="radio" :value="Frequnecy.MONTHLY">
               <span class="mx-1">毎月</span>
             </label>
+            <p class="text-red-500 text-xs italic">
+              <span>{{ errorMsg.monthlyType }}</span>
+            </p>
             <span v-show="habit.frequency === Frequnecy.MONTHLY" class="flex flex-col">
               <div>
                 <label class="ml-4 my-1">
@@ -205,6 +223,9 @@ defineExpose({
                   <option v-for="day of 31" :key="day" :value="day">{{ day }}</option>
                 </select>
               </div>
+              <p class="ml-4 text-red-500 text-xs italic">
+                <span>{{ errorMsg.planDays }}</span>
+              </p>
               <div>
                 <label class="ml-4 my-1">
                   <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.WEEK">
@@ -221,6 +242,9 @@ defineExpose({
                   <span>曜日</span>
                 </div>
               </div>
+              <p class="ml-4 text-red-500 text-xs italic">
+                <span>{{ errorMsg.planWeek }}</span>
+              </p>
               <div>
                 <label class="ml-4 my-1">
                   <input v-model="habit.monthlyType" type="radio" :value="MonthlyType.END">
