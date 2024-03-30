@@ -61,7 +61,7 @@ export default class DateWrapper {
 
   public constructor(date?: string | number | Date, format?: string) {
     if (!date) {
-      this.instance = dayjs()
+      this.instance = dayjs(/* DEBUGの際はここに値を設定 */)
     } else if (!format && (typeof date === 'string' || typeof date === 'number') && /^[0-9]{8}$/.test(date.toString())) {
       this.instance = dayjs(date.toString(), 'YYYYMMDD')
     } else if (!format && date) {

@@ -32,7 +32,7 @@ export class TaskUseCase {
     await this.transaction.run(this.userId, async (scope) => {
       t = await this.taskRepository.get(scope, tasklistId)
     })
-    return t!
+    return this.sort(t!)
   }
 
   /**
@@ -118,7 +118,7 @@ export class TaskUseCase {
 
     tasks.push(...newhabitTasks, ...todaysTasks, ...todaysDone)
 
-    return tasks
+    return this.sort(tasks)
   }
 
   /**
@@ -148,14 +148,16 @@ export class TaskUseCase {
         throw new Error('Tasklist does not exist.')
       }
 
-      await new TasklistBehavior(tasklist).actionAsync(async behavior => {
+      const updatedTasklist = await new TasklistBehavior(tasklist).actionAsync(async behavior => {
         const newMaxIndex = behavior.get('maxIndex') + 1
         behavior.update({ maxIndex: newMaxIndex })
-        this.tasklistRepository.update(scope, behavior.format())
+        await this.tasklistRepository.update(scope, behavior.format())
       })
 
       task.listId = tasklistId
       task.userId = this.userId
+      task.orderIndex = updatedTasklist.maxIndex
+
       result = await new TaskBehavior(task as Task).actionAsync(async behvior => {
         behvior.update({ stateChangeDate: dateFactory().getDateNumber() as DateNumber } as Task)
         const data = await this.taskRepository.save(scope, behvior.format())
@@ -179,10 +181,21 @@ export class TaskUseCase {
       if (!oldTask) {
         throw new Error('task does not exist.')
       }
-      if (!this.existsList(scope, oldTask)) {
+      if (!this.existsList(scope, newTask)) {
         throw new Error('listId is missing.')
       }
+
       newTask.stateChangeDate = dateFactory().getDateNumber() as DateNumber
+
+      if (oldTask.listId !== newTask.listId && newTask.type === TaskType.TODO) {
+        const tasklist = await this.tasklistRepository.getById(scope, newTask.listId)
+        const updated = await new TasklistBehavior(tasklist!).actionAsync(async behavior => {
+          const newMaxIndex = behavior.get('maxIndex') + 1
+          behavior.update({ maxIndex: newMaxIndex })
+          await this.tasklistRepository.update(scope, behavior.format())
+        })
+        newTask.orderIndex = updated.maxIndex
+      }
 
       result = await this.updateTaskAndHabit(scope, oldTask, newTask)
     })
@@ -299,6 +312,7 @@ export class TaskUseCase {
       const data = await this.taskRepository.updateAll(scope, targets.map(item => {
         return {
           id: item.id,
+          listId: task?.listId, // 画面側処理で利用
           startdate: item.startdate as DateNumber,
           enddate: item.enddate as DateNumber
         }
@@ -307,5 +321,34 @@ export class TaskUseCase {
     })
 
     return result
+  }
+
+  /**
+   * タスク種別、リスト、表示順で並び替え(昇順)
+   * @see https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+   */
+  private async sort(tasks: Task[]) {
+    const FORWORD = -1
+    const BACKWORD = 1
+
+    let tasklistOrder: string[]
+    await this.transaction.run(this.userId, async (scope) => {
+      // TODO: キャッシュから取得
+      tasklistOrder = (await this.tasklistRepository.get(scope)).map(t => t.id)
+    })
+
+    return tasks.sort((a, b) => {
+      if (a.type === TaskType.HABIT && b.type === TaskType.TODO) return FORWORD
+      if (a.type === TaskType.TODO && b.type === TaskType.HABIT) return BACKWORD
+
+      const aListIndex = tasklistOrder.findIndex(t => t === a.listId)
+      const bListIndex = tasklistOrder.findIndex(t => t === b.listId)
+      if (aListIndex < bListIndex) return FORWORD
+      if (aListIndex > bListIndex) return BACKWORD
+
+      if (a.orderIndex < b.orderIndex) return FORWORD
+      if (a.orderIndex > b.orderIndex) return BACKWORD
+      return 0
+    })
   }
 }

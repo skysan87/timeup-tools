@@ -180,6 +180,7 @@ export class TaskRepository implements ITaskRepository {
       const newData = structuredClone(task)
       newData.updatedAt = new Date()
 
+      // FIXME: 更新した部分のみ返却している
       result.push(newData as Task)
     }
 

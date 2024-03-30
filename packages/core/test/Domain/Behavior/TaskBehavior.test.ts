@@ -9,7 +9,7 @@ function create(): Task {
     title: null,
     type: TaskType.TODO,
     state: TaskState.Todo,
-    detail: null,
+    detail: undefined,
     startdate: null,
     enddate: null,
     orderIndex: 0,

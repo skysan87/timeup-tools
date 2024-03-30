@@ -10,7 +10,8 @@
     "dev:storage": "cross-env APP_MODE=dev-storage nuxt dev",
     "dev:emulator": "cross-env APP_MODE=dev-emulator nuxt dev",
     "clean": "nuxi cleanup",
-    "type-check": "tsc -noEmit"
+    "type-check:default": "tsc -noEmit",
+    "type-check:vue": "cross-env APP_MODE=dev-inmemory nuxi typecheck"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

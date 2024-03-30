@@ -6,7 +6,7 @@ export class TasklistRepository implements ITasklistRepository {
 
   private static readonly KEY: string = 'TASKLIST'
 
-  private getData(scope: Scope): Tasklist[] {
+  private getData(scope: Scope): Array<Tasklist> {
     return scope.get(TasklistRepository.KEY) ?? []
   }
 
@@ -15,18 +15,20 @@ export class TasklistRepository implements ITasklistRepository {
     return Promise.resolve(data.length < 10)
   }
 
-  public getMaxIndex(scope: Scope): Promise<number> {
+  public getMaxOrderIndex(scope: Scope): Promise<number> {
     return new Promise((resolve) => {
       const data: Tasklist[] = this.getData(scope)
       resolve(data
-        .map(i => i.maxIndex)
+        .map(i => i.orderIndex)
         .reduce((a, b) => Math.max(a, b), 0)
       )
     })
   }
 
   public get(scope: Scope): Promise<Tasklist[]> {
-    return Promise.resolve(this.getData(scope))
+    return Promise.resolve(
+      this.getData(scope).sort((a: Tasklist, b: Tasklist) => a.orderIndex - b.orderIndex) // 昇順
+    )
   }
 
   public getById(scope: Scope, tasklistId: string): Promise<Tasklist | null> {

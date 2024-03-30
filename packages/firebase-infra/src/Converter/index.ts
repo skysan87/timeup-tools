@@ -3,7 +3,7 @@ import { TaskEntity, TasklistEntity, HabitEntity, HabitlistEntity, ConfigEntity 
 
 export function toTaskEntity(model: Task): TaskEntity {
   return {
-    detail: model.detail,
+    detail: model.detail ?? null,
     enddate: model.enddate,
     lastActivityDate: model.lastActivityDate,
     listId: model.listId,
@@ -22,7 +22,7 @@ export function toTaskEntity(model: Task): TaskEntity {
 
 export function toTasklistEntity(model: Tasklist): TasklistEntity {
   return {
-    detail: model.detail,
+    detail: model.detail ?? null,
     maxIndex: model.maxIndex,
     orderIndex: model.orderIndex,
     title: model.title,

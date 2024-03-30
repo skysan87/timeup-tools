@@ -330,11 +330,31 @@ export class HabitBehavior extends BehaviorBase<Habit> {
       error.set('frequency', 'frequency must be selected.')
     }
 
+    if (this.value.frequency === Frequnecy.WEEKLY && this.value.weekdays.length === 0) {
+      error.set('weekdays', 'weekdays must be selected.')
+    } else if (this.value.frequency === Frequnecy.MONTHLY) {
+      if (this.value.monthlyType === null) {
+        error.set('monthlyType', 'monthlyType must be selected.')
+      }
+      else if (this.value.monthlyType === MonthlyType.DAY
+        && this.value.planDays.length === 0) {
+        error.set('planDays', 'planDays must be selected.')
+      } else if (this.value.monthlyType === MonthlyType.WEEK
+        && (this.value.planWeek === null || Object.keys(this.value.planWeek).length === 0)) {
+        error.set('planWeek', 'planWeek must be selected.')
+      } else {
+        // do nothing
+      }
+    } else {
+      // do nothning
+    }
+
     if (error.hasError) {
       throw error
     }
   }
 
+  // TODO: 代数的データ型を使用して不要なパラメータ管理をしないようにする
   private setFrequencyOptions(habit: Habit): void {
     switch (habit.frequency) {
       case Frequnecy.DAILY:

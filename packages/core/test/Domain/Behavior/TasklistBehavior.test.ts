@@ -6,7 +6,7 @@ function create(): Tasklist {
   return {
     id: '',
     title: null,
-    detail: null,
+    detail: undefined,
     userId: '',
     maxIndex: 0,
     orderIndex: 0,

@@ -55,7 +55,10 @@ describe('TasklistUseCase #addList', () => {
   const MAX_NUM = 10
 
   test('データ登録', async () => {
-    await usecase.getList()
+    const lists = await usecase.getList()
+    const lastOrderIndex = lists
+      .map(i => i.orderIndex)
+      .reduce((a, b) => Math.max(a, b), 0)
 
     const tasklist = usecase.create()
     tasklist.title = 'new_list'
@@ -66,6 +69,7 @@ describe('TasklistUseCase #addList', () => {
     expect(!created.createdAt).toBe(false)
     expect(!created.updatedAt).toBe(false)
     expect(created.createdAt === created.updatedAt).toBe(true)
+    expect(created.orderIndex).toBe(lastOrderIndex + 1)
   })
 
   test('バリデーションエラー', async () => {
