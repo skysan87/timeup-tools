@@ -3,7 +3,7 @@ import { Nominal, UserId } from "../ValueObject";
 export type Tasklist = Nominal<{
   id: string
   title: string | null
-  detail: string | null
+  detail: string | undefined
   userId: UserId
   /** TaskのorderIndexの最大値 */
   maxIndex: number

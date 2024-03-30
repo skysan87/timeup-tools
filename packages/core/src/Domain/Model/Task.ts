@@ -6,7 +6,7 @@ export type Task = Nominal<{
   type: TaskType
   title: string | null
   state: TaskState
-  detail: string | null
+  detail: string | undefined
   startdate: DateNumber | null
   enddate: DateNumber | null
   orderIndex: number

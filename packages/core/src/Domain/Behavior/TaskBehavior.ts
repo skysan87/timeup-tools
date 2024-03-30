@@ -40,7 +40,7 @@ export class TaskBehavior extends BehaviorBase<Task> {
       title: v.title ?? null,
       type: v.type ?? TaskType.TODO,
       state: v.state ?? TaskState.Todo,
-      detail: v.detail ?? null,
+      detail: v.detail ?? undefined,
       startdate: v.startdate ?? null,
       enddate: v.enddate ?? null,
       orderIndex: v.orderIndex ?? 0,
