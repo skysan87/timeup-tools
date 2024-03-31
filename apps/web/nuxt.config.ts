@@ -1,3 +1,4 @@
+import { faL } from '@fortawesome/free-solid-svg-icons'
 import packageInfo from './package.json'
 
 // APP_MODEを定義し環境を分類する
@@ -34,7 +35,9 @@ export default defineNuxtConfig({
         { hid: 'robots', name: 'robots', content: 'noindex' }
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+        { rel: 'icon', href: '/favicon.ico', sizes: "48x48" },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg', sizes: "any" },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon-180x180.png' }
       ]
     }
   },
@@ -53,7 +56,8 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxtjs/device'
+    '@nuxtjs/device',
+    '@vite-pwa/nuxt'
   ],
 
   dir: {
@@ -76,5 +80,54 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true
+  },
+
+  // @ts-ignore
+  pwa: {
+    // registerType: 'autoUpdate',
+    manifest: {
+      name: 'what-to-do-today',
+      short_name: 'what-to-do-today',
+      display: 'standalone',
+      lang: 'ja',
+      theme_color: 'green',
+      icons: [
+        {
+          "src": "pwa-64x64.png",
+          "sizes": "64x64",
+          "type": "image/png"
+        },
+        {
+          "src": "pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "pwa-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        },
+        {
+          "src": "maskable-icon-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    },
+    workbox: {
+      navigateFallback: '/',
+      cleanupOutdatedCaches: true,
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,vue,ts}'],
+    },
+    client: {
+      installPrompt: true
+    },
+    devOptions: {
+      enabled: true, // true: ローカルでPWAインストール可
+      suppressWarnings: true,
+      // navigateFallbackAllowlist: [/^\/$/],
+      type: 'module'
+    }
   }
 })

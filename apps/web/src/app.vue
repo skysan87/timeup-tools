@@ -14,6 +14,7 @@ if (checkLogin()) {
 </script>
 
 <template>
+  <NuxtPwaManifest/>
   <NuxtLayout>
     <NuxtLoadingIndicator />
     <NuxtPage />
