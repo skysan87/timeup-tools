@@ -283,7 +283,7 @@ defineExpose({
           :class="{ 'btn-disabled': forbid.delete }" @click="_delete">
           Delete
         </button>
-        <span class="text-xs text-gray-600 flex-1">{{ footerMsg }}</span>
+        <span class="text-xs text-gray-600 flex-1 ml-2">{{ footerMsg }}</span>
       </div>
     </div>
   </dialog>
