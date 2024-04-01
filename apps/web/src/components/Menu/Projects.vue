@@ -11,10 +11,6 @@ const dialog = ref<InstanceType<typeof TasklistDialog>>()
 const openListDialog = async () => {
   await dialog.value?.openAsync({ isCreateMode: true })
 }
-
-const editTodolist = async (listId: string) => {
-  await dialog.value?.openAsync({ tasklistId: listId, isCreateMode: false })
-}
 </script>
 
 <template>
