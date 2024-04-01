@@ -6,7 +6,6 @@ import TasklistDialog from '@/components/Tasklist/Dialog.vue'
 const { tasklists } = useTasklistStore()
 const { isSelected } = useMenu()
 
-const activeItemId = ref<string>('')
 const dialog = ref<InstanceType<typeof TasklistDialog>>()
 
 const openListDialog = async () => {
@@ -30,20 +29,10 @@ const editTodolist = async (listId: string) => {
     <div
       class="py-1 flex justify-between items-center hover:bg-blue-700 hover:opacity-75"
       :class="{ 'bg-blue-700': isSelected(MainPage.Task, tasklist.id) }"
-      @mouseover="activeItemId = tasklist.id"
-      @mouseout="activeItemId = ''"
     >
       <RouterLink :to="`/${MainPage.Task}/${tasklist.id}`" class="px-5 flex-1 cursor-pointer" replace>
         # {{ tasklist.title }}
       </RouterLink>
-
-      <div
-        class="flex-none mr-2 px-2 opacity-0 cursor-pointer rounded-full hover:bg-blue-400"
-        :class="{ 'opacity-100': activeItemId === tasklist.id }"
-        @click.left.prevent="editTodolist(tasklist.id)"
-      >
-        <fa :icon="['fas', 'edit']" size="xs" title="プロジェクトを編集する" />
-      </div>
     </div>
   </template>
 
