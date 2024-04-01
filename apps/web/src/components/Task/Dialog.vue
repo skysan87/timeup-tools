@@ -83,6 +83,13 @@ const _init = (input: Input) => {
     forbid.delete = true
     forbid.addButton = true
     footerMsg.value = '習慣から生成されたタスクはステータスの変更のみ可能です。'
+  } else {
+    forbid.title = false
+    forbid.detail = false
+    forbid.range = false
+    forbid.delete = false
+    forbid.addButton = false
+    footerMsg.value = ''
   }
 
   closeButton.value?.focus()
