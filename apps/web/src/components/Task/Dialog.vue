@@ -83,6 +83,13 @@ const _init = (input: Input) => {
     forbid.delete = true
     forbid.addButton = true
     footerMsg.value = '習慣から生成されたタスクはステータスの変更のみ可能です。'
+  } else {
+    forbid.title = false
+    forbid.detail = false
+    forbid.range = false
+    forbid.delete = false
+    forbid.addButton = false
+    footerMsg.value = ''
   }
 
   closeButton.value?.focus()
@@ -276,7 +283,7 @@ defineExpose({
           :class="{ 'btn-disabled': forbid.delete }" @click="_delete">
           Delete
         </button>
-        <span class="text-xs text-gray-600 flex-1">{{ footerMsg }}</span>
+        <span class="text-xs text-gray-600 flex-1 ml-2">{{ footerMsg }}</span>
       </div>
     </div>
   </dialog>
