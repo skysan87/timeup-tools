@@ -289,8 +289,8 @@ export const useGantt = () => {
   const todayPosition = computed(() => {
     const today = dateFactory()
     const diffFuture = today.diff(startMonth.value as DateUtil, 'day')
-    const diffPast = endMonth.diff(today, 'day') + endMonth.daysInMonth()
-    return (diffFuture >= 0 && diffPast > 0)
+    const isBetween = today.isBetween(startMonth.value.toDate(), endMonth.toDate(), true)
+    return (isBetween && diffFuture >= 0)
       ? diffFuture * BLOCK_SIZE + TASK_WIDTH
       : -1
   })
