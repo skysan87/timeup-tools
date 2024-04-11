@@ -145,6 +145,12 @@ Authentication Emulator, Firestore Emulator
     * title: string
     * userId: string
 
+## index
+* todos
+  * type 昇順 userId 昇順 state 昇順 startdate 昇順 __name__ 昇順
+* lists
+  * userId 昇順 orderIndex 昇順 __name__ 昇順
+
 ## NOTE: DBのタイムスタンプ
 * set, updateのtimestampには`firebase/firestore`の`serverTimestamp()`を利用している
 * この時点でclient側はタイムスタンプを取得できないので、一時的にDateの値を設定する

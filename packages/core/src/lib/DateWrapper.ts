@@ -1,9 +1,11 @@
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
+import isBetween from 'dayjs/plugin/isBetween'
 import utc from 'dayjs/plugin/utc'
 import 'dayjs/locale/ja'
 
 dayjs.extend(timezone)
+dayjs.extend(isBetween)
 dayjs.extend(utc)
 dayjs.locale('ja')
 
@@ -163,5 +165,15 @@ export default class DateWrapper {
    */
   public diff(dateObj: DateWrapper, unit: ManipulateUnit): number {
     return this.instance.diff(dateObj.instance, DateOpeUnitMap.get(unit))
+  }
+
+  /**
+   * 期間内か
+   * @param start 期間の最初の日
+   * @param end 期間の最後の日
+   * @param includes 最初の日と最後の日を含むか
+   */
+  public isBetween(start: Date | string, end: Date | string, includes: boolean): boolean {
+    return this.instance.isBetween(start, end, 'day', includes ? '[]' : '()')
   }
 }
