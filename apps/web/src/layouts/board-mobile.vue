@@ -34,7 +34,7 @@ watch(
         </button>
       </div>
 
-      <div v-show="isMenuExpanded" class="fixed left-0 mt-10 w-full bg-gray-800 h-full overflow-y-scroll">
+      <div v-show="isMenuExpanded" class="fixed left-0 mt-10 pb-20 w-full bg-gray-800 h-full overflow-y-scroll">
         <MenuCommand />
 
         <MenuSummary />
