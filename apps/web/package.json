@@ -1,0 +1,45 @@
+{
+  "name": "@timeup-tools/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "release-build": "cross-env APP_MODE=production nuxt build && cross-env APP_MODE=production nuxt generate",
+    "dev:build": "cross-env APP_MODE=dev-inmemory nuxt build",
+    "dev:inmemory": "cross-env APP_MODE=dev-inmemory nuxt dev",
+    "dev:storage": "cross-env APP_MODE=dev-storage nuxt dev",
+    "dev:emulator": "cross-env APP_MODE=dev-emulator nuxt dev",
+    "clean": "nuxi cleanup",
+    "type-check:default": "tsc -noEmit",
+    "type-check:vue": "cross-env APP_MODE=dev-inmemory nuxi typecheck",
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 src/public/icon.svg"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxt/types": "^2.17.1",
+    "@nuxtjs/device": "^3.1.1",
+    "@vite-pwa/assets-generator": "^0.2.4",
+    "@vite-pwa/nuxt": "^0.6.0",
+    "cross-env": "^7.0.3",
+    "firebase-tools": "^13.2.1",
+    "nuxt": "^3.7.4",
+    "postcss": "^8.4.31",
+    "sass": "^1.69.3",
+    "tailwindcss": "^3.3.3",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-brands-svg-icons": "^6.4.2",
+    "@fortawesome/free-regular-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@popperjs/core": "^2.11.8",
+    "@timeup-tools/core": "workspace:*",
+    "@timeup-tools/firebase-infra": "workspace:*",
+    "@timeup-tools/web-storage-infra": "workspace:*",
+    "tailvue": "^1.0.0",
+    "v-calendar": "^3.1.1"
+  }
+}

@@ -1,0 +1,7 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="256" cy="256" rx="256" ry="256" fill="rgb(28, 89, 104)"/>
+  <text textLength="170" font-size="180" x="77" y="233" fill="rgb(255, 255, 255)" font-family="'Toppan Bunkyu Midashi Mincho'">今</text>
+  <text textLength="170" font-size="180" x="251" y="233" fill="rgb(255, 255, 255)" font-family="'Toppan Bunkyu Midashi Mincho'">日</text>
+  <text textLength="170" font-size="180" x="77" y="417" fill="rgb(255, 255, 255)" font-family="'Toppan Bunkyu Midashi Mincho'">や</text>
+  <text textLength="170" font-size="180" x="251" y="417" fill="rgb(255, 255, 255)" font-family="'Toppan Bunkyu Midashi Mincho'">る</text>
+</svg>

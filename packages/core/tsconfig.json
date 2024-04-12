@@ -1,0 +1,25 @@
+/**
+  * プロダクションコード設定
+  *
+  * - importは相対パスを使用
+  */
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "composite": false,
+    "moduleResolution": "nodenext",
+    "rootDir": "./src",
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "noEmit": false,
+  },
+  "include": [
+    "src"
+  ]
+}

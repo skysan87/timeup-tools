@@ -1,0 +1,30 @@
+/**
+  * テストコード設定
+  *
+  * - testフォルダ配下はVSCodeがこちらの設定を読み込む
+  * - プロダクションコードからのimportは`@`を使用
+  */
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "composite": false,
+    "moduleResolution": "nodenext",
+    "rootDirs": ["../src", "../test"],
+    "paths": {
+      "@/*": ["../src/*"]
+    },
+    "declaration": true,
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "noEmit": false,
+  },
+  "include": [
+    "./**/*"
+  ]
+}
