@@ -66,3 +66,12 @@ $ pnpm run test
 # jest: カバレッジの出力 -> coverage/lcov-report/index.html
 $ pnpm run test:coverage
 ```
+
+## トラブルシューティング
+
+### コマンド実行でrollup系のエラーメッセージが出た場合
+
+```bash
+$ rm -rf node_modules
+$ pnpm install
+```
