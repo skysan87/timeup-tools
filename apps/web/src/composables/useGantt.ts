@@ -229,12 +229,12 @@ export const useGantt = () => {
 
   const getChangedData = () => {
     return tasks.value
-      .filter(task => task.isChanged && !!task.startDate && !!task.endDate)
+      .filter(task => task.isChanged)
       .map(task => {
         return {
           id: task.id,
-          startDate: task.startDate!.getDateNumber() as DateNumber,
-          endDate: task.endDate!.getDateNumber() as DateNumber
+          startDate: task.startDate ? task.startDate.getDateNumber() as DateNumber : null,
+          endDate: task.endDate ? task.endDate.getDateNumber() as DateNumber : null
         }
       })
   }

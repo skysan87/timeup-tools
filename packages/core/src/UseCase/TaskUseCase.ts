@@ -297,7 +297,7 @@ export class TaskUseCase {
    * @param targets
    * @returns
    */
-  public async updateDeadlines(targets: Array<{ id: string, startdate: Number, enddate: Number }>): Promise<Task[]> {
+  public async updateDeadlines(targets: Array<{ id: string, startdate: Number | null, enddate: Number | null }>): Promise<Task[]> {
     const result: Task[] = []
 
     if (targets.length === 0) return result
@@ -313,8 +313,8 @@ export class TaskUseCase {
         return {
           id: item.id,
           listId: task?.listId, // 画面側処理で利用
-          startdate: item.startdate as DateNumber,
-          enddate: item.enddate as DateNumber
+          startdate: item.startdate ? item.startdate as DateNumber : null,
+          enddate: item.enddate ? item.enddate as DateNumber : null
         }
       }))
       result.push(...data)

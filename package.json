@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test:all": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "nuxt:dev": "pnpm -F @timeup-tools/web run dev:storage"
   },
   "keywords": [],
   "author": "",
