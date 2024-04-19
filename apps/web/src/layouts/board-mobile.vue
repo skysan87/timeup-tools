@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { dateFactory } from '@timeup-tools/core/util/DateUtil'
-
 const { isMenuExpanded, switchMenu, close } = useMobileLayout()
 
 const route = useRoute()
 
-const currentDate: string = dateFactory().format('YYYY.M.D(ddd)')
 const { config } = useConfigStore()
+const { currentDate } = useViewState()
 
 watch(
   () => route.path,

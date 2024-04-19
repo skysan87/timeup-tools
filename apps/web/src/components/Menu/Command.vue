@@ -5,6 +5,8 @@ const { logout, getUserName } = useAuth()
 const { init: initTasklist } = useTasklistStore()
 const { init: initHabit } = useHabitStore()
 const { init: initConfig } = useConfigStore()
+const { init: initDate } = useViewState()
+
 
 const config = useRuntimeConfig()
 
@@ -19,6 +21,8 @@ const handleLogout = async () => {
 }
 
 const reload = async () => {
+  initDate()
+
   await Promise.all([
     initHabit(),
     initTasklist(),

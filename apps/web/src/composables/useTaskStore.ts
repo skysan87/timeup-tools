@@ -114,7 +114,7 @@ export const useTaskStore = () => {
     }
   }
 
-  const setDeadline = async (targets: Array<{ id: string, startdate: DateNumber, enddate: DateNumber }>) => {
+  const setDeadline = async (targets: Array<{ id: string, startdate: DateNumber | null, enddate: DateNumber | null }>) => {
     const updated = await $task.updateDeadlines(targets)
     updated.forEach(task => updateArray(task))
   }

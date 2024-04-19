@@ -198,6 +198,8 @@ export class TaskRepository implements ITaskRepository {
     const task = { ...data, id } as Task
     task.createdAt = data.createdAt?.toDate() ?? ''
     task.updatedAt = data.createdAt?.toDate() ?? ''
+    // サブタスク実装前データ対応
+    task.subTasks = structuredClone(task.subTasks ?? [])
     return task
   }
 
