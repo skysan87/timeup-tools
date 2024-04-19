@@ -288,7 +288,7 @@ export class TaskUseCase {
    */
   public async deleteTasks(taskIds: string[]): Promise<void> {
     await this.transaction.runBatch(this.userId, async (scope) => {
-      this.taskRepository.delete(scope, taskIds)
+      await this.taskRepository.delete(scope, taskIds)
     })
   }
 
