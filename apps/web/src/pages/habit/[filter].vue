@@ -61,8 +61,8 @@ definePageMeta({
       </div>
       <NoData v-else />
     </main>
+    <HabitDialog ref="dialog" />
   </div>
-  <HabitDialog ref="dialog" />
 </template>
 
 <style scoped>

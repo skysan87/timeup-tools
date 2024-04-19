@@ -154,8 +154,8 @@ onMounted(async () => {
     <footer class="px-2 py-2 bg-gray-500 flex-none">
       <TaskInput />
     </footer>
+    <TaskDialog ref="dialog" />
   </div>
-  <TaskDialog ref="dialog" />
 </template>
 
 <style scoped>
