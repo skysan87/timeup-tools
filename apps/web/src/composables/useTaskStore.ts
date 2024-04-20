@@ -119,6 +119,11 @@ export const useTaskStore = () => {
     updated.forEach(task => updateArray(task))
   }
 
+  const changeTasklist = async (listId: string, taskIds: Array<string>) => {
+    const updated = await $task.updateListId(listId, taskIds)
+    updated.forEach(task => updateArray(task))
+  }
+
   const changeState = async (taskId: string) => {
     const task = await $task.changeState(taskId)
     updateArray(task)
@@ -153,6 +158,7 @@ export const useTaskStore = () => {
     deleteDone,
     changeState,
     setDeadline,
+    changeTasklist,
     selectTask,
     switchEdit,
     getTaskById,

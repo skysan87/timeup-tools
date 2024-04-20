@@ -7,7 +7,7 @@ import { DatePicker } from 'v-calendar'
 import { LayoutKey } from '~~/.nuxt/types/layouts'
 
 const route = useRoute()
-const { editMode, filterdTasks, init, setDeadline, deleteTasks, switchEdit, selectTask } = useTaskStore()
+const { editMode, filterdTasks, init, setDeadline, deleteTasks, switchEdit, selectTask, changeTasklist } = useTaskStore()
 const { $toast } = useNuxtApp()
 
 const dialog = ref<InstanceType<typeof TaskDialog>>()
@@ -34,6 +34,10 @@ const deleteSelected = async () => {
   if (selectedIds.value.length > 0 && confirm('削除しますか？')) {
     await runAsync(() => deleteTasks(selectedIds.value))
   }
+}
+
+const changeList = async (listId: string) => {
+  await changeTasklist(listId, selectedIds.value)
 }
 
 const editTodo = async (taskId: string) => {
@@ -127,6 +131,7 @@ onMounted(async () => {
         <button class="btn-sm btn-outline mx-0.5" @click="deleteSelected">
           一括削除
         </button>
+        <TaskListChangeDialog @select="changeList" />
         <button class="btn-sm btn-regular mx-0.5" @click="switchEdit">
           キャンセル
         </button>
