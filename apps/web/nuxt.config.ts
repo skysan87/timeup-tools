@@ -88,7 +88,7 @@ export default defineNuxtConfig({
 
   // @ts-ignore
   pwa: {
-    // registerType: 'autoUpdate',
+    registerType: 'autoUpdate',
     manifest: {
       name: 'what-to-do-today',
       short_name: 'what-to-do-today',
