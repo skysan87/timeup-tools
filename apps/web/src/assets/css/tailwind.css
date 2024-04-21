@@ -59,6 +59,10 @@
   @apply bg-stone-50;
 }
 
+.list-style-selected {
+  @apply bg-blue-100;
+}
+
 .list-group {
   @apply p-0
 }

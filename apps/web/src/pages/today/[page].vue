@@ -4,7 +4,7 @@ import { Task } from '@timeup-tools/core/model'
 import { TodayPage } from '~/const/page'
 import { LayoutKey } from '~~/.nuxt/types/layouts'
 
-const { filterdTasks, selectTask, initTodaylist, initInProgressList } = useTaskStore()
+const { filterdTasks, selectedItem, selectTask, initTodaylist, initInProgressList } = useTaskStore()
 const dialog = ref<InstanceType<typeof TaskDialog>>()
 
 const showEditDialog = async (id: string) => {
@@ -44,6 +44,7 @@ definePageMeta({
             :task="item"
             :option="{ showPointer: false, showEdit: false }"
             class="list-group-item list-style"
+            :class="{ 'list-style-selected': selectedItem?.id === item.id }"
             @edit="showEditDialog(item.id)"
             @select="selectTask"
           />

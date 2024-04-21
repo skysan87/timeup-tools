@@ -147,6 +147,7 @@ onMounted(async () => {
               :option="{ showPointer: editMode, showEdit: editMode }"
               :is-checked="selectedIds.includes(item.id)"
               class="list-group-item list-style"
+              :class="{ 'list-style-selected': selectedItem?.id === item.id }"
               @edit="editTodo"
               @select="selectTask"
               @check="handleCheck"
