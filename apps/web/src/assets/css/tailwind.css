@@ -53,3 +53,24 @@
 .output-text {
   @apply block w-full border py-1 px-2;
 }
+
+.list-style {
+  padding: 0.25rem 0.5rem;
+  @apply bg-stone-50;
+}
+
+.list-group {
+  @apply p-0
+}
+
+.list-group-item:first-child {
+  border-top: 1px solid;
+  @apply border-stone-400;
+}
+
+.list-group-item {
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  @apply border-stone-400;
+}

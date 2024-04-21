@@ -54,29 +54,3 @@ definePageMeta({
     <TaskDialog ref="dialog" />
   </div>
 </template>
-
-<style scoped>
-.list-style {
-  padding: 0.25rem 0.5rem;
-  background-color: #faf9f9;
-}
-
-.list-group {
-  padding: 0;
-}
-
-.list-group-item:first-child {
-  border-top: 1px solid #979797;
-}
-
-.list-group-item {
-  border-left: 1px solid #979797;
-  border-right: 1px solid #979797;
-  border-bottom: 1px solid #979797;
-}
-
-/* ステータスラベル */
-.status-label {
-  margin: 0 5px;
-}
-</style>
