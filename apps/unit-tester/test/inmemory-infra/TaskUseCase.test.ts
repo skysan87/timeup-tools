@@ -248,3 +248,37 @@ describe('TaskUseCase #updateTask', () => {
     await expect(validateTest()).rejects.toThrowError(ValidateError)
   })
 })
+
+describe('TaskUseCase #updateListId', () => {
+  test('タスクを別タスクに移動する', async () => {
+    const tasklist2 = await tasklistUseCase.addList({ title: 'list_title2' } as Tasklist)
+
+    const task1 = await usecase.addTask(listId, {
+      title: 'タスク1',
+      listId
+    } as Task)
+
+    const task2 = await usecase.addTask(listId, {
+      title: 'タスク2',
+      listId
+    } as Task)
+
+    const task3 = await usecase.addTask(listId, {
+      title: 'タスク2',
+      listId
+    } as Task)
+
+    await usecase.updateListId(tasklist2.id, [task1.id, task3.id])
+
+    const expectContains = (expectArr: Array<string>, toBeArr: Array<string>): boolean => {
+      return expectArr.length === toBeArr.length
+        && expectArr.every(item => toBeArr.includes(item)) // 順不同
+    }
+
+    const result1 = await usecase.getCurrentTasks(listId)
+    expect(expectContains(result1.map(r => r.id), [task2.id])).toBe(true)
+
+    const result2 = await usecase.getCurrentTasks(tasklist2.id)
+    expect(expectContains(result2.map(r => r.id), [task1.id, task3.id])).toBe(true)
+  })
+})
