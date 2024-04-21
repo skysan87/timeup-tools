@@ -12,7 +12,7 @@
     "clean": "rm -rf build tsconfig.tsbuildinfo",
     "build": "tsc --incremental",
     "type-check": "tsc -noEmit",
-    "dev-emulator-start": "firebase emulators:start --import=emulator_data --export-on-exit=emulator_data"
+    "start-emulator": "firebase emulators:start --import=emulator_data --export-on-exit=emulator_data"
   },
   "keywords": [],
   "author": "",

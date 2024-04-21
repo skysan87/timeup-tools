@@ -12,7 +12,10 @@
   "scripts": {
     "test:all": "jest",
     "test:coverage": "jest --coverage",
-    "nuxt:dev": "pnpm -F @timeup-tools/web run dev:storage"
+    "nuxt:dev": "pnpm -F @timeup-tools/web run dev:storage",
+    "nuxt:emulator": "pnpm run \"/^emulator:.*/\"",
+    "emulator:run": "pnpm -F @timeup-tools/firebase-infra run start-emulator",
+    "emulator:serve": "pnpm -F @timeup-tools/web run dev:emulator"
   },
   "keywords": [],
   "author": "",
