@@ -323,6 +323,24 @@ export class TaskUseCase {
     return result
   }
 
+  public async updateListId(listId: string, taskIds: Array<string>): Promise<Task[]> {
+    const result: Task[] = []
+
+    if (taskIds.length === 0) return result
+
+    await this.transaction.runBatch(this.userId, async (scope) => {
+      const tasklist = await this.tasklistRepository.getById(scope, listId)
+      if (!tasklist) {
+        throw new Error('listId is missing.')
+      }
+
+      const data = await this.taskRepository.updateAll(scope, taskIds.map(item => ({ id: item, listId })))
+      result.push(...data)
+    })
+
+    return result
+  }
+
   /**
    * タスク種別、リスト、表示順で並び替え(昇順)
    * @see https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
