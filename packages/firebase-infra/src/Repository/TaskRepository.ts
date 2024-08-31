@@ -8,7 +8,7 @@ import { FirestoreTransactoinScope as Scope } from "./Transaction"
 
 export class TaskRepository implements ITaskRepository {
 
-  private static readonly MAX_COUNT: number = 100
+  private static readonly MAX_COUNT: number = 300
 
   private getRef(userId: UserId): CollectionReference {
     // TODO: 将来的に構造を変更する(userIdを利用)
