@@ -1,7 +1,7 @@
 {
   "packages": [
-    "nodejs@18",
-    "nodePackages.pnpm@latest"
+    "nodePackages.pnpm@latest",
+    "nodejs@24"
   ],
   "shell": {
     "init_hook": [
