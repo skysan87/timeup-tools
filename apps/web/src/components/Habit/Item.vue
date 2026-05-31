@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Habit } from '@timeup-tools/core/model'
+import type { Habit } from '@timeup-tools/core/model'
 
 interface Props {
   habit: Habit

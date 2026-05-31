@@ -75,6 +75,8 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+@reference "tailwindcss";
+
 .login-container {
   max-width: 480px;
 }
@@ -96,6 +98,6 @@ onMounted(async () => {
 }
 
 .login-button__disabled {
-  @apply bg-gray-500 !important;
+  @apply bg-gray-500;
 }
 </style>

@@ -92,6 +92,8 @@ const reload = async () => {
 </template>
 
 <style lang="scss" scoped>
+@reference "tailwindcss"
+
 .input-form {
   display: flex;
   width: 100%;

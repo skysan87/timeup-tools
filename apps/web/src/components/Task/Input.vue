@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import TaskDialog from '@/components/Task/Dialog.vue'
-import { Task } from '@timeup-tools/core/model'
+import type { Task } from '@timeup-tools/core/model'
 import { isEmpty } from '@timeup-tools/core/util/StringUtil'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
-import { DateNumber, TaskType } from '@timeup-tools/core/value-object'
+import { type DateNumber, TaskType } from '@timeup-tools/core/value-object'
 
 type DeadlineType = 'today' | 'tomorrow' | 'later'
 

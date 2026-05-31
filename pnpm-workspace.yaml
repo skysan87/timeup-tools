@@ -3,3 +3,11 @@
 packages:
   - 'packages/**'
   - 'apps/**'
+allowBuilds:
+  '@firebase/util': true
+  '@parcel/watcher': true
+  esbuild: true
+  protobufjs: true
+  re2: true
+  sharp: true
+  unrs-resolver: true

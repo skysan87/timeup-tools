@@ -1,16 +1,16 @@
 {
   "packages": [
-    "nodePackages.pnpm@latest",
     "nodejs@24"
   ],
+  "env": {
+    "DEVBOX_COREPACK_ENABLED": "true"
+  },
   "shell": {
     "init_hook": [
-      "echo 'Welcome to devbox!' > /dev/null"
+      "pnpm install"
     ],
     "scripts": {
-      "test": [
-        "echo \"Error: no test specified\" && exit 1"
-      ]
+      "run_test": "pnpm run start"
     }
   }
 }

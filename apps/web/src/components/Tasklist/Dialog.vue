@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Tasklist } from '@timeup-tools/core/model'
+import type { Tasklist } from '@timeup-tools/core/model'
 import { useDialog } from '@/composables/useDialog'
 import { ValidateError } from '@timeup-tools/core/error';
 

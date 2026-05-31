@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Task } from '@timeup-tools/core/model'
+import type { Task } from '@timeup-tools/core/model'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
 import { useStateColor } from '~/composables/useStateColor'
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useDialog } from '@/composables/useDialog'
 import { useSubTask } from '@/composables/useSubTask'
-import { Task } from '@timeup-tools/core/model'
+import type { Task } from '@timeup-tools/core/model'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil';
-import { DateNumber, DateRange, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
+import { type DateNumber, type DateRange, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
 import { DatePicker } from 'v-calendar'
 import { ValidateError } from '@timeup-tools/core/error'
 

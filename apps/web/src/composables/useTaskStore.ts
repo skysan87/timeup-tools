@@ -1,5 +1,5 @@
-import { Task } from "@timeup-tools/core/model"
-import { DateNumber, TaskState, TaskType } from "@timeup-tools/core/value-object"
+import { type Task } from "@timeup-tools/core/model"
+import { type DateNumber, TaskState, TaskType } from "@timeup-tools/core/value-object"
 
 export const useTaskStore = () => {
   const { $task } = useNuxtApp()

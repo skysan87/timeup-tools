@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import TaskDialog from '@/components/Task/Dialog.vue'
-import { Task } from '@timeup-tools/core/model'
+import type { Task } from '@timeup-tools/core/model'
 import { TodayPage } from '~/const/page'
-import { LayoutKey } from '~~/.nuxt/types/layouts'
+import type { LayoutKey } from '#build/types/layouts'
 
 const { filterdTasks, selectedItem, selectTask, initTodaylist, initInProgressList } = useTaskStore()
 const dialog = ref<InstanceType<typeof TaskDialog>>()

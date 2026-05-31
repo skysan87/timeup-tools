@@ -19,6 +19,6 @@
     "@timeup-tools/core": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "5.2.2"
+    "typescript": "6.0.3"
   }
 }

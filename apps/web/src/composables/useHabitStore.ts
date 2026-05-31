@@ -1,4 +1,4 @@
-import { Habit } from "@timeup-tools/core/model"
+import type { Habit } from "@timeup-tools/core/model"
 import { HabitPage } from "@/const/page"
 
 export const useHabitStore = () => {

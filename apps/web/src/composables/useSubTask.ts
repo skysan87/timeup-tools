@@ -1,4 +1,4 @@
-import { SubTask } from "@timeup-tools/core/model"
+import { type SubTask } from "@timeup-tools/core/model"
 
 export const useSubTask = () => {
   const addButton = ref<HTMLButtonElement>()

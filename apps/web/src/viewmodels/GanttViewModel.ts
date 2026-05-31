@@ -1,6 +1,6 @@
-import { dateFactory, DateUtil } from "@timeup-tools/core/util/DateUtil"
+import { dateFactory, type DateUtil } from "@timeup-tools/core/util/DateUtil"
 import type { Task } from "@timeup-tools/core/model"
-import { DateNumber } from "@timeup-tools/core/value-object"
+import type { DateNumber } from "@timeup-tools/core/value-object"
 
 export class GanttViewModel {
   public id: string

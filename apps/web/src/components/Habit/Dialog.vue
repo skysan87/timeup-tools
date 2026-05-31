@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useDialog } from '@/composables/useDialog'
 import { ValidateError } from '@timeup-tools/core/error'
-import { Habit } from '@timeup-tools/core/model'
-import { Weekday, MonthlyType, WeekdaysLabel, Weekdays, Frequnecy, FullYear } from '@timeup-tools/core/value-object'
+import type { Habit } from '@timeup-tools/core/model'
+import { type Weekday, MonthlyType, WeekdaysLabel, Weekdays, Frequnecy, type FullYear } from '@timeup-tools/core/value-object'
 import { getTargetMonth } from '@timeup-tools/core/util/ZippedDataUtil'
 import { Calendar } from 'v-calendar'
-import { Page } from 'v-calendar/dist/types/src/utils/page.js'
+import type { Page } from 'v-calendar/dist/types/src/utils/page.js'
 
 const { dialog, open, cancel, submit } = useDialog()
 const { create, getHabitById, addHabit, updateHabit, deleteHabit } = useHabitStore()

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import TaskDialog from '@/components/Task/Dialog.vue'
-import { Task } from '@timeup-tools/core/model'
+import type { Task } from '@timeup-tools/core/model'
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
-import { DateNumber, DateRange } from '@timeup-tools/core/value-object'
+import { type DateNumber, type DateRange } from '@timeup-tools/core/value-object'
 import { DatePicker } from 'v-calendar'
-import { LayoutKey } from '~~/.nuxt/types/layouts'
+import type { LayoutKey } from '#build/types/layouts'
 
 const route = useRoute()
 const { selectedItem, editMode, filterdTasks, init, setDeadline, deleteTasks, switchEdit, selectTask, changeTasklist } = useTaskStore()
@@ -113,7 +113,6 @@ onMounted(async () => {
         <fa class="mx-0.5 cursor-pointer" :icon="['fas', 'circle-info']" @click="showInfo" />
         <span class="mx-0.5">編集モード:</span>
         <div class="mx-0.5 flex flex items-center">
-          <!-- @vue-ignore -->
           <DatePicker v-model.range="dateRange" class="flex-1" :attributes="[{
               key: 'today',
               dot: 'blue',
@@ -140,7 +139,6 @@ onMounted(async () => {
     <main class="pt-2 pb-4 flex-1 overflow-y-scroll">
       <div v-if="filterdTasks.length > 0" class="mx-2 overflow-x-hidden flex-grow">
         <div class="list-group">
-          <!-- <draggable v-model="filterdTasks" handle=".move-icon" @end="onDragEnd"> -->
             <TaskItem v-for="item in filterdTasks"
               :key="item.id"
               :task="item"
@@ -152,7 +150,6 @@ onMounted(async () => {
               @select="selectTask"
               @check="handleCheck"
             />
-          <!-- </draggable> -->
         </div>
       </div>
       <NoData v-else />

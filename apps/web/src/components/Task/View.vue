@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dateFactory } from '@timeup-tools/core/util/DateUtil'
-import { DateNumber, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
+import { type DateNumber, TaskState, TaskStateLabel, TaskType } from '@timeup-tools/core/value-object'
 
 const { selectedItem: task, selectTask } = useTaskStore()
 const { getTasklistName } = useTasklistStore()

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { HabitPage, HabitPageLabel } from '@/const/page'
 import HabitDialog from '@/components/Habit/Dialog.vue'
-import { Habit } from '@timeup-tools/core/model'
-import { LayoutKey } from '~~/.nuxt/types/layouts'
+import type { Habit } from '@timeup-tools/core/model'
+import type { LayoutKey } from '#build/types/layouts'
 
 const { currentHabits, currentFilter, initFromCache } = useHabitStore()
 const dialog = ref<InstanceType<typeof HabitDialog>>()
@@ -66,6 +66,8 @@ definePageMeta({
 </template>
 
 <style scoped>
+@reference "tailwindcss"
+
 .add-button {
   @apply bg-blue-500 text-white p-2 px-4 shadow-md;
 }

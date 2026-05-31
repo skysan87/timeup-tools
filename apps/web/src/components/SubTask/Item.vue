@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SubTask } from '@timeup-tools/core/model'
+import type { SubTask } from '@timeup-tools/core/model'
 import { onMounted, onUnmounted } from 'vue';
 
 interface Props {

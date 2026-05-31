@@ -1,4 +1,4 @@
-import { Tasklist } from "@timeup-tools/core/model"
+import type { Tasklist } from "@timeup-tools/core/model"
 
 export const useTasklistStore = () => {
   const { $tasklist, $toast } = useNuxtApp()

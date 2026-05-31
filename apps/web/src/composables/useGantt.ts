@@ -1,7 +1,7 @@
-import { DateUtil, dateFactory } from "@timeup-tools/core/util/DateUtil"
+import { type DateUtil, dateFactory } from "@timeup-tools/core/util/DateUtil"
 import { GanttViewModel } from '@/viewmodels/GanttViewModel'
-import { Task } from "@timeup-tools/core/model"
-import { DateNumber, DateRange } from "@timeup-tools/core/value-object"
+import { type Task } from "@timeup-tools/core/model"
+import { type DateNumber, type DateRange } from "@timeup-tools/core/value-object"
 
 const BLOCK_SIZE = 20
 const TASK_WIDTH = 320

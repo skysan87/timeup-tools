@@ -1,4 +1,4 @@
-import { Config } from '@timeup-tools/core/model'
+import type { Config } from '@timeup-tools/core/model'
 
 export const useConfigStore = () => {
   const { $user_config } = useNuxtApp()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useGantt } from '@/composables/useGantt'
-import { Task } from '@timeup-tools/core/model'
+import type { Task } from '@timeup-tools/core/model'
 import { GanttViewModel } from '~/viewmodels/GanttViewModel'
 import CalendarDialog from './CalendarDialog.vue'
 

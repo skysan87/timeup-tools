@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import GanttChart from '@/components/Gantt/Chart.vue'
-import { LayoutKey } from '~~/.nuxt/types/layouts'
+import type { LayoutKey } from '#build/types/layouts'
 
 const { filterdTasks, init, setDeadline, selectTask } = useTaskStore()
 const { tasklists } = useTasklistStore()
